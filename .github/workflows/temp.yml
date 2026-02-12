@@ -2,7 +2,7 @@ name: Deploy (S3 frontend + EC2 backend)
 
 on:
   push:
-    branches: []
+    branches: [temp]
 
 permissions:
   id-token: write   # required for OIDC
