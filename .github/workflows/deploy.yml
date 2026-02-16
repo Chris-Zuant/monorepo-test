@@ -17,10 +17,22 @@ jobs:
         shared: ${{ steps.filter.outputs.shared }}
       steps:
         - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Debug SHAs and diff
+          run: |
+            echo "sha: $GITHUB_SHA"
+            echo "before: ${{ github.event.before }}"
+            echo "after:  ${{ github.sha }}"
+            git --no-pager log --oneline -n 5
+            git --no-pager diff --name-only ${{ github.event.before }} ${{ github.sha }} || true
 
         - id: filter
           uses: dorny/paths-filter@v3
           with:
+            base: ${{ github.event.before }}
+            ref: ${{ github.sha }} 
             filters: |
               client:
                 - 'client/**'
@@ -56,13 +68,14 @@ jobs:
       #   run: |
       #     npm ci
       #     npm run build
-      - name: Install client deps
-        working-directory: client
-        run: npm ci
 
       - name: Build shared (required if client imports built output)
         working-directory: shared
         run: npm ci && npm run build
+      
+      - name: Install client deps
+        working-directory: client
+        run: npm ci
 
       - name: Build frontend
         working-directory: client
