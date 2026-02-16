@@ -1,17 +1,18 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import {userRoutes} from './routes/user';
+import { userRoutes } from './routes/user';
+import env from './config/env';
 
 const app = Fastify();
 
 // Enable CORS for the Vite dev server origin
 app.register(cors, {
-  origin: 'http://localhost:5173',
+  origin: env.CLIENT_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 });
-const port = parseInt(process.env.PORT || '3000', 10);
-const host = process.env.HOST || '0.0.0.0';
+const port = env.PORT;
+const host = env.HOST;
 
 // Register additional routes
 app.register(userRoutes, {prefix: '/user'});

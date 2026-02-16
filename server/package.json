@@ -11,7 +11,8 @@
   "dependencies": {
     "@monorepo/shared": "file:../shared",
     "fastify": "^4.25.2",
-    "@fastify/cors": "^9.0.0"
+    "@fastify/cors": "^9.0.0",
+    "dotenv": "^16.1.4"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
