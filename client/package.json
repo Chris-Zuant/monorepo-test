@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:staging": "tsc -b && vite build --mode staging",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@monorepo/shared": "file:../shared",
+    "axios": "^1.13.5",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@monorepo/shared": "file:../shared"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

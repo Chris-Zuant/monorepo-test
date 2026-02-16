@@ -75,11 +75,25 @@ jobs:
   #         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
   #         aws-region: ${{ vars.AWS_REGION }}
 
-  #     - name: Install + build backend
-  #       working-directory: server
-  #       run: |
-  #         npm ci
-  #         npm run build
+      # # - name: Install + build backend
+      # #   working-directory: server
+      # #   run: |
+      # #     npm ci
+      # #     npm run build
+
+      # - name: Install + build shared
+      #   working-directory: shared
+      #   run: |
+      #     npm ci
+      #     npm run build
+
+      # - name: Install backend
+      #   working-directory: server
+      #   run: npm ci
+
+      # - name: Build backend
+      #   working-directory: server
+      #   run: npm run build
 
   #     - name: Create backend artifact
   #       run: |

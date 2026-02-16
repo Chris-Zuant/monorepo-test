@@ -1,18 +1,38 @@
-import express, { Express, Request, Response } from 'express';
-import { User, ApiResponse } from '@monorepo/shared';
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import {userRoutes} from './routes/user';
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
+const app = Fastify();
 
-app.use(express.json());
+// Enable CORS for the Vite dev server origin
+app.register(cors, {
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+});
+const port = parseInt(process.env.PORT || '3000', 10);
+const host = process.env.HOST || '0.0.0.0';
 
-app.get('/', (req: Request, res: Response) => {
+// Register additional routes
+app.register(userRoutes, {prefix: '/user'});
 
-    const user: User = {id: 'meow', name: 'chris', email: 'chris@zuant.com', createdAt: new Date()}
-
-  res.json({ message: 'Hello from Express + TypeScript!' });
+//Not found handler
+app.setNotFoundHandler((request, reply) => {
+  reply.status(404).send({
+    error: "Route not found",
+    path: request.url
+  });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+// Start server
+const start = async () => {
+  try {
+    await app.listen({ port, host });
+    console.log(`Server is running at http://${host}:${port}`);
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+};
+
+start();
