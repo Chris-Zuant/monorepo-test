@@ -2,7 +2,7 @@
  * API helpers for form-builder feature
  */
 import axios from 'axios';
-import type { Form } from '../types';
+import type { Form } from '../form-builder.types';
 
 const client = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000' });
 

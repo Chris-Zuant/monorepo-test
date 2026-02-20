@@ -1,3 +1,3 @@
 export * from './api';
-export * from './types';
-export { integrationsRoutes } from './routes';
+export * from './integrations.types';
+export { integrationsRoutes } from './integrations.routes';

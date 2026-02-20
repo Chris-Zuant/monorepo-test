@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { userRoutes } from './routes/user';
-import env from './config/env';
+import { userRoutes } from './features/account/user.routes';
+import env from './app/config/env';
 
 const app = Fastify();
 

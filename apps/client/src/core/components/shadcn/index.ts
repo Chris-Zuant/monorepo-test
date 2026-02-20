@@ -1,5 +1,5 @@
-export { Button } from "./button"
-export { Input } from "./input"
+export { Button } from "./Button.component"
+export { Input } from "./Input.component"
 export {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -16,4 +16,4 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
-} from "./dropdown-menu"
+} from "./DropdownMenu.component"

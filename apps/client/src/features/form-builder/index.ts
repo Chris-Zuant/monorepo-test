@@ -1,3 +1,3 @@
 export * from './api';
-export * from './types';
-export { formBuilderRoutes } from './routes';
+export * from './form-builder.types';
+export { formBuilderRoutes } from './form-builder.routes';

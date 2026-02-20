@@ -5,7 +5,7 @@ import enLocale from './locales/en.json';
 import frLocale from './locales/fr.json';
 
 // Feature locales
-import { usersLocales } from '@features/users/locales';
+import { usersLocales } from '@/features/account/locales';
 import { formBuilderLocales } from '@features/form-builder/locales';
 import { integrationsLocales } from '@features/integrations/locales';
 

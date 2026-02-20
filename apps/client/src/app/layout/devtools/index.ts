@@ -1,1 +1,1 @@
-export { DevTools } from './components/DevTools';
+export { DevTools } from './components/DevTools.component';
