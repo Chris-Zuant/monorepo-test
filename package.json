@@ -10,7 +10,10 @@
     "test:e2e:ui": "playwright test --ui",
     "dev": "pnpm -r --parallel --stream dev",
     "build": "pnpm -r build",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "docs:dev": "pnpm --filter ./apps/docs start",
+    "docs:build": "pnpm --filter ./apps/docs build",
+    "docs:serve": "pnpm --filter ./apps/docs serve"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

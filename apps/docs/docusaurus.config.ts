@@ -1,5 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
@@ -87,7 +87,7 @@ const config: Config = {
           position: 'left',
           label: 'Tutorial',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/facebook/docusaurus',
           label: 'GitHub',
@@ -144,6 +144,33 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
+
+    plugins: [
+      [
+        "docusaurus-plugin-typedoc",
+        {
+          id: "shared-api",
+          entryPoints: ["../../packages/shared/src/index.ts"],
+          tsconfig: "../../packages/shared/tsconfig.json",
+          out: "docs/reference/shared-api",
+          sidebar: {
+            categoryLabel: "Shared API",
+          },
+        },
+      ],
+      [
+        "docusaurus-plugin-typedoc",
+        {
+          id: "server-api",
+          entryPoints: ["../../apps/server/src/index.ts"],
+          tsconfig: "../../apps/server/tsconfig.json",
+          out: "docs/reference/server-api",
+          sidebar: {
+            categoryLabel: "Server API",
+          },
+        },
+      ],
+    ],
   } satisfies Preset.ThemeConfig,
 };
 
