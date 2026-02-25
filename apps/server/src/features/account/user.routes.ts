@@ -8,7 +8,7 @@ export const userRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
   // GET / - Retrieve list of users
   app.get<{ Reply: ApiResponse<User> }>('/', { preHandler: fakeAuth }, getUsersHandler);
 
-  // POST / - Create a new user
+  // POST / - Create a new use
   app.post<{ Reply: ApiResponse<User> }>('/', { preHandler: fakeAuth }, createUserHandler);
 }
 

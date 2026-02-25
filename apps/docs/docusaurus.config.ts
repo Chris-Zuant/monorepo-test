@@ -4,6 +4,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+const typedocWatch = process.env.TYPEDOC_WATCH === "true";
+
 const config: Config = {
   title: 'My Site',
   tagline: 'Dinosaurs are cool',
@@ -85,9 +87,9 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Docs',
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
+        // { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/facebook/docusaurus',
           label: 'GitHub',
@@ -102,7 +104,7 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Docs',
               to: '/docs/intro',
             },
           ],
@@ -144,34 +146,40 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-
-    plugins: [
-      [
-        "docusaurus-plugin-typedoc",
-        {
-          id: "shared-api",
-          entryPoints: ["../../packages/shared/src/index.ts"],
-          tsconfig: "../../packages/shared/tsconfig.json",
-          out: "docs/reference/shared-api",
-          sidebar: {
-            categoryLabel: "Shared API",
-          },
-        },
-      ],
-      [
-        "docusaurus-plugin-typedoc",
-        {
-          id: "server-api",
-          entryPoints: ["../../apps/server/src/index.ts"],
-          tsconfig: "../../apps/server/tsconfig.json",
-          out: "docs/reference/server-api",
-          sidebar: {
-            categoryLabel: "Server API",
-          },
-        },
-      ],
-    ],
   } satisfies Preset.ThemeConfig,
+  plugins: [
+    [
+      "docusaurus-plugin-typedoc",
+      {
+        id: "shared-package",
+        // entryPoints: ["../../packages/shared/src/index.ts"],
+        entryPoints: [
+          "../../apps/server/src/app/index.ts",
+          "../../apps/server/src/features/index.ts",
+          "../../apps/server/src/core/index.ts",
+        ],
+        tsconfig: "../../packages/shared/tsconfig.json",
+        out: "docs/shared-package",
+        sidebar: {
+          categoryLabel: "Shared Package",
+        },
+        watch: typedocWatch,
+      },
+    ],
+    [
+      "docusaurus-plugin-typedoc",
+      {
+        id: "server-api",
+        entryPoints: ["../../apps/server/src/docs.ts"],
+        tsconfig: "../../apps/server/tsconfig.json",
+        out: "docs/server-api",
+        sidebar: {
+          categoryLabel: "Server API",
+        },
+        watch: typedocWatch,
+      },
+    ],
+  ],
 };
 
 export default config;
