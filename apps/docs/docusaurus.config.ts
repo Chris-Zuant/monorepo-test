@@ -151,17 +151,25 @@ const config: Config = {
     [
       "docusaurus-plugin-typedoc",
       {
+        id: "client-components",
+        entryPoints: ["../../apps/client/src/index.ts"],
+        tsconfig: "../../apps/client/tsconfig.doc.json",
+        out: "docs/client",
+        sidebar: {
+          autoConfiguration: true,
+        },
+        watch: typedocWatch,
+      },
+    ],
+    [
+      "docusaurus-plugin-typedoc",
+      {
         id: "shared-package",
-        // entryPoints: ["../../packages/shared/src/index.ts"],
-        entryPoints: [
-          "../../apps/server/src/app/index.ts",
-          "../../apps/server/src/features/index.ts",
-          "../../apps/server/src/core/index.ts",
-        ],
-        tsconfig: "../../packages/shared/tsconfig.json",
+        entryPoints: ["../../packages/shared/src/index.ts"],
+        tsconfig: "../../packages/shared/tsconfig.doc.json",
         out: "docs/shared-package",
         sidebar: {
-          categoryLabel: "Shared Package",
+          autoConfiguration: true,
         },
         watch: typedocWatch,
       },
@@ -174,7 +182,7 @@ const config: Config = {
         tsconfig: "../../apps/server/tsconfig.json",
         out: "docs/server-api",
         sidebar: {
-          categoryLabel: "Server API",
+          autoConfiguration: true,
         },
         watch: typedocWatch,
       },

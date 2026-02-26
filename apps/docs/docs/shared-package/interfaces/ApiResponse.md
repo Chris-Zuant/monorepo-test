@@ -1,6 +1,6 @@
 # Interface: ApiResponse\<T\>
 
-Defined in: [types.ts:14](https://github.com/Chris-Zuant/monorepo-test/blob/0f932ca1113d0ad253987736ca677484957823b7/packages/shared/src/types.ts#L14)
+Defined in: [types.ts:14](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L14)
 
 API Response wrapper
 
@@ -16,7 +16,7 @@ API Response wrapper
 
 > `optional` **data**: `T`
 
-Defined in: [types.ts:16](https://github.com/Chris-Zuant/monorepo-test/blob/0f932ca1113d0ad253987736ca677484957823b7/packages/shared/src/types.ts#L16)
+Defined in: [types.ts:16](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L16)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [types.ts:16](https://github.com/Chris-Zuant/monorepo-test/blob/0f93
 
 > `optional` **error**: `string`
 
-Defined in: [types.ts:17](https://github.com/Chris-Zuant/monorepo-test/blob/0f932ca1113d0ad253987736ca677484957823b7/packages/shared/src/types.ts#L17)
+Defined in: [types.ts:17](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L17)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: [types.ts:17](https://github.com/Chris-Zuant/monorepo-test/blob/0f93
 
 > **success**: `boolean`
 
-Defined in: [types.ts:15](https://github.com/Chris-Zuant/monorepo-test/blob/0f932ca1113d0ad253987736ca677484957823b7/packages/shared/src/types.ts#L15)
+Defined in: [types.ts:15](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L15)

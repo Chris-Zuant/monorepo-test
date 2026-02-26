@@ -2,7 +2,7 @@
 
 > **logUser**(`user`): `void`
 
-Defined in: [functions/logUser.ts:3](https://github.com/Chris-Zuant/monorepo-test/blob/0f932ca1113d0ad253987736ca677484957823b7/packages/shared/src/functions/logUser.ts#L3)
+Defined in: [functions/logUser.ts:3](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/functions/logUser.ts#L3)
 
 ## Parameters
 
