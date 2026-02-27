@@ -2,7 +2,7 @@
 
 > `const` **DropdownMenuContent**: `ForwardRefExoticComponent`\<`Omit`\<`DropdownMenuContentProps` & `RefAttributes`\<`HTMLDivElement`\>, `"ref"`\> & `RefAttributes`\<`HTMLDivElement`\>\>
 
-Defined in: [apps/client/src/core/components/shadcn/DropdownMenu.component.tsx:57](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/apps/client/src/core/components/shadcn/DropdownMenu.component.tsx#L57)
+Defined in: [apps/client/src/core/components/shadcn/DropdownMenu.component.tsx:57](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/apps/client/src/core/components/shadcn/DropdownMenu.component.tsx#L57)
 
 Dropdown menu component with support for items, separators, and sub-menus
 

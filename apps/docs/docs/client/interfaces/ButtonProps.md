@@ -1,6 +1,6 @@
 # Interface: ButtonProps
 
-Defined in: [apps/client/src/core/components/shadcn/Button.component.tsx:32](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/apps/client/src/core/components/shadcn/Button.component.tsx#L32)
+Defined in: [apps/client/src/core/components/shadcn/Button.component.tsx:32](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/apps/client/src/core/components/shadcn/Button.component.tsx#L32)
 
 ## Extends
 
@@ -3589,7 +3589,7 @@ Defined in: node\_modules/.pnpm/@types+react@19.2.14/node\_modules/@types/react/
 
 > `optional` **size**: `"default"` \| `"sm"` \| `"lg"` \| `"icon"`
 
-Defined in: [apps/client/src/core/components/shadcn/Button.component.tsx:35](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/apps/client/src/core/components/shadcn/Button.component.tsx#L35)
+Defined in: [apps/client/src/core/components/shadcn/Button.component.tsx:35](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/apps/client/src/core/components/shadcn/Button.component.tsx#L35)
 
 ***
 
@@ -3741,7 +3741,7 @@ Defined in: node\_modules/.pnpm/@types+react@19.2.14/node\_modules/@types/react/
 
 > `optional` **variant**: `"default"` \| `"destructive"` \| `"outline"` \| `"secondary"` \| `"ghost"` \| `"link"`
 
-Defined in: [apps/client/src/core/components/shadcn/Button.component.tsx:34](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/apps/client/src/core/components/shadcn/Button.component.tsx#L34)
+Defined in: [apps/client/src/core/components/shadcn/Button.component.tsx:34](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/apps/client/src/core/components/shadcn/Button.component.tsx#L34)
 
 ***
 

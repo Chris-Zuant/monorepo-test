@@ -1,6 +1,6 @@
 # Interface: User
 
-Defined in: [types.ts:4](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L4)
+Defined in: [types.ts:4](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/packages/shared/src/types.ts#L4)
 
 User type definition
 
@@ -10,7 +10,7 @@ User type definition
 
 > **createdAt**: `Date`
 
-Defined in: [types.ts:8](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L8)
+Defined in: [types.ts:8](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/packages/shared/src/types.ts#L8)
 
 ***
 
@@ -18,7 +18,7 @@ Defined in: [types.ts:8](https://github.com/Chris-Zuant/monorepo-test/blob/a8125
 
 > **email**: `string`
 
-Defined in: [types.ts:7](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L7)
+Defined in: [types.ts:7](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/packages/shared/src/types.ts#L7)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: [types.ts:7](https://github.com/Chris-Zuant/monorepo-test/blob/a8125
 
 > **id**: `string`
 
-Defined in: [types.ts:5](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L5)
+Defined in: [types.ts:5](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/packages/shared/src/types.ts#L5)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: [types.ts:5](https://github.com/Chris-Zuant/monorepo-test/blob/a8125
 
 > **name**: `string`
 
-Defined in: [types.ts:6](https://github.com/Chris-Zuant/monorepo-test/blob/a8125e1047dab5249b5bdf447fb30d3ef111006c/packages/shared/src/types.ts#L6)
+Defined in: [types.ts:6](https://github.com/Chris-Zuant/monorepo-test/blob/0c52fba37cd26bc907e1708b33d94632fa5bf555/packages/shared/src/types.ts#L6)
