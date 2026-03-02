@@ -8,6 +8,7 @@ import frLocale from './locales/fr.json';
 import { usersLocales } from '@/features/account/locales';
 import { formBuilderLocales } from '@features/form-builder/locales';
 import { integrationsLocales } from '@features/integrations/locales';
+import { condLogicLocales } from '@/features/conditional-logic/locales';
 
 const resources = {
   en: {
@@ -15,12 +16,14 @@ const resources = {
     users: usersLocales.en,
     formBuilder: formBuilderLocales.en,
     integrations: integrationsLocales.en,
+    condLogic: condLogicLocales.en,
   },
   fr: {
     translation: frLocale,
     users: usersLocales.fr,
     formBuilder: formBuilderLocales.fr,
     integrations: integrationsLocales.fr,
+    condLogic: condLogicLocales.fr,
   },
 };
 
@@ -30,7 +33,7 @@ i18n
     resources,
     lng: 'en',
     fallbackLng: 'en',
-    ns: ['translation', 'users', 'formBuilder', 'integrations'],
+    ns: ['translation', 'users', 'formBuilder', 'integrations', 'condLogic'],
     defaultNS: 'translation',
     interpolation: {
       escapeValue: false,

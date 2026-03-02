@@ -28,6 +28,7 @@ export const Header: React.FC = () => {
     { key: 'users.title', namespace: 'users', path: '/users' },
     { key: 'formBuilder.title', namespace: 'formBuilder', path: '/forms' },
     { key: 'integrations.title', namespace: 'integrations', path: '/integrations' },
+    { key: 'condLogic.title', namespace: 'condLogic', path: '/conditional-logic' },
   ];
 
   return (
