@@ -7,7 +7,7 @@
  * Note: API client functions that use Vite-specific imports are documented in the feature modules.
  * 
  * Usage:
- * import { Button, Input, DropdownMenu, Form, Integration } from '@monorepo/client';
+ * import { Button, Input, CoreDropdownMenu, CoreDropdownButton, Form, Integration } from '@monorepo/client';
  */
 
 // ============================================================================
@@ -35,8 +35,8 @@ export {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuCheckboxItem,
+  DropdownMenuItem,
   DropdownMenuRadioItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -48,6 +48,13 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from './core/shadcn/components/ui/DropdownMenu.component';
+
+/**
+ * Generic dropdown menu wrapper with consistent styling and behavior
+ * @component
+ */
+export { CoreDropdownMenu, CoreDropdownButton } from './core/components/dropdown/coreDropdownMenu';
+export type { CoreDropdownMenuItem, CoreDropdownMenuProps, CoreDropdownButtonProps } from './core/components/dropdown/coreDropdownMenu';
 
 // ============================================================================
 // Utilities

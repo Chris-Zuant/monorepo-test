@@ -16,7 +16,6 @@ export const DevTools = () => {
         <CoreButton
           onClick={() => setIsOpen(!isOpen)}
           className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
-          variant="default"
           title="Toggle DevTools"
         >
           <ChevronRight className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />

@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Search, Globe, Menu, Moon, Sun } from 'lucide-react';
+import { Globe, Menu, Moon, Sun } from 'lucide-react';
 import { CoreButton } from '@/core/components/buttons';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/core/shadcn/components/ui/DropdownMenu.component';
-import { Input } from '@/core/shadcn/components/ui/Input.component';
+import { SearchBar } from '@/core/components/inputs/searchbar.component';
+import { CoreDropdownMenu, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
 import { useTheme } from '@app/providers/theme/hooks';
 
 export const Header: React.FC = () => {
@@ -29,6 +24,27 @@ export const Header: React.FC = () => {
     { key: 'formBuilder.title', namespace: 'formBuilder', path: '/forms' },
     { key: 'integrations.title', namespace: 'integrations', path: '/integrations' },
     { key: 'condLogic.title', namespace: 'condLogic', path: '/conditional-logic' },
+  ];
+
+  const featuresItems: CoreDropdownMenuItem[] = features.map((feature) => ({
+    id: feature.path,
+    label: t(feature.key, { ns: feature.namespace }),
+    onClick: () => navigate(feature.path),
+  }));
+
+  const languageItems: CoreDropdownMenuItem[] = [
+    {
+      id: 'en',
+      label: 'English',
+      onClick: () => handleLanguageChange('en'),
+      selected: i18n.language === 'en',
+    },
+    {
+      id: 'fr',
+      label: 'Français',
+      onClick: () => handleLanguageChange('fr'),
+      selected: i18n.language === 'fr',
+    },
   ];
 
   return (
@@ -52,16 +68,13 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
-            <Input
-              type="text"
-              placeholder={t('common.search') || 'Search...'}
-              value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 h-9 text-sm"
-            />
-          </div>
+          <SearchBar
+            type="text"
+            placeholder={t('common.search') || 'Search...'}
+            value={searchQuery}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-4 h-9 text-sm"
+          />
         </div>
 
         {/* Right Section: Theme, Features, and Language Controls */}
@@ -82,8 +95,8 @@ export const Header: React.FC = () => {
           </CoreButton>
 
           {/* Features Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <CoreDropdownMenu
+            trigger={
               <CoreButton
                 variant="ghost"
                 size="sm"
@@ -92,22 +105,14 @@ export const Header: React.FC = () => {
                 <Menu className="w-4 h-4" />
                 <span>{t('header.features')}</span>
               </CoreButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {features.map((feature) => (
-                <DropdownMenuItem
-                  key={feature.path}
-                  onClick={() => navigate(feature.path)}
-                >
-                  {t(feature.key, { ns: feature.namespace })}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            }
+            items={featuresItems}
+            align="end"
+          />
 
           {/* Language Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <CoreDropdownMenu
+            trigger={
               <CoreButton
                 variant="ghost"
                 size="sm"
@@ -116,28 +121,10 @@ export const Header: React.FC = () => {
                 <Globe className="w-4 h-4" />
                 <span>{currentLanguage}</span>
               </CoreButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => handleLanguageChange('en')}
-                className={i18n.language === 'en' ? 'bg-neutral-100' : ''}
-              >
-                <span>English</span>
-                {i18n.language === 'en' && (
-                  <span className="ml-2 text-blue-600">✓</span>
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleLanguageChange('fr')}
-                className={i18n.language === 'fr' ? 'bg-neutral-100' : ''}
-              >
-                <span>Français</span>
-                {i18n.language === 'fr' && (
-                  <span className="ml-2 text-blue-600">✓</span>
-                )}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            }
+            items={languageItems}
+            align="end"
+          />
         </div>
       </div>
     </header>

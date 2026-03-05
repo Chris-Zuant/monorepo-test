@@ -18,7 +18,6 @@ export function CoreButton({
         // base overrides
         "font-bold",
         "rounded-full",
-        "bg-primary text-primary",
         "shadow-sm",
         className
       )}

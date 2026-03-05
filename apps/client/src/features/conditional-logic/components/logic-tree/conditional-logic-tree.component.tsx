@@ -14,13 +14,7 @@ import {
 import { NODE_TYPES, nodeTypes } from './nodes';
 import { setNodes, setEdges, addNode } from '../../store';
 import type { RootState } from '@app/providers/theme/store';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/core/shadcn/components/ui';
-import { CoreButton } from '@/core/components/buttons';
+import { CoreDropdownButton, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
 
 export function LogicTreeCanvas() {
   const dispatch = useDispatch();
@@ -82,24 +76,21 @@ export function LogicTreeCanvas() {
     setIsDropdownOpen(false);
   }, [dispatch]);
 
+  const nodeItems: CoreDropdownMenuItem[] = NODE_TYPES.map((nodeType) => ({
+    id: nodeType.id,
+    label: nodeType.label,
+    onClick: () => handleAddNode(nodeType.id),
+  }));
+
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
-        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <CoreButton variant="default">+ Add Node</CoreButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {NODE_TYPES.map((nodeType) => (
-              <DropdownMenuItem
-                key={nodeType.id}
-                onClick={() => handleAddNode(nodeType.id)}
-              >
-                {nodeType.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <CoreDropdownButton
+          buttonText="+ Add Node"
+          items={nodeItems}
+          open={isDropdownOpen}
+          onOpenChange={setIsDropdownOpen}
+        />
       </div>
       <ReactFlow
         nodes={nodes}

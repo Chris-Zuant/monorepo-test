@@ -16,9 +16,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const root = document.documentElement;
     
     // Apply all CSS variables from the current theme variant
-    Object.entries(currentVariables).forEach(([category, values]) => {
+    Object.entries(currentVariables).forEach(([_category, values]) => {
       Object.entries(values).forEach(([key, value]) => {
-        root.style.setProperty(key, value);
+        root.style.setProperty(key, value as string);
       });
     });
 
