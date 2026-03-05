@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search, Globe, Menu, Moon, Sun } from 'lucide-react';
-import { Button } from '@core/components/shadcn/Button.component';
+import { CoreButton } from '@/core/components/buttons';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@core/components/shadcn/DropdownMenu.component';
-import { Input } from '@core/components/shadcn/Input.component';
+} from '@/core/shadcn/components/ui/DropdownMenu.component';
+import { Input } from '@/core/shadcn/components/ui/Input.component';
 import { useTheme } from '@app/providers/theme/hooks';
 
 export const Header: React.FC = () => {
@@ -67,7 +67,7 @@ export const Header: React.FC = () => {
         {/* Right Section: Theme, Features, and Language Controls */}
         <div className="flex items-center gap-2">
           {/* Theme Toggle Button */}
-          <Button
+          <CoreButton
             variant="ghost"
             size="sm"
             onClick={toggleTheme}
@@ -79,19 +79,19 @@ export const Header: React.FC = () => {
             ) : (
               <Moon className="w-4 h-4" />
             )}
-          </Button>
+          </CoreButton>
 
           {/* Features Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
+              <CoreButton
                 variant="ghost"
                 size="sm"
                 className="flex items-center gap-2"
               >
                 <Menu className="w-4 h-4" />
                 <span>{t('header.features')}</span>
-              </Button>
+              </CoreButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {features.map((feature) => (
@@ -108,14 +108,14 @@ export const Header: React.FC = () => {
           {/* Language Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
+              <CoreButton
                 variant="ghost"
                 size="sm"
                 className="flex items-center gap-2"
               >
                 <Globe className="w-4 h-4" />
                 <span>{currentLanguage}</span>
-              </Button>
+              </CoreButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem

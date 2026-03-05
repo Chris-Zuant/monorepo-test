@@ -41,6 +41,54 @@ const commonBreakpoints = {
   '--breakpoint-xl': '1200px',
 };
 
+// Bumblebee Theme
+export const bumblebeeTheme: Theme = {
+  id: 'bumblebee',
+  name: 'Bumblebee',
+  variants: {
+    light: {
+      colors: {
+        '--primary-color': '#FDCD43',
+        '--secondary-color': '#AA7427',
+        '--success-color': '#3E9C86',
+        '--danger-color': '#DA3B3B',
+        '--warning-color': '#FDCD43',
+        '--info-color': '#E5E5E5',
+        '--bg-primary': '#D8D8D8',
+        '--bg-secondary': '#E5E5E5',
+        '--bg-card': '#D8D8D8',
+        '--text-primary': '#393939',
+        '--text-secondary': '#2D2E2F',
+        '--text-muted': '#D8D8D8',
+        '--border-color': '#F1F4F9',
+      },
+      fonts: commonFonts,
+      spacing: commonSpacing,
+      breakpoints: commonBreakpoints,
+    },
+    dark: {
+      colors: {
+        '--primary-color': '#E0B328',      // darker yellow
+        '--secondary-color': '#8A5C1F',    // darker brown
+        '--success-color': '#337766',      // darker teal
+        '--danger-color': '#BB3333',       // slightly muted red
+        '--warning-color': '#E0B328',      // same as primary
+        '--info-color': '#B0B0B0',         // darker grey
+        '--bg-primary': '#2E2E2E',         // dark background
+        '--bg-secondary': '#3C3C3C',       // slightly lighter
+        '--bg-card': '#2A2A2A',            // card background
+        '--text-primary': '#E5E5E5',       // light text
+        '--text-secondary': '#CCCCCC',     // slightly muted text
+        '--text-muted': '#777777',         // less contrast text
+        '--border-color': '#444444',       // dark borders
+      },
+      fonts: commonFonts,
+      spacing: commonSpacing,
+      breakpoints: commonBreakpoints,
+    },
+  },
+};
+
 // Nord Theme (Default)
 export const highContrastTheme: Theme = {
   id: 'high-contrast',
@@ -287,6 +335,7 @@ export const AVAILABLE_THEMES: Theme[] = [
   nordTheme,
   solarizedTheme,
   catppuccinTheme,
+  bumblebeeTheme
 ];
 
 interface ThemeState {
@@ -295,8 +344,8 @@ interface ThemeState {
 }
 
 const initialState: ThemeState = {
-  currentTheme: nordTheme,
-  mode: 'dark',
+  currentTheme: bumblebeeTheme,
+  mode: 'light',
 };
 
 export const themeSlice = createSlice({

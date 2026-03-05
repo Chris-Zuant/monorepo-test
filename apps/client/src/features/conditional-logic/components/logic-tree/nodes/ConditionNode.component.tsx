@@ -1,8 +1,8 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { NodeWrapper } from './NodeWrapper';
+import { NodeWrapper } from './NodeWrapper.component';
 
-const ConditionNode: React.FC<any> = ({ data, id }) => {
+const ConditionNode: React.FC<{data: {label: string}, id: string}> = ({ data, id }) => {
   return (
     <NodeWrapper id={id} className="condition-node">
       <Handle type="target" position={Position.Top} />

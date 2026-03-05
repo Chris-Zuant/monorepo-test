@@ -19,8 +19,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@/core/components/shadcn';
-import { Button } from '@/core/components/shadcn';
+} from '@/core/shadcn/components/ui';
+import { CoreButton } from '@/core/components/buttons';
 
 export function LogicTreeCanvas() {
   const dispatch = useDispatch();
@@ -87,7 +87,7 @@ export function LogicTreeCanvas() {
       <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="default">+ Add Node</Button>
+            <CoreButton variant="default">+ Add Node</CoreButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {NODE_TYPES.map((nodeType) => (

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, X } from 'lucide-react';
-import { Button } from '@core/components/shadcn/Button.component';
+import { CoreButton } from '@/core/components/buttons';
 import { ThemeSwitcher } from './ThemeSwitcher.component';
 
 export const DevTools = () => {
@@ -13,14 +13,14 @@ export const DevTools = () => {
     <>
       {/* Toggle Button - Bottom Right */}
       <div style={{ position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 9999 }}>
-        <Button
+        <CoreButton
           onClick={() => setIsOpen(!isOpen)}
           className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
           variant="default"
           title="Toggle DevTools"
         >
           <ChevronRight className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-        </Button>
+        </CoreButton>
       </div>
 
       {/* Side Panel */}
@@ -51,14 +51,14 @@ export const DevTools = () => {
           transition: 'border-color 200ms'
         }}>
           <h2 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>DevTools</h2>
-          <Button
+          <CoreButton
             onClick={() => setIsOpen(false)}
             variant="ghost"
             size="sm"
             className="p-0 w-8 h-8"
           >
             <X className="w-4 h-4" />
-          </Button>
+          </CoreButton>
         </div>
 
         {/* Tabs */}
@@ -69,13 +69,13 @@ export const DevTools = () => {
           borderBottom: '1px solid var(--border-color)',
           transition: 'border-color 200ms'
         }}>
-          <Button
+          <CoreButton
             onClick={() => setActiveTab('themes')}
             variant={activeTab === 'themes' ? 'default' : 'secondary'}
             size="sm"
           >
             {t('devtools.themesTab')}
-          </Button>
+          </CoreButton>
         </div>
 
         {/* Content */}

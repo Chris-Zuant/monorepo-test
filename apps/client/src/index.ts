@@ -17,15 +17,15 @@
  * Primary button component with multiple variants
  * @component
  */
-export { Button, buttonVariants } from './core/components/shadcn/Button.component';
-export type { ButtonProps } from './core/components/shadcn/Button.component';
+export { Button, buttonVariants } from './core/shadcn/components/ui/Button.component';
+export type { ButtonProps } from './core/shadcn/components/ui/Button.component';
 
 /**
  * Standard input field component
  * @component
  */
-export { Input } from './core/components/shadcn/Input.component';
-export type { InputProps } from './core/components/shadcn/Input.component';
+export { Input } from './core/shadcn/components/ui/Input.component';
+export type { InputProps } from './core/shadcn/components/ui/Input.component';
 
 /**
  * Dropdown menu component with support for items, separators, and sub-menus
@@ -47,7 +47,7 @@ export {
   DropdownMenuRadioGroup,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-} from './core/components/shadcn/DropdownMenu.component';
+} from './core/shadcn/components/ui/DropdownMenu.component';
 
 // ============================================================================
 // Utilities
@@ -55,7 +55,7 @@ export {
 /**
  * Utility functions for className management and other common operations
  */
-export * from './lib/utils';
+export * from './core/shadcn/lib/utils';
 
 // ============================================================================
 // Form Builder Feature - Type definitions

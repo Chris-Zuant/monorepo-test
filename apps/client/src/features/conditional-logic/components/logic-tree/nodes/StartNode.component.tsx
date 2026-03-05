@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { NodeWrapper } from './NodeWrapper';
+import { NodeWrapper } from './NodeWrapper.component';
 
 const StartNode: React.FC<any> = ({ data, id }) => {
   return (

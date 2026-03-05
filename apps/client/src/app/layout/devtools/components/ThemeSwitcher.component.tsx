@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@app/providers/theme/hooks';
 import { AVAILABLE_THEMES } from '@app/providers/theme/store/theme.slice';
-import { Button } from '@core/components/shadcn/Button.component';
+import { CoreButton } from '@/core/components/buttons';
 
 export const ThemeSwitcher = () => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ export const ThemeSwitcher = () => {
         <h3 style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>{t('devtools.selectTheme')}</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {AVAILABLE_THEMES.map((theme) => (
-            <Button
+            <CoreButton
               key={theme.id}
               onClick={() => setTheme(theme.id)}
               variant={currentTheme.id === theme.id ? 'default' : 'outline'}
@@ -27,7 +27,7 @@ export const ThemeSwitcher = () => {
               }}
             >
               <div style={{ fontWeight: '500' }}>{theme.name}</div>
-            </Button>
+            </CoreButton>
           ))}
         </div>
       </div>

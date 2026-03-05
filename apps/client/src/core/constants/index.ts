@@ -1,5 +1,6 @@
 /**
- * App constants
+ * App constants barrel export
  */
 
-// Re-export or define constants here
+// Re-export all app constants as they are defined
+
