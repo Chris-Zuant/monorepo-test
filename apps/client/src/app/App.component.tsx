@@ -12,9 +12,7 @@ function App() {
   return (
     <>
       <Router>
-        <div className="flex flex-col min-h-screen w-full" style={{
-          backgroundColor: 'var(--bg-primary)',
-          color: 'var(--text-primary)',
+        <div className="flex flex-col min-h-screen w-full bg-background text-foreground" style={{
           transition: 'background-color 200ms, color 200ms'
         }}>
           <Header />

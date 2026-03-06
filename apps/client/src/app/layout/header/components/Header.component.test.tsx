@@ -26,14 +26,26 @@ describe('Header Component', () => {
     expect(screen.getByText(/Monorepo/)).toBeInTheDocument();
   });
 
-  it('displays search input', () => {
+  it('displays search input when enabled', async () => {
+    const user = userEvent.setup();
     renderWithProviders(<Header />);
+    
+    // Search should not be visible initially
+    expect(screen.queryByPlaceholderText(/Search|Rechercher/)).not.toBeInTheDocument();
+    
+    // Click the search toggle button
+    const searchToggle = screen.getByRole('button', { name: /Toggle search|Basculer la recherche/ });
+    await user.click(searchToggle);
+    
+    // Now search should be visible
     expect(screen.getByPlaceholderText(/Search|Rechercher/)).toBeInTheDocument();
   });
 
   it('renders theme toggle button', () => {
     renderWithProviders(<Header />);
-    const themeButton = screen.getByRole('button', { name: /Toggle|Basculer/ });
+    // Look for button containing sun or moon icon by finding buttons with SVG children
+    const buttons = screen.getAllByRole('button');
+    const themeButton = buttons.find(button => button.querySelector('svg'));
     expect(themeButton).toBeInTheDocument();
   });
 
@@ -48,9 +60,14 @@ describe('Header Component', () => {
     expect(languageButton).toBeInTheDocument();
   });
 
-  it('handles search input', async () => {
+  it('handles search input when enabled', async () => {
     const user = userEvent.setup();
     renderWithProviders(<Header />);
+    
+    // Click the search toggle button
+    const searchToggle = screen.getByRole('button', { name: /Toggle search|Basculer la recherche/ });
+    await user.click(searchToggle);
+    
     const searchInput = screen.getByPlaceholderText(/Search|Rechercher/);
 
     await user.type(searchInput, 'test');

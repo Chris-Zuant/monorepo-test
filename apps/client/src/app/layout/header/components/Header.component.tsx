@@ -7,11 +7,18 @@ import { SearchBar } from '@/core/components/inputs/searchbar.component';
 import { CoreDropdownMenu, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
 import { useTheme } from '@app/providers/theme/hooks';
 
+interface SearchItem {
+  id: string;
+  label: string;
+  href?: string;
+  onClick?: () => void;
+}
+
 export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { i18n, t } = useTranslation();
   const { mode, toggleTheme } = useTheme();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchEnabled, setIsSearchEnabled] = useState(false);
 
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -20,11 +27,17 @@ export const Header: React.FC = () => {
   const currentLanguage = i18n.language.toUpperCase();
 
   const features = [
-    { key: 'users.title', namespace: 'users', path: '/users' },
-    { key: 'formBuilder.title', namespace: 'formBuilder', path: '/forms' },
-    { key: 'integrations.title', namespace: 'integrations', path: '/integrations' },
-    { key: 'condLogic.title', namespace: 'condLogic', path: '/conditional-logic' },
+    { key: 'users.title', namespace: 'users', path: '/users', label: 'Users' },
+    { key: 'formBuilder.title', namespace: 'formBuilder', path: '/forms', label: 'Form Builder' },
+    { key: 'integrations.title', namespace: 'integrations', path: '/integrations', label: 'Integrations' },
+    { key: 'condLogic.title', namespace: 'condLogic', path: '/conditional-logic', label: 'Conditional Logic' },
   ];
+
+  const searchItems: SearchItem[] = features.map((feature) => ({
+    id: feature.path,
+    label: t(feature.key, { ns: feature.namespace, defaultValue: feature.label }),
+    onClick: () => navigate(feature.path),
+  }));
 
   const featuresItems: CoreDropdownMenuItem[] = features.map((feature) => ({
     id: feature.path,
@@ -47,14 +60,17 @@ export const Header: React.FC = () => {
     },
   ];
 
+  const handleSearchToggle = () => {
+    setIsSearchEnabled(!isSearchEnabled);
+  };
+
+  const handleItemSelect = (_item: SearchItem) => {
+    // Item selection is handled by the onClick in the item
+  };
+
   return (
-    <header style={{
-      borderBottom: '1px solid var(--border-color)',
-      backgroundColor: 'var(--bg-primary)',
-      color: 'var(--text-primary)',
-      transition: 'background-color 200ms, color 200ms, border-color 200ms'
-    }}>
-      <div className="flex items-center justify-between px-6 py-4">
+    <header className='w-full border-b-2 border-accent'>
+      <div className="flex items-center justify-between px-6 py-2">
         {/* Left Section: Logo and Search */}
         <div className="flex items-center gap-8 flex-1">
           {/* Logo */}
@@ -67,21 +83,34 @@ export const Header: React.FC = () => {
             <span className="font-semibold text-lg text-neutral-900 dark:text-neutral-100">{t('header.monorepo')}</span>
           </div>
 
-          {/* Search Bar */}
-          <SearchBar
-            type="text"
-            placeholder={t('common.search') || 'Search...'}
-            value={searchQuery}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 h-9 text-sm"
-          />
+          {/* Search Bar - conditionally shown */}
+          {isSearchEnabled && (
+            <SearchBar
+              items={searchItems}
+              onItemSelect={handleItemSelect}
+              placeholder={t('common.search') || 'Search features...'}
+            />
+          )}
         </div>
 
-        {/* Right Section: Theme, Features, and Language Controls */}
+        {/* Right Section: Search Toggle, Theme, Features, and Language Controls */}
         <div className="flex items-center gap-2">
+          {/* Search Toggle Button */}
+          <CoreButton
+            variant={isSearchEnabled ? "default" : "outline"}
+            size="sm"
+            onClick={handleSearchToggle}
+            title={t('header.toggleSearch', 'Toggle search')}
+            aria-label={t('header.toggleSearch', 'Toggle search')}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </CoreButton>
+
           {/* Theme Toggle Button */}
           <CoreButton
-            variant="ghost"
+            variant="default"
             size="sm"
             onClick={toggleTheme}
             className="flex items-center gap-2"
@@ -98,9 +127,9 @@ export const Header: React.FC = () => {
           <CoreDropdownMenu
             trigger={
               <CoreButton
-                variant="ghost"
+                variant="default"
                 size="sm"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-sm"
               >
                 <Menu className="w-4 h-4" />
                 <span>{t('header.features')}</span>
@@ -114,7 +143,7 @@ export const Header: React.FC = () => {
           <CoreDropdownMenu
             trigger={
               <CoreButton
-                variant="ghost"
+                variant="default"
                 size="sm"
                 className="flex items-center gap-2"
               >

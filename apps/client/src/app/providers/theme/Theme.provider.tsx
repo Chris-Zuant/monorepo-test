@@ -15,10 +15,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     // Apply theme to document root
     const root = document.documentElement;
     
-    // Apply all CSS variables from the current theme variant
+    // Apply all CSS variables from the current theme variant.
+    // Use the optional `priority` argument to force !important so that
+    // changes always win over any rules defined in imported stylesheets
+    // (including Tailwind's generated :root defaults).  This is the
+    // core fix for "themeProvider not overwriting default root themes".
     Object.entries(currentVariables).forEach(([_category, values]) => {
       Object.entries(values).forEach(([key, value]) => {
-        root.style.setProperty(key, value as string);
+        root.style.setProperty(key, value as string, 'important');
       });
     });
 

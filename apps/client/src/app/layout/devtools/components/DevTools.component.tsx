@@ -29,16 +29,11 @@ export const DevTools = () => {
           bottom: 0,
           right: 0,
           top: 0,
-          width: '20rem',
           zIndex: 9998,
           transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 300ms, background-color 200ms, color 200ms, border-color 200ms',
-          backgroundColor: 'var(--bg-primary)',
-          borderLeft: '1px solid var(--border-color)',
-          color: 'var(--text-primary)',
-          boxShadow: 'var(--box-shadow, 0 10px 15px -3px rgba(0, 0, 0, 0.1))'
+          transition: 'transform 300ms, background-color 200ms, color 200ms, border-color 200ms'
         }}
-        className="shadow-lg"
+        className="shadow-lg bg-background w-100"
       >
         {/* Header */}
         <div style={{

@@ -24,18 +24,14 @@ export function LogicTreeCanvas() {
   const [edges, setLocalEdges, onEdgesChange] = useEdgesState(reduxEdges);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Sync Redux state changes to local state
+  // Initialize local state from Redux only once
   useEffect(() => {
-    if (JSON.stringify(nodes) !== JSON.stringify(reduxNodes)) {
-      setLocalNodes(reduxNodes);
-    }
-  }, [reduxNodes]);
+    setLocalNodes(reduxNodes);
+  }, []);
 
   useEffect(() => {
-    if (JSON.stringify(edges) !== JSON.stringify(reduxEdges)) {
-      setLocalEdges(reduxEdges);
-    }
-  }, [reduxEdges]);
+    setLocalEdges(reduxEdges);
+  }, []);
 
   const onNodesChangeHandler = useCallback((changes: any) => {
     onNodesChange(changes);
@@ -45,12 +41,12 @@ export function LogicTreeCanvas() {
     onEdgesChange(changes);
   }, [onEdgesChange]);
 
-  // Update Redux when nodes change
+  // Update Redux when nodes change (one-way sync, no circular dependency)
   useEffect(() => {
     dispatch(setNodes(nodes));
   }, [nodes, dispatch]);
 
-  // Update Redux when edges change
+  // Update Redux when edges change (one-way sync, no circular dependency)
   useEffect(() => {
     dispatch(setEdges(edges));
   }, [edges, dispatch]);
@@ -58,9 +54,9 @@ export function LogicTreeCanvas() {
   const onConnect = useCallback(
     (connection: Connection) => {
       const newEdges = addEdgeUtil(connection, edges);
-      onEdgesChange([{ type: 'reset', payload: newEdges }] as any);
+      setLocalEdges(newEdges);
     },
-    [edges, onEdgesChange]
+    [edges, setLocalEdges]
   );
 
   const handleAddNode = useCallback((nodeTypeId: string) => {
