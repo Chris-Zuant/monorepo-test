@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { userRoutes } from './features/account/user.routes';
 import env from './app/config/env';
+import { integrationRoutes } from './features/integrations/integrations.routes';
 
 const app = Fastify();
 
@@ -16,6 +17,7 @@ const host = env.HOST;
 
 // Register additional routes
 app.register(userRoutes, {prefix: '/user'});
+app.register(integrationRoutes, {prefix: '/integration'});
 
 //Not found handler
 app.setNotFoundHandler((request, reply) => {
@@ -31,6 +33,7 @@ const start = async () => {
     await app.listen({ port, host });
     console.log(`Server is running at http://${host}:${port}`);
   } catch (err) {
+    console.error("Failed to start server", err);
     app.log.error(err);
     process.exit(1);
   }

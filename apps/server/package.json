@@ -4,7 +4,10 @@
   "description": "Fastify server with TypeScript",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "npm run dev:api",
+    "dev:temporal": "sh -c 'npm run dev:api & npm run temporal:worker & wait'",
+    "dev:api": "ts-node src/index.ts",
+    "temporal:worker": "ts-node src/app/temporal/runWorkers.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "vitest --run",
@@ -15,10 +18,15 @@
   "dependencies": {
     "@fastify/cors": "^9.0.0",
     "@monorepo/shared": "workspace:*",
+    "@temporalio/client": "^1.15.0",
+    "@temporalio/worker": "^1.15.0",
+    "@temporalio/workflow": "^1.15.0",
+    "axios": "^1.13.5",
     "dotenv": "^16.1.4",
     "fastify": "^4.25.2"
   },
   "devDependencies": {
+    "@temporalio/testing": "^1.15.0",
     "@types/node": "^20.10.0",
     "@vitest/ui": "^4.0.18",
     "ts-node": "^10.9.2",
