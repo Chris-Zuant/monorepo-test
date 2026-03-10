@@ -29,3 +29,8 @@ export async function demoIntegrationWorkflow() {
 
   return transformed
 }
+
+export async function welcomeWorkflow(name: string = "world") {
+  await logActivity({ message: `Welcome workflow started for ${name}` })
+  return demoIntegrationWorkflow()
+}

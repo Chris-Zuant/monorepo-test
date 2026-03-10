@@ -8,40 +8,30 @@ export const ThemeSwitcher = () => {
   const { currentTheme, setTheme } = useTheme();
 
   return (
-    <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className="flex flex-col gap-4 p-4">
       <div>
-        <h3 style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>{t('devtools.selectTheme')}</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <h3 className="mb-3 text-sm font-semibold text-foreground">
+          {t('devtools.selectTheme')}
+        </h3>
+        <div className="flex flex-col gap-2">
           {AVAILABLE_THEMES.map((theme) => (
             <CoreButton
               key={theme.id}
               onClick={() => setTheme(theme.id)}
               variant={currentTheme.id === theme.id ? 'default' : 'outline'}
-              style={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                textAlign: 'left',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start'
-              }}
+              className="w-full justify-start text-left"
             >
-              <div style={{ fontWeight: '500' }}>{theme.name}</div>
+              <div className="font-medium">{theme.name}</div>
             </CoreButton>
           ))}
         </div>
       </div>
 
-      {/* Current Theme Info */}
-      <div style={{
-        padding: '0.75rem',
-        backgroundColor: 'var(--bg-secondary)',
-        borderRadius: '0.5rem',
-        border: '1px solid var(--border-color)',
-        transition: 'all 200ms'
-      }}>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>{t('devtools.currentTheme')}</div>
-        <div style={{ fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-primary)' }}>{currentTheme.name}</div>
+      <div className="rounded-lg border border-border bg-secondary/30 p-3 transition-colors">
+        <div className="mb-1 text-xs text-muted-foreground">
+          {t('devtools.currentTheme')}
+        </div>
+        <div className="text-sm font-medium text-foreground">{currentTheme.name}</div>
       </div>
     </div>
   );

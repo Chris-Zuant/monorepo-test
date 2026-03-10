@@ -3,17 +3,24 @@ import { renderHook, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '@app/providers/theme/store';
 import { useTheme } from './useTheme.hook';
+import { AVAILABLE_THEMES, setMode, setTheme } from '../store/theme.slice';
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <Provider store={store}>{children}</Provider>
 );
 
 describe('useTheme hook', () => {
+  beforeEach(() => {
+    store.dispatch(setTheme('bumblebee'));
+    store.dispatch(setMode('light'));
+  });
+
   it('should return initial theme state', () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
 
     expect(result.current.currentTheme).toBeDefined();
-    expect(result.current.mode).toBe('dark');
+    expect(result.current.currentTheme.id).toBe('bumblebee');
+    expect(result.current.mode).toBe('light');
     expect(result.current.currentVariables).toBeDefined();
   });
 
@@ -28,13 +35,13 @@ describe('useTheme hook', () => {
   it('should toggle between light and dark mode', () => {
     const { result } = renderHook(() => useTheme(), { wrapper });
 
-    expect(result.current.mode).toBe('dark');
+    expect(result.current.mode).toBe('light');
 
     act(() => {
       result.current.toggleTheme();
     });
 
-    expect(result.current.mode).toBe('light');
+    expect(result.current.mode).toBe('dark');
   });
 
   it('should set mode to light', () => {
@@ -47,15 +54,18 @@ describe('useTheme hook', () => {
     expect(result.current.mode).toBe('light');
   });
 
-  it('should change theme', () => {
-    const { result } = renderHook(() => useTheme(), { wrapper });
-    const initialTheme = result.current.currentTheme.id;
+  it('should change theme for all available theme ids', () => {
+    const themeIds = AVAILABLE_THEMES.map((theme) => theme.id);
 
-    act(() => {
-      result.current.setTheme('dracula');
+    themeIds.forEach((themeId) => {
+      const { result } = renderHook(() => useTheme(), { wrapper });
+
+      act(() => {
+        result.current.setTheme(themeId);
+      });
+
+      expect(result.current.currentTheme.id).toBe(themeId);
+      expect(result.current.currentVariables).toBeDefined();
     });
-
-    expect(result.current.currentTheme.id).toBe('dracula');
-    expect(result.current.currentTheme.id).not.toBe(initialTheme);
   });
 });

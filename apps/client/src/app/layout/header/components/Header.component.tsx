@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Globe, Menu, Moon, Sun } from 'lucide-react';
+import { CircleUserRound, Globe, LayoutGrid, Moon, Sun } from 'lucide-react';
 import { CoreButton } from '@/core/components/buttons';
 import { SearchBar } from '@/core/components/inputs/searchbar.component';
 import { CoreDropdownMenu, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
@@ -18,7 +18,7 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { i18n, t } = useTranslation();
   const { mode, toggleTheme } = useTheme();
-  const [isSearchEnabled, setIsSearchEnabled] = useState(false);
+  const [isSearchEnabled] = useState(true);
 
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -60,9 +60,33 @@ export const Header: React.FC = () => {
     },
   ];
 
-  const handleSearchToggle = () => {
-    setIsSearchEnabled(!isSearchEnabled);
-  };
+  const accountMenuConfig = [
+    { id: 'account-label', labelKey: 'header.accountMenu', isLabel: true },
+    { id: 'profile', labelKey: 'header.profile', path: '/users' },
+    { id: 'settings', labelKey: 'header.settings' },
+    { id: 'preferences', labelKey: 'header.preferences' },
+    { id: 'account-separator', separator: true },
+    { id: 'sign-out', labelKey: 'header.signOut' },
+  ] as const;
+
+  const accountItems: CoreDropdownMenuItem[] = accountMenuConfig.map((item) => {
+    if ('separator' in item) {
+      return {
+        id: item.id,
+        label: item.id,
+        separator: true,
+      };
+    }
+
+    const translatedLabel = t(item.labelKey);
+
+    return {
+      id: item.id,
+      label: translatedLabel,
+      isLabel: 'isLabel' in item ? item.isLabel : false,
+      onClick: 'path' in item && item.path ? () => navigate(item.path) : undefined,
+    };
+  });
 
   const handleItemSelect = (_item: SearchItem) => {
     // Item selection is handled by the onClick in the item
@@ -91,27 +115,30 @@ export const Header: React.FC = () => {
               placeholder={t('common.search') || 'Search features...'}
             />
           )}
+
+          {/* Features Dropdown */}
+          <CoreDropdownMenu
+            trigger={
+              <CoreButton
+                variant="icon"
+                size="icon"
+                className="flex items-center gap-2 text-sm"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </CoreButton>
+            }
+            items={featuresItems}
+            align="end"
+          />
+
         </div>
 
         {/* Right Section: Search Toggle, Theme, Features, and Language Controls */}
         <div className="flex items-center gap-2">
-          {/* Search Toggle Button */}
-          <CoreButton
-            variant={isSearchEnabled ? "default" : "outline"}
-            size="sm"
-            onClick={handleSearchToggle}
-            title={t('header.toggleSearch', 'Toggle search')}
-            aria-label={t('header.toggleSearch', 'Toggle search')}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </CoreButton>
 
           {/* Theme Toggle Button */}
           <CoreButton
             variant="default"
-            size="sm"
             onClick={toggleTheme}
             className="flex items-center gap-2"
             title={t('header.toggleTheme')}
@@ -123,28 +150,11 @@ export const Header: React.FC = () => {
             )}
           </CoreButton>
 
-          {/* Features Dropdown */}
-          <CoreDropdownMenu
-            trigger={
-              <CoreButton
-                variant="default"
-                size="sm"
-                className="flex items-center gap-2 text-sm"
-              >
-                <Menu className="w-4 h-4" />
-                <span>{t('header.features')}</span>
-              </CoreButton>
-            }
-            items={featuresItems}
-            align="end"
-          />
-
           {/* Language Dropdown */}
           <CoreDropdownMenu
             trigger={
               <CoreButton
                 variant="default"
-                size="sm"
                 className="flex items-center gap-2"
               >
                 <Globe className="w-4 h-4" />
@@ -152,6 +162,21 @@ export const Header: React.FC = () => {
               </CoreButton>
             }
             items={languageItems}
+            align="end"
+          />
+
+          {/* Account Dropdown */}
+          <CoreDropdownMenu
+            trigger={
+              <CoreButton
+                variant="default"
+                className="flex items-center gap-2"
+              >
+                <CircleUserRound className="w-4 h-4" />
+                <span>{t('header.account')}</span>
+              </CoreButton>
+            }
+            items={accountItems}
             align="end"
           />
         </div>

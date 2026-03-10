@@ -22,7 +22,13 @@
     "search": "Search...",
     "toggleTheme": "Toggle theme mode",
     "selectLanguage": "Select language",
-    "features": "Features"
+    "features": "Features",
+    "account": "Account",
+    "accountMenu": "My Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "preferences": "Preferences",
+    "signOut": "Sign out"
   },
   "devtools": {
     "title": "DevTools",

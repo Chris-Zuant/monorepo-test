@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, X } from 'lucide-react';
 import { CoreButton } from '@/core/components/buttons';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/shadcn/components/ui/Tabs.component';
 import { ThemeSwitcher } from './ThemeSwitcher.component';
 
 export const DevTools = () => {
@@ -15,10 +16,9 @@ export const DevTools = () => {
       <div style={{ position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 9999 }}>
         <CoreButton
           onClick={() => setIsOpen(!isOpen)}
-          className="rounded-full w-12 h-12 p-0 flex items-center justify-center"
           title="Toggle DevTools"
         >
-          <ChevronRight className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronRight className={`w-5 h-5 transition-transform ${isOpen ? '' : 'rotate-180'}`} />
         </CoreButton>
       </div>
 
@@ -55,27 +55,29 @@ export const DevTools = () => {
           </CoreButton>
         </div>
 
-        {/* Tabs */}
-        <div style={{
-          display: 'flex',
-          gap: '0.5rem',
-          padding: '1rem',
-          borderBottom: '1px solid var(--border-color)',
-          transition: 'border-color 200ms'
-        }}>
-          <CoreButton
-            onClick={() => setActiveTab('themes')}
-            variant={activeTab === 'themes' ? 'default' : 'secondary'}
-            size="sm"
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex h-[calc(100%-65px)] flex-col"
+        >
+          <div
+            style={{
+              padding: '1rem',
+              borderBottom: '1px solid var(--border-color)',
+              transition: 'border-color 200ms'
+            }}
           >
-            {t('devtools.themesTab')}
-          </CoreButton>
-        </div>
+            <TabsList className="grid w-full grid-cols-1">
+              <TabsTrigger value="themes">
+                {t('devtools.themesTab')}
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        {/* Content */}
-        <div className="overflow-y-auto h-full pb-8">
-          {activeTab === 'themes' && <ThemeSwitcher />}
-        </div>
+          <TabsContent value="themes" className="overflow-y-auto pb-8">
+            <ThemeSwitcher />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Backdrop */}
