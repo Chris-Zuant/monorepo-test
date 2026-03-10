@@ -11,6 +11,11 @@
     "enabled": "Activé",
     "disabled": "Désactivé",
     "testSuccess": "Connexion réussie",
-    "testFailed": "Échec de la connexion"
+    "testFailed": "Échec de la connexion",
+    "editor": {
+      "open": "Ouvrir l'éditeur",
+      "title": "Éditeur d'intégration",
+      "description": "Choisissez un nœud dans la barre latérale pour l'ajouter au flux."
+    }
   }
 }

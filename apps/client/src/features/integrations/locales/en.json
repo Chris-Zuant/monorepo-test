@@ -11,6 +11,11 @@
     "enabled": "Enabled",
     "disabled": "Disabled",
     "testSuccess": "Connection successful",
-    "testFailed": "Connection failed"
+    "testFailed": "Connection failed",
+    "editor": {
+      "open": "Open Editor",
+      "title": "Integration Editor",
+      "description": "Choose a node from the sidebar to add it to the flow."
+    }
   }
 }

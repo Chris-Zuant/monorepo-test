@@ -1,5 +1,6 @@
 import { Provider } from 'react-redux';
 import { store } from './theme/store';
+import { QueryProvider } from './query/Query.provider';
 import { ThemeProvider } from './theme/Theme.provider';
 
 interface AppProvidersProps {
@@ -9,7 +10,9 @@ interface AppProvidersProps {
 export const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <Provider store={store}>
-      <ThemeProvider>{children}</ThemeProvider>
+      <QueryProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+      </QueryProvider>
     </Provider>
   );
 };

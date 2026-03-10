@@ -27,21 +27,21 @@ export const Header: React.FC = () => {
   const currentLanguage = i18n.language.toUpperCase();
 
   const features = [
-    { key: 'users.title', namespace: 'users', path: '/users', label: 'Users' },
-    { key: 'formBuilder.title', namespace: 'formBuilder', path: '/forms', label: 'Form Builder' },
-    { key: 'integrations.title', namespace: 'integrations', path: '/integrations', label: 'Integrations' },
-    { key: 'condLogic.title', namespace: 'condLogic', path: '/conditional-logic', label: 'Conditional Logic' },
+    { translationKey: 'users.page.title', namespace: 'users', path: '/users', label: 'Users' },
+    { translationKey: 'formBuilder.page.title', namespace: 'formBuilder', path: '/forms', label: 'Form Builder' },
+    { translationKey: 'integrations.page.title', namespace: 'integrations', path: '/integrations', label: 'Integrations' },
+    { translationKey: 'title', namespace: 'condLogic', path: '/conditional-logic', label: 'Conditional Logic' },
   ];
 
   const searchItems: SearchItem[] = features.map((feature) => ({
     id: feature.path,
-    label: t(feature.key, { ns: feature.namespace, defaultValue: feature.label }),
+    label: t(feature.translationKey, { ns: feature.namespace, defaultValue: feature.label }),
     onClick: () => navigate(feature.path),
   }));
 
   const featuresItems: CoreDropdownMenuItem[] = features.map((feature) => ({
     id: feature.path,
-    label: t(feature.key, { ns: feature.namespace }),
+    label: t(feature.translationKey, { ns: feature.namespace, defaultValue: feature.label }),
     onClick: () => navigate(feature.path),
   }));
 
