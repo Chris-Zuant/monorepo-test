@@ -31,7 +31,6 @@ export interface ReactFlowNodeData extends Record<string, unknown> {
   config: Record<string, unknown>
   category: string
   activityName: string
-  icon: LucideIcon
   inputs: NodePortDefinition[]
   outputs: NodePortDefinition[]
   configSchema: NodeConfigFieldDefinition[]

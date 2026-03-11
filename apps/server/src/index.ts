@@ -17,7 +17,7 @@ const host = env.HOST;
 
 // Register additional routes
 app.register(userRoutes, {prefix: '/user'});
-app.register(integrationRoutes, {prefix: '/integration'});
+app.register(integrationRoutes, {prefix: '/integrations'});
 
 //Not found handler
 app.setNotFoundHandler((request, reply) => {

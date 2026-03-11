@@ -1,70 +1,67 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { IntegrationGraphDefinition } from '@monorepo/shared';
 import type { Node, Edge } from '@xyflow/react';
+import { toReactFlow } from '../functions/reactFlowToGraphConversion';
 import type { ReactFlowNodeData } from '../models/reactFlowNodeData.types';
-import { NODE_DEFINITIONS } from '../components/flow-diagram/nodes';
-import { IntegrationNodeType } from '@monorepo/shared';
 
 export interface IntegrationsState {
-  nodes: Node[];
+  id: string;
+  name: string;
+  nodes: Node<ReactFlowNodeData>[];
   edges: Edge[];
 }
 
-const initialState: IntegrationsState = {
-  nodes: [
-    {
-      id: '1',
-      position: { x: 80, y: 120 },
-      data: {
-        nodeId: '1',
-        name: 'HTTP Request',
-        label: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].label,
-        type: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].type,
-        description: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].description,
-        config: {},
-        category: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].category,
-        activityName: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].activityName,
-        icon: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].icon,
-        inputs: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].inputs,
-        outputs: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].outputs,
-        configSchema: NODE_DEFINITIONS[IntegrationNodeType.HttpRequest].configSchema,
-      } satisfies ReactFlowNodeData,
-      type: 'integrationNode',
-    },
-    {
-      id: '2',
-      position: { x: 360, y: 120 },
-      data: {
-        nodeId: '2',
-        name: 'Transform',
-        label: NODE_DEFINITIONS[IntegrationNodeType.Transform].label,
-        type: NODE_DEFINITIONS[IntegrationNodeType.Transform].type,
-        description: NODE_DEFINITIONS[IntegrationNodeType.Transform].description,
-        config: {},
-        category: NODE_DEFINITIONS[IntegrationNodeType.Transform].category,
-        activityName: NODE_DEFINITIONS[IntegrationNodeType.Transform].activityName,
-        icon: NODE_DEFINITIONS[IntegrationNodeType.Transform].icon,
-        inputs: NODE_DEFINITIONS[IntegrationNodeType.Transform].inputs,
-        outputs: NODE_DEFINITIONS[IntegrationNodeType.Transform].outputs,
-        configSchema: NODE_DEFINITIONS[IntegrationNodeType.Transform].configSchema,
-      } satisfies ReactFlowNodeData,
-      type: 'integrationNode',
-    },
-  ],
-  edges: [{ id: 'e1-2', source: '1', target: '2' }],
-};
+const createInitialState = (): IntegrationsState => ({
+  id: globalThis.crypto?.randomUUID?.() ?? `integration-${Date.now()}`,
+  name: '',
+  nodes: [],
+  edges: [],
+});
+
+const initialState: IntegrationsState = createInitialState();
 
 export const integrationsSlice = createSlice({
   name: 'integrations',
   initialState,
   reducers: {
-    setNodes: (state, action: PayloadAction<Node[]>) => {
+    setIntegrationGraph: (
+      state,
+      action: PayloadAction<IntegrationGraphDefinition>
+    ) => {
+      const graph = action.payload;
+      const { nodes, edges } = toReactFlow(graph);
+
+      state.id = graph.id;
+      state.name = graph.name;
+      state.nodes = nodes;
+      state.edges = edges;
+    },
+    setNodes: (state, action: PayloadAction<Node<ReactFlowNodeData>[]>) => {
       state.nodes = action.payload;
     },
     setEdges: (state, action: PayloadAction<Edge[]>) => {
       state.edges = action.payload;
     },
-    addNode: (state, action: PayloadAction<Node>) => {
+    addNode: (state, action: PayloadAction<Node<ReactFlowNodeData>>) => {
       state.nodes.push(action.payload);
+    },
+    updateNodeConfig: (
+      state,
+      action: PayloadAction<{
+        nodeId: string;
+        config: Record<string, unknown>;
+      }>
+    ) => {
+      const node = state.nodes.find((entry) => entry.id === action.payload.nodeId);
+
+      if (!node) {
+        return;
+      }
+
+      node.data = {
+        ...node.data,
+        config: action.payload.config,
+      };
     },
     addEdge: (state, action: PayloadAction<Edge>) => {
       state.edges.push(action.payload);
@@ -82,5 +79,14 @@ export const integrationsSlice = createSlice({
   },
 });
 
-export const { setNodes, setEdges, addNode, addEdge, removeNode, removeEdge } = integrationsSlice.actions;
+export const {
+  setIntegrationGraph,
+  setNodes,
+  setEdges,
+  addNode,
+  updateNodeConfig,
+  addEdge,
+  removeNode,
+  removeEdge
+} = integrationsSlice.actions;
 export default integrationsSlice.reducer;

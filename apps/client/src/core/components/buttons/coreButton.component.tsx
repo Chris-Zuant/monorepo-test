@@ -19,6 +19,7 @@ export function CoreButton({
         "font-bold",
         "rounded-full",
         "shadow-sm",
+        "hover:cursor-pointer",
         className
       )}
       {...props}

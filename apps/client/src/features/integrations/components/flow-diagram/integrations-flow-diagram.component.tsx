@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ReactFlow,
@@ -6,6 +6,7 @@ import {
   Background,
   Controls,
   MiniMap,
+  type Node,
   useEdgesState,
   useNodesState,
   type Connection,
@@ -13,6 +14,8 @@ import {
 import { nodeTypes } from './nodes';
 import type { RootState } from '@app/providers/theme/store';
 import { setEdges, setNodes } from "../../store/integrations.slice";
+import { NodeConfigEditorModal } from "./modals/nodeConfigEditorModal.component";
+import type { ReactFlowNodeData } from "../../models/reactFlowNodeData.types";
 
 export function LogicTreeCanvas() {
   const dispatch = useDispatch();
@@ -20,15 +23,16 @@ export function LogicTreeCanvas() {
   const reduxEdges = useSelector((state: RootState) => state.integrations.edges);
   const [nodes, setLocalNodes, onNodesChange] = useNodesState(reduxNodes);
   const [edges, setLocalEdges, onEdgesChange] = useEdgesState(reduxEdges);
+  const [, startTransition] = useTransition();
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
-  // Initialize local state from Redux only once
   useEffect(() => {
     setLocalNodes(reduxNodes);
-  }, []);
+  }, [reduxNodes, setLocalNodes]);
 
   useEffect(() => {
     setLocalEdges(reduxEdges);
-  }, []);
+  }, [reduxEdges, setLocalEdges]);
 
   const onNodesChangeHandler = useCallback((changes: any) => {
     onNodesChange(changes);
@@ -38,22 +42,41 @@ export function LogicTreeCanvas() {
     onEdgesChange(changes);
   }, [onEdgesChange]);
 
-  // Update Redux when nodes change (one-way sync)
-  useEffect(() => {
-    dispatch(setNodes(nodes));
-  }, [nodes, dispatch]);
+  const selectedNode = useMemo(() => {
+    if (!selectedNodeId) {
+      return null;
+    }
 
-  // Update Redux when edges change (one-way sync)
-  useEffect(() => {
-    dispatch(setEdges(edges));
-  }, [edges, dispatch]);
+    return reduxNodes.find((node) => node.id === selectedNodeId) ?? null;
+  }, [reduxNodes, selectedNodeId]);
+
+  const handleDragStop = useCallback(() => {
+
+    startTransition(() => {
+      dispatch(setNodes(nodes));
+    });
+  }, [dispatch, nodes, startTransition]);
+
+  const handleNodeClick = useCallback((_: React.MouseEvent, node: Node<ReactFlowNodeData>) => {
+    setSelectedNodeId(node.id);
+  }, []);
+
+  const handleModalOpenChange = useCallback((open: boolean) => {
+    if (!open) {
+      setSelectedNodeId(null);
+    }
+  }, []);
 
   const onConnect = useCallback(
     (connection: Connection) => {
       const newEdges = addEdgeUtil(connection, edges);
       setLocalEdges(newEdges);
+
+      startTransition(() => {
+        dispatch(setEdges(newEdges));
+      });
     },
-    [edges, setLocalEdges]
+    [dispatch, edges, setLocalEdges, startTransition]
   );
 
   return (
@@ -64,6 +87,8 @@ export function LogicTreeCanvas() {
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChangeHandler}
         onEdgesChange={onEdgesChangeHandler}
+        onNodeDragStop={handleDragStop}
+        onNodeClick={handleNodeClick}
         onConnect={onConnect}
         fitView
       >
@@ -71,6 +96,12 @@ export function LogicTreeCanvas() {
         <Controls />
         <Background />
       </ReactFlow>
+
+      <NodeConfigEditorModal
+        node={selectedNode}
+        open={selectedNode !== null}
+        onOpenChange={handleModalOpenChange}
+      />
     </div>
   );
 }

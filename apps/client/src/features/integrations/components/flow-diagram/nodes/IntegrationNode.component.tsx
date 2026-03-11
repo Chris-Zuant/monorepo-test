@@ -1,12 +1,13 @@
 import { memo } from "react"
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react"
 import type { ReactFlowNodeData } from "@/features/integrations/models/reactFlowNodeData.types"
+import { NODE_DEFINITIONS } from "./index"
 
 type IntegrationFlowNode = Node<ReactFlowNodeData, "integrationNode">
 
 export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) => {
   const nodeData = data as ReactFlowNodeData
-  const Icon = nodeData.icon
+  const Icon = NODE_DEFINITIONS[nodeData.type]?.icon
 
   return (
     <div
@@ -20,7 +21,7 @@ export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) =
           console.log(nodeData)
         }
       }}
-    >
+      >
       <Handle
         type="target"
         position={Position.Left}
@@ -28,7 +29,7 @@ export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) =
       />
       <div className="flex items-center gap-2">
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Icon className="size-4" />
+          {Icon ? <Icon className="size-4" /> : null}
         </div>
         <span className="text-sm font-medium">{nodeData.label}</span>
       </div>

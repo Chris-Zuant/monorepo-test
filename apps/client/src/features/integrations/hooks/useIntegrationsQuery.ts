@@ -4,9 +4,9 @@ import {
   type UseMutationOptions,
   type UseQueryOptions,
 } from '@tanstack/react-query';
-import type { Integration } from '../integrations.types';
-import { fetchIntegrations, updateIntegration } from '../api';
-import { integrationTemporalTest } from '../api/integration.api';
+import type { IntegrationGraphDefinition } from '@monorepo/shared';
+import { fetchIntegrations, runIntegration, updateIntegration } from '../api';
+import { integrationTemporalTest } from '../api/integrationTest.api';
 
 // export const integrationsQueryKeys = {
 //   all: ['integrations'] as const,
@@ -15,19 +15,27 @@ import { integrationTemporalTest } from '../api/integration.api';
 // };
 
 export const useIntegrationsQuery = (
-  options?: Omit<UseQueryOptions<Integration[], Error>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<IntegrationGraphDefinition[], Error>, 'queryKey' | 'queryFn'>
 ) =>
   useQuery({
-    queryKey: ['meow'],
+    queryKey: ['integrations', 'list'],
     queryFn: fetchIntegrations,
     ...options,
   });
 
-export const useTestIntegrationMutation = (
-  options?: UseMutationOptions<boolean, Error, string>
+export const useUpdateIntegrationMutation = (
+  options?: UseMutationOptions<boolean, Error, IntegrationGraphDefinition>
 ) =>
   useMutation({
     mutationFn: updateIntegration,
+    ...options,
+  });
+
+export const useRunIntegrationMutation = (
+  options?: UseMutationOptions<{ id: string }, Error, { id: string }>
+) =>
+  useMutation({
+    mutationFn: runIntegration,
     ...options,
   });
 
