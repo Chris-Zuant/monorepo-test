@@ -6,6 +6,7 @@ import {
   Background,
   Controls,
   MiniMap,
+  type Edge,
   type Node,
   useEdgesState,
   useNodesState,
@@ -16,13 +17,25 @@ import type { RootState } from '@app/providers/theme/store';
 import { setEdges, setNodes } from "../../store/integrations.slice";
 import { NodeConfigEditorModal } from "./modals/nodeConfigEditorModal.component";
 import type { ReactFlowNodeData } from "../../models/reactFlowNodeData.types";
+import { DeletableEdge } from "./edges/DeletableEdge.component";
+
+const edgeTypes = {
+  deletableEdge: DeletableEdge,
+}
+
+function withDeletableEdgeType(edges: Edge[]) {
+  return edges.map((edge) => ({
+    ...edge,
+    type: edge.type ?? "deletableEdge",
+  }))
+}
 
 export function LogicTreeCanvas() {
   const dispatch = useDispatch();
   const reduxNodes = useSelector((state: RootState) => state.integrations.nodes);
   const reduxEdges = useSelector((state: RootState) => state.integrations.edges);
   const [nodes, setLocalNodes, onNodesChange] = useNodesState(reduxNodes);
-  const [edges, setLocalEdges, onEdgesChange] = useEdgesState(reduxEdges);
+  const [edges, setLocalEdges, onEdgesChange] = useEdgesState(withDeletableEdgeType(reduxEdges));
   const [, startTransition] = useTransition();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
@@ -31,7 +44,7 @@ export function LogicTreeCanvas() {
   }, [reduxNodes, setLocalNodes]);
 
   useEffect(() => {
-    setLocalEdges(reduxEdges);
+    setLocalEdges(withDeletableEdgeType(reduxEdges));
   }, [reduxEdges, setLocalEdges]);
 
   const onNodesChangeHandler = useCallback((changes: any) => {
@@ -69,7 +82,7 @@ export function LogicTreeCanvas() {
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      const newEdges = addEdgeUtil(connection, edges);
+      const newEdges = addEdgeUtil({ ...connection, type: "deletableEdge" }, edges);
       setLocalEdges(newEdges);
 
       startTransition(() => {
@@ -85,6 +98,7 @@ export function LogicTreeCanvas() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChangeHandler}
         onEdgesChange={onEdgesChangeHandler}
         onNodeDragStop={handleDragStop}

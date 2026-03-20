@@ -15,7 +15,7 @@ import { Input } from "@/core/shadcn/components/ui/Input.component";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/core/shadcn/components/ui/Select.component";
 import { Textarea } from "@/core/shadcn/components/ui/TextArea.component";
 import type { NodeConfigFieldDefinition, ReactFlowNodeData } from "../../../models/reactFlowNodeData.types";
-import { updateNodeConfig } from "../../../store/integrations.slice";
+import { removeNode, updateNodeConfig } from "../../../store/integrations.slice";
 
 interface NodeConfigEditorModalProps {
   node: Node<ReactFlowNodeData> | null;
@@ -116,6 +116,15 @@ export function NodeConfigEditorModal({
     }
   };
 
+  const handleDelete = () => {
+    if (!node) {
+      return
+    }
+
+    dispatch(removeNode(node.id))
+    onOpenChange(false)
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden p-0">
@@ -179,6 +188,9 @@ export function NodeConfigEditorModal({
         </div>
 
         <DialogFooter className="px-6" showCloseButton>
+          <Button variant="destructive" onClick={handleDelete}>
+            Delete
+          </Button>
           <Button onClick={handleSave} disabled={!canSave}>
             Save
           </Button>

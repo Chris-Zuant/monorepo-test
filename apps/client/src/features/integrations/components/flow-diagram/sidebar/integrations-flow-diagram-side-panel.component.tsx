@@ -4,8 +4,12 @@ import type { RootState } from '@app/providers/theme/store';
 import { CoreButton } from '@/core/components';
 import { Separator } from '@/core/shadcn/components/ui/Seperator.component';
 import { Workflow } from 'lucide-react';
-import type { ReactFlowNodeData } from '../../../models/reactFlowNodeData.types';
-import { NODE_DEFINITIONS } from '../nodes';
+import type {
+  IntegrationNodeDefinition,
+  ReactFlowNodeData,
+  RelationshipNodeDefinition,
+} from '../../../models/reactFlowNodeData.types';
+import { NODE_DEFINITIONS, RELATIONSHIP_NODE_DEFINITIONS } from '../nodes';
 import { addNode } from '../../../store/integrations.slice';
 
 interface IntegrationsFlowDiagramSidePanelProps {
@@ -19,14 +23,17 @@ export const IntegrationsFlowDiagramSidePanel = ({
 }: IntegrationsFlowDiagramSidePanelProps) => {
   const dispatch = useDispatch();
   const nodes = useSelector((state: RootState) => state.integrations.nodes);
-  const availableNodes = Object.values(NODE_DEFINITIONS);
+  const integrationNodes = Object.values(NODE_DEFINITIONS);
+  const relationshipNodes = Object.values(RELATIONSHIP_NODE_DEFINITIONS);
 
-  const handleAddNode = (nodeTypeId: keyof typeof NODE_DEFINITIONS) => {
-    const definition = NODE_DEFINITIONS[nodeTypeId];
-    const nodeId = `integration-node-${Date.now()}`;
+  const handleAddNode = (
+    definition: IntegrationNodeDefinition | RelationshipNodeDefinition
+  ) => {
+    const isRelationshipNode = definition.category === 'relationship';
+    const nodeId = `${isRelationshipNode ? 'relationship' : 'integration'}-node-${Date.now()}`;
     const newNode: Node<ReactFlowNodeData> = {
       id: nodeId,
-      type: 'integrationNode',
+      type: isRelationshipNode ? 'relationshipNode' : 'integrationNode',
       position: {
         x: 120 + (nodes.length % 3) * 220,
         y: 80 + Math.floor(nodes.length / 3) * 140,
@@ -36,10 +43,11 @@ export const IntegrationsFlowDiagramSidePanel = ({
         name: definition.label,
         label: definition.label,
         type: definition.type,
+        nodeKind: isRelationshipNode ? 'relationship' : 'integration',
         description: definition.description,
         config: {},
         category: definition.category,
-        activityName: definition.activityName,
+        activityName: 'activityName' in definition ? definition.activityName : undefined,
         inputs: definition.inputs,
         outputs: definition.outputs,
         configSchema: definition.configSchema,
@@ -73,7 +81,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
         </CoreButton>
         <div className="flex items-start gap-4 p-4">
           <div>
-            <h2 className="text-base font-semibold">Integration Nodes</h2>
+            <h2 className="text-base font-semibold">Flow Nodes</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Choose a node from the list to add it to the flow.
             </p>
@@ -81,7 +89,10 @@ export const IntegrationsFlowDiagramSidePanel = ({
         </div>
         <Separator />
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
-          {availableNodes.map((nodeDefinition) => {
+          <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Integration
+          </div>
+          {integrationNodes.map((nodeDefinition) => {
             const Icon = nodeDefinition.icon;
 
             return (
@@ -89,10 +100,35 @@ export const IntegrationsFlowDiagramSidePanel = ({
                 key={nodeDefinition.type}
                 variant="outline"
                 className="h-auto w-full justify-start rounded-xl px-3 py-3 text-left"
-                onClick={() => handleAddNode(nodeDefinition.type)}
+                onClick={() => handleAddNode(nodeDefinition)}
               >
                 <div className="flex items-center gap-3">
                   <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="size-4" />
+                  </div>
+                  <div>
+                    <div className="font-medium">{nodeDefinition.label}</div>
+                    <div className="text-xs text-muted-foreground">{nodeDefinition.description}</div>
+                  </div>
+                </div>
+              </CoreButton>
+            );
+          })}
+          <div className="mt-4 px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Relationship
+          </div>
+          {relationshipNodes.map((nodeDefinition) => {
+            const Icon = nodeDefinition.icon;
+
+            return (
+              <CoreButton
+                key={nodeDefinition.type}
+                variant="outline"
+                className="h-auto w-full justify-start rounded-xl border-sky-200 px-3 py-3 text-left hover:border-sky-300"
+                onClick={() => handleAddNode(nodeDefinition)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
                     <Icon className="size-4" />
                   </div>
                   <div>

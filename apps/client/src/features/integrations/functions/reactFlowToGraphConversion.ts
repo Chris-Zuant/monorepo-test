@@ -19,6 +19,7 @@ export const toReactFlow = (graph: IntegrationGraphDefinition): {
       name: node.name,
       label: definition.label,
       type: definition.type,
+      nodeKind: "integration",
       description: definition.description,
       config: node.config ?? {},
       category: definition.category,

@@ -1,16 +1,29 @@
-import type { IntegrationNodeDefinition } from "@/features/integrations/models/reactFlowNodeData.types";
+import type {
+  IntegrationNodeDefinition,
+  RelationshipNodeDefinition,
+} from "@/features/integrations/models/reactFlowNodeData.types";
 import {
   Blocks,
+  Filter,
+  FolderGit2,
+  Funnel,
   Clock3,
   GitBranch,
+  GitCompareArrows,
+  GitFork,
   Logs,
+  PauseOctagon,
   RefreshCcwDot,
+  ScanSearch,
   Send,
   Split,
   UserRoundPlus,
 } from "lucide-react";
-import { IntegrationNodeType } from "@monorepo/shared";
+import { IntegrationNodeType, type RelationshipNodeType } from "@monorepo/shared";
 import { IntegrationNode } from "./IntegrationNode.component";
+import { RelationshipNode } from "./RelationshipNode.component";
+
+const GitMergeIconShim = GitBranch
 
 export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefinition> = {
   [IntegrationNodeType.HttpRequest]: {
@@ -21,10 +34,10 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "httpRequestActivity",
     icon: Send,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "object" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
     ],
     outputs: [
-      { id: "success", label: "Success", portType: "output", dataType: "object" }
+      { id: "success", label: "Success", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
       { key: "url", label: "URL", kind: "text", required: true },
@@ -53,10 +66,10 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "delayActivity",
     icon: Clock3,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "any" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "any" }
     ],
     outputs: [
-      { id: "out", label: "Output", portType: "output", dataType: "any" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "any" }
     ],
     configSchema: [
       { key: "ms", label: "Milliseconds", kind: "number", required: true, defaultValue: 1000 }
@@ -71,10 +84,10 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "transformActivity",
     icon: RefreshCcwDot,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "any" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "any" }
     ],
     outputs: [
-      { id: "out", label: "Output", portType: "output", dataType: "object" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
       { key: "mode", label: "Mode", kind: "select", defaultValue: "appendTimestamp", options: [
@@ -91,10 +104,10 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "randomFailureActivity",
     icon: GitBranch,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "any" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "any" }
     ],
     outputs: [
-      { id: "success", label: "Success", portType: "output", dataType: "object" }
+      { id: "success", label: "Success", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
       { key: "failureRate", label: "Failure Rate", kind: "number", defaultValue: 0.5 }
@@ -109,10 +122,10 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "logActivity",
     icon: Logs,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "any" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "any" }
     ],
     outputs: [
-      { id: "out", label: "Output", portType: "output", dataType: "any" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "any" }
     ],
     configSchema: [
       { key: "message", label: "Message", kind: "text", required: true },
@@ -138,10 +151,10 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "createContactActivity",
     icon: UserRoundPlus,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "object" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
     ],
     outputs: [
-      { id: "contact", label: "Contact", portType: "output", dataType: "object" }
+      { id: "contact", label: "Contact", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
       { key: "email", label: "Email", kind: "text", required: true },
@@ -157,11 +170,11 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "checkConditionActivity",
     icon: Split,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "object" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
     ],
     outputs: [
-      { id: "true", label: "True", portType: "output", dataType: "boolean" },
-      { id: "false", label: "False", portType: "output", dataType: "boolean" }
+      { id: "true", label: "True", direction: "output", cardinality: "one", dataType: "boolean" },
+      { id: "false", label: "False", direction: "output", cardinality: "one", dataType: "boolean" }
     ],
     configSchema: [
       { key: "value", label: "Value", kind: "number", required: true }
@@ -176,17 +189,196 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     activityName: "batchActivity",
     icon: Blocks,
     inputs: [
-      { id: "in", label: "Input", portType: "input", dataType: "array" }
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "array" }
     ],
     outputs: [
-      { id: "items", label: "Items", portType: "output", dataType: "array" }
+      { id: "items", label: "Items", direction: "output", cardinality: "one", dataType: "array" }
     ],
     configSchema: []
   }
 }
 
+export const RELATIONSHIP_NODE_DEFINITIONS: Record<
+  RelationshipNodeType,
+  RelationshipNodeDefinition
+> = {
+  passThrough: {
+    type: "passThrough",
+    label: "Pass Through",
+    description: "Forward input directly to the next step.",
+    category: "relationship",
+    icon: GitCompareArrows,
+    inputs: [
+      { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "any" },
+    ],
+    outputs: [
+      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
+    ],
+    configSchema: [],
+  },
+  condition: {
+    type: "condition",
+    label: "Condition",
+    description: "Branch flow to one of several outputs.",
+    category: "relationship",
+    icon: Split,
+    inputs: [
+      { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "any" },
+    ],
+    outputs: [
+      { id: "true", label: "True", direction: "output", cardinality: "one", dataType: "any" },
+      { id: "false", label: "False", direction: "output", cardinality: "one", dataType: "any" },
+    ],
+    configSchema: [
+      { key: "expression", label: "Expression", kind: "text" },
+    ],
+  },
+  fanOut: {
+    type: "fanOut",
+    label: "Fan Out",
+    description: "Duplicate or partition a payload to multiple branches.",
+    category: "relationship",
+    icon: GitFork,
+    inputs: [
+      { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "any" },
+    ],
+    outputs: [
+      { id: "branch-a", label: "Branch A", direction: "output", cardinality: "one", dataType: "any" },
+      { id: "branch-b", label: "Branch B", direction: "output", cardinality: "one", dataType: "any" },
+    ],
+    configSchema: [
+      {
+        key: "mode",
+        label: "Mode",
+        kind: "select",
+        defaultValue: "clone",
+        options: [
+          { label: "Clone", value: "clone" },
+          { label: "Partition", value: "partition" },
+        ],
+      },
+    ],
+  },
+  joinAll: {
+    type: "joinAll",
+    label: "Join All",
+    description: "Wait for multiple branches and emit one result.",
+    category: "relationship",
+    icon: FolderGit2,
+    inputs: [
+      { id: "a", label: "A", direction: "input", cardinality: "one", dataType: "any" },
+      { id: "b", label: "B", direction: "input", cardinality: "one", dataType: "any" },
+    ],
+    outputs: [
+      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "array" },
+    ],
+    configSchema: [
+      {
+        key: "emitMode",
+        label: "Emit Mode",
+        kind: "select",
+        defaultValue: "array",
+        options: [
+          { label: "Array", value: "array" },
+          { label: "Object", value: "object" },
+        ],
+      },
+    ],
+  },
+  mergeAny: {
+    type: "mergeAny",
+    label: "Merge Any",
+    description: "Continue once any upstream branch completes.",
+    category: "relationship",
+    icon: GitMergeIconShim,
+    inputs: [
+      { id: "a", label: "A", direction: "input", cardinality: "one", dataType: "any" },
+      { id: "b", label: "B", direction: "input", cardinality: "one", dataType: "any" },
+    ],
+    outputs: [
+      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
+    ],
+    configSchema: [],
+  },
+  collect: {
+    type: "collect",
+    label: "Collect",
+    description: "Gather many items before emitting an array.",
+    category: "relationship",
+    icon: Funnel,
+    inputs: [
+      { id: "in", label: "In", direction: "input", cardinality: "many", dataType: "any" },
+    ],
+    outputs: [
+      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "array" },
+    ],
+    configSchema: [
+      { key: "count", label: "Count", kind: "number", required: true, defaultValue: 2 },
+    ],
+  },
+  map: {
+    type: "map",
+    label: "Map",
+    description: "Split an array into individual item branches.",
+    category: "relationship",
+    icon: ScanSearch,
+    inputs: [
+      { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "array" },
+    ],
+    outputs: [
+      { id: "item", label: "Item", direction: "output", cardinality: "many", dataType: "any" },
+    ],
+    configSchema: [
+      { key: "itemPortId", label: "Item Port Id", kind: "text" },
+    ],
+  },
+  reduce: {
+    type: "reduce",
+    label: "Reduce",
+    description: "Aggregate many inputs into a single output.",
+    category: "relationship",
+    icon: Filter,
+    inputs: [
+      { id: "in", label: "In", direction: "input", cardinality: "many", dataType: "any" },
+    ],
+    outputs: [
+      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
+    ],
+    configSchema: [
+      {
+        key: "strategy",
+        label: "Strategy",
+        kind: "select",
+        defaultValue: "merge",
+        options: [
+          { label: "Sum", value: "sum" },
+          { label: "Concat", value: "concat" },
+          { label: "Merge", value: "merge" },
+          { label: "Custom", value: "custom" },
+        ],
+      },
+    ],
+  },
+  barrier: {
+    type: "barrier",
+    label: "Barrier",
+    description: "Pause until all declared branches have reached the gate.",
+    category: "relationship",
+    icon: PauseOctagon,
+    inputs: [
+      { id: "a", label: "A", direction: "input", cardinality: "one", dataType: "any" },
+      { id: "b", label: "B", direction: "input", cardinality: "one", dataType: "any" },
+    ],
+    outputs: [
+      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
+    ],
+    configSchema: [],
+  },
+}
+
 export const nodeTypes = {
   integrationNode: IntegrationNode,
+  relationshipNode: RelationshipNode,
 };
 
 export type NodeTypesMap = typeof nodeTypes;

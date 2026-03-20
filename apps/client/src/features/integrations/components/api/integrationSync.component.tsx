@@ -16,13 +16,15 @@ export const IntegrationSyncComponent = () => {
     () => ({
       id,
       name: name.trim() || 'Untitled Integration',
-      nodes: nodes.map((node) => ({
-        id: node.id,
-        type: node.data.type,
-        name: node.data.name,
-        position: node.position,
-        config: node.data.config,
-      })),
+      nodes: nodes
+        .filter((node) => node.data.nodeKind === 'integration')
+        .map((node) => ({
+          id: node.id,
+          type: node.data.type,
+          name: node.data.name,
+          position: node.position,
+          config: node.data.config,
+        })) as IntegrationGraphDefinition['nodes'],
       edges: edges.map((edge) => ({
         id: edge.id,
         source: edge.source,
@@ -53,7 +55,6 @@ export const IntegrationSyncComponent = () => {
 
     const timeoutId = window.setTimeout(() => {
       lastQueuedGraphRef.current = graphSignature;
-      console.log('meow', graphSignature, graph)
       mutate(graph);
     }, 500);
 

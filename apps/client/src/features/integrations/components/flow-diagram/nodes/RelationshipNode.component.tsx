@@ -1,27 +1,20 @@
 import { memo } from "react"
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react"
-import type { IntegrationNodeType } from "@monorepo/shared"
+import { Workflow } from "lucide-react"
 import type { ReactFlowNodeData } from "@/features/integrations/models/reactFlowNodeData.types"
-import { NODE_DEFINITIONS } from "./index"
 
-type IntegrationNodeData = ReactFlowNodeData & {
-  nodeKind: "integration"
-  type: IntegrationNodeType
-}
-
-type IntegrationFlowNode = Node<IntegrationNodeData, "integrationNode">
+type RelationshipFlowNode = Node<ReactFlowNodeData, "relationshipNode">
 
 function getHandleOffset(index: number, total: number) {
   return `${((index + 1) / (total + 1)) * 100}%`
 }
 
-export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) => {
-  const nodeData = data as IntegrationNodeData
-  const Icon = NODE_DEFINITIONS[nodeData.type]?.icon
+export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>) => {
+  const nodeData = data as ReactFlowNodeData
 
   return (
     <div
-      className="min-w-40 cursor-pointer rounded-xl border border-border bg-card px-4 py-3 text-card-foreground shadow-sm transition-colors hover:border-primary/40 hover:bg-accent/30"
+      className="min-w-44 cursor-pointer rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sky-950 shadow-sm transition-colors hover:border-sky-400 hover:bg-sky-100"
       onClick={() => console.log(nodeData)}
       role="button"
       tabIndex={0}
@@ -39,15 +32,20 @@ export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) =
           type="target"
           position={Position.Left}
           style={{ top: getHandleOffset(index, nodeData.inputs.length) }}
-          className="size-2 border-2 border-background bg-primary"
+          className="size-2 border-2 border-background bg-sky-500"
         />
       ))}
+
       <div className="flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          {Icon ? <Icon className="size-4" /> : null}
+        <div className="flex size-8 items-center justify-center rounded-lg bg-sky-200 text-sky-700">
+          <Workflow className="size-4" />
         </div>
-        <span className="text-sm font-medium">{nodeData.label}</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">{nodeData.label}</span>
+          <span className="text-xs text-sky-700/80">{nodeData.type}</span>
+        </div>
       </div>
+
       {nodeData.outputs.map((output, index) => (
         <Handle
           key={output.id}
@@ -55,11 +53,11 @@ export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) =
           type="source"
           position={Position.Right}
           style={{ top: getHandleOffset(index, nodeData.outputs.length) }}
-          className="size-2 border-2 border-background bg-primary"
+          className="size-2 border-2 border-background bg-sky-500"
         />
       ))}
     </div>
   )
 })
 
-IntegrationNode.displayName = "IntegrationNode"
+RelationshipNode.displayName = "RelationshipNode"
