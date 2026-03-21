@@ -1,4 +1,4 @@
-import type { PortDefinition } from "./portDefinition.types";
+import type { IntegrationGraphNodeBase } from "./integration.types";
 
 export type RelationshipNodeType =
   | "passThrough"
@@ -11,37 +11,16 @@ export type RelationshipNodeType =
   | "reduce"
   | "barrier";
 
-export interface BaseRelationshipNode<TType extends RelationshipNodeType, TConfig> {
-  id: string;
-  type: TType;
-  category: "relationship";
-  name: string;
-  description?: string;
-  inputs: PortDefinition[];
-  outputs: PortDefinition[];
+export interface BaseRelationshipNode<
+  TType extends RelationshipNodeType,
+  TConfig
+> extends IntegrationGraphNodeBase<TType> {
   config: TConfig;
 }
 
 export interface PassThroughRelationshipNode
   extends BaseRelationshipNode<"passThrough", Record<string, never>> {
-  inputs: [
-    {
-      id: "in";
-      label: "In";
-      direction: "input";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
-  outputs: [
-    {
-      id: "out";
-      label: "Out";
-      direction: "output";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
+  type: "passThrough";
 }
 
 export interface ConditionRelationshipConfig {
@@ -51,16 +30,7 @@ export interface ConditionRelationshipConfig {
 
 export interface ConditionRelationshipNode
   extends BaseRelationshipNode<"condition", ConditionRelationshipConfig> {
-  inputs: [
-    {
-      id: "in";
-      label: "In";
-      direction: "input";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
-  outputs: PortDefinition[];
+  type: "condition";
 }
 
 export interface FanOutRelationshipConfig {
@@ -70,16 +40,7 @@ export interface FanOutRelationshipConfig {
 
 export interface FanOutRelationshipNode
   extends BaseRelationshipNode<"fanOut", FanOutRelationshipConfig> {
-  inputs: [
-    {
-      id: "in";
-      label: "In";
-      direction: "input";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
-  outputs: PortDefinition[];
+  type: "fanOut";
 }
 
 export interface JoinAllRelationshipConfig {
@@ -89,16 +50,7 @@ export interface JoinAllRelationshipConfig {
 
 export interface JoinAllRelationshipNode
   extends BaseRelationshipNode<"joinAll", JoinAllRelationshipConfig> {
-  inputs: PortDefinition[];
-  outputs: [
-    {
-      id: "out";
-      label: "Out";
-      direction: "output";
-      cardinality: "one";
-      dataType?: "array" | "object";
-    }
-  ];
+  type: "joinAll";
 }
 
 export interface MergeAnyRelationshipConfig {
@@ -107,16 +59,7 @@ export interface MergeAnyRelationshipConfig {
 
 export interface MergeAnyRelationshipNode
   extends BaseRelationshipNode<"mergeAny", MergeAnyRelationshipConfig> {
-  inputs: PortDefinition[];
-  outputs: [
-    {
-      id: "out";
-      label: "Out";
-      direction: "output";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
+  type: "mergeAny";
 }
 
 export interface CollectRelationshipConfig {
@@ -126,24 +69,7 @@ export interface CollectRelationshipConfig {
 
 export interface CollectRelationshipNode
   extends BaseRelationshipNode<"collect", CollectRelationshipConfig> {
-  inputs: [
-    {
-      id: "in";
-      label: "In";
-      direction: "input";
-      cardinality: "many";
-      dataType?: "any";
-    }
-  ];
-  outputs: [
-    {
-      id: "out";
-      label: "Out";
-      direction: "output";
-      cardinality: "one";
-      dataType?: "array";
-    }
-  ];
+  type: "collect";
 }
 
 export interface MapRelationshipConfig {
@@ -152,24 +78,7 @@ export interface MapRelationshipConfig {
 
 export interface MapRelationshipNode
   extends BaseRelationshipNode<"map", MapRelationshipConfig> {
-  inputs: [
-    {
-      id: "in";
-      label: "In";
-      direction: "input";
-      cardinality: "one";
-      dataType?: "array";
-    }
-  ];
-  outputs: [
-    {
-      id: "item";
-      label: "Item";
-      direction: "output";
-      cardinality: "many";
-      dataType?: "any";
-    }
-  ];
+  type: "map";
 }
 
 export interface ReduceRelationshipConfig {
@@ -180,24 +89,7 @@ export interface ReduceRelationshipConfig {
 
 export interface ReduceRelationshipNode
   extends BaseRelationshipNode<"reduce", ReduceRelationshipConfig> {
-  inputs: [
-    {
-      id: "in";
-      label: "In";
-      direction: "input";
-      cardinality: "many";
-      dataType?: "any";
-    }
-  ];
-  outputs: [
-    {
-      id: "out";
-      label: "Out";
-      direction: "output";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
+  type: "reduce";
 }
 
 export interface BarrierRelationshipConfig {
@@ -206,19 +98,10 @@ export interface BarrierRelationshipConfig {
 
 export interface BarrierRelationshipNode
   extends BaseRelationshipNode<"barrier", BarrierRelationshipConfig> {
-  inputs: PortDefinition[];
-  outputs: [
-    {
-      id: "out";
-      label: "Out";
-      direction: "output";
-      cardinality: "one";
-      dataType?: "any";
-    }
-  ];
+  type: "barrier";
 }
 
-export type RelationshipNode =
+export type RelationshipGraphNode =
   | PassThroughRelationshipNode
   | ConditionRelationshipNode
   | FanOutRelationshipNode

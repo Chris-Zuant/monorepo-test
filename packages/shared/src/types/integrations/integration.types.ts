@@ -1,3 +1,5 @@
+import { RelationshipGraphNode } from "./relationshipNode.types"
+
 export const IntegrationNodeType = {
   HttpRequest: "httpRequest",
   Delay: "delay",
@@ -11,24 +13,18 @@ export const IntegrationNodeType = {
 
 export type IntegrationNodeType = (typeof IntegrationNodeType)[keyof typeof IntegrationNodeType]
 
-  export interface IntegrationGraphDefinition {
+export interface IntegrationGraphDefinition {
   id: string
   name: string
   nodes: IntegrationGraphNode[]
   edges: IntegrationGraphEdge[]
 }
 
-export interface IntegrationGraphNodeBase {
-  id: string;
-  type: IntegrationNodeType;
-  name: string;
-  position: {
-    x: number;
-    y: number;
-  };
-}
+export interface BaseActionNode<
+  TType extends IntegrationNodeType
+> extends IntegrationGraphNodeBase<TType> {}
 
-export interface HttpRequestNode extends IntegrationGraphNodeBase {
+export interface HttpRequestNode extends BaseActionNode<"httpRequest"> {
   type: "httpRequest";
   config: {
     url: string;
@@ -38,28 +34,28 @@ export interface HttpRequestNode extends IntegrationGraphNodeBase {
   };
 }
 
-export interface DelayNode extends IntegrationGraphNodeBase {
+export interface DelayNode extends BaseActionNode<"delay"> {
   type: "delay";
   config: {
     ms: number;
   };
 }
 
-export interface TransformNode extends IntegrationGraphNodeBase {
+export interface TransformNode extends BaseActionNode<"transform"> {
   type: "transform";
   config: {
     mode: "appendTimestamp";
   };
 }
 
-export interface RandomFailureNode extends IntegrationGraphNodeBase {
+export interface RandomFailureNode extends BaseActionNode<"randomFailure"> {
   type: "randomFailure";
   config: {
     failureRate?: number;
   };
 }
 
-export interface LogNode extends IntegrationGraphNodeBase {
+export interface LogNode extends BaseActionNode<"log"> {
   type: "log";
   config: {
     message: string;
@@ -67,7 +63,7 @@ export interface LogNode extends IntegrationGraphNodeBase {
   };
 }
 
-export interface CreateContactNode extends IntegrationGraphNodeBase {
+export interface CreateContactNode extends BaseActionNode<"createContact"> {
   type: "createContact";
   config: {
     email: string;
@@ -75,19 +71,19 @@ export interface CreateContactNode extends IntegrationGraphNodeBase {
   };
 }
 
-export interface CheckConditionNode extends IntegrationGraphNodeBase {
+export interface CheckConditionNode extends BaseActionNode<"checkCondition"> {
   type: "checkCondition";
   config: {
     value: number;
   };
 }
 
-export interface BatchNode extends IntegrationGraphNodeBase {
+export interface BatchNode extends BaseActionNode<"batch"> {
   type: "batch";
   config: {};
 }
 
-export type IntegrationGraphNode =
+export type ActionGraphNode =
   | HttpRequestNode
   | DelayNode
   | TransformNode
@@ -96,6 +92,18 @@ export type IntegrationGraphNode =
   | CreateContactNode
   | CheckConditionNode
   | BatchNode;
+
+export type IntegrationGraphNode = ActionGraphNode | RelationshipGraphNode;
+
+export interface IntegrationGraphNodeBase<TType extends string = IntegrationNodeType> {
+  id: string;
+  type: TType;
+  name: string;
+  position: {
+    x: number;
+    y: number;
+  };
+}
 
 export interface IntegrationGraphEdge {
   id: string
