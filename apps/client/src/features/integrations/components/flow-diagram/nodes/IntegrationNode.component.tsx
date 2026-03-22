@@ -2,7 +2,7 @@ import { memo } from "react"
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react"
 import type { IntegrationNodeType } from "@monorepo/shared"
 import type { ReactFlowNodeData } from "@/features/integrations/models/reactFlowNodeData.types"
-import { NODE_DEFINITIONS } from "./index"
+import { ACTION_NODE_DEFINITIONS } from "./index"
 
 type IntegrationNodeData = ReactFlowNodeData & {
   nodeKind: "integration"
@@ -17,7 +17,7 @@ function getHandleOffset(index: number, total: number) {
 
 export const IntegrationNode = memo(({ data }: NodeProps<IntegrationFlowNode>) => {
   const nodeData = data as IntegrationNodeData
-  const Icon = NODE_DEFINITIONS[nodeData.type]?.icon
+  const Icon = ACTION_NODE_DEFINITIONS[nodeData.type]?.icon
 
   return (
     <div

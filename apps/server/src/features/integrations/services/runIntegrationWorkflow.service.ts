@@ -5,7 +5,10 @@ import type {
   RelationshipGraphNode,
 } from "./integrationWorkflowBuilder.service";
 import { executeActionNode, type ActivityFns } from "./executeActionNode.service";
-import { executeRelationshipNode } from "./executeRelationshipNode.service";
+import {
+  executeRelationshipNode,
+  type RelationshipActivityFns,
+} from "./executeRelationshipNode.service";
 
 const DEFAULT_PORT = "__default__";
 
@@ -26,15 +29,12 @@ export interface IntegrationWorkflowExecutionResult {
 
 function isRelationshipNode(node: ExecutableGraphNode): node is ExecutableRelationshipNode {
   return [
-    "passThrough",
     "condition",
     "fanOut",
-    "joinAll",
-    "mergeAny",
+    "join",
     "collect",
     "map",
     "reduce",
-    "barrier",
   ].includes(node.type);
 }
 
@@ -126,7 +126,7 @@ function enqueueOutputs(
 
 export async function runIntegrationWorkflow(
   builtWorkflow: BuiltIntegrationWorkflow,
-  activityFns: ActivityFns,
+  activityFns: ActivityFns & RelationshipActivityFns,
   initialInput: unknown = null
 ): Promise<IntegrationWorkflowExecutionResult> {
   const { graph, nodeMap, startNodeIds } = builtWorkflow;
@@ -147,7 +147,7 @@ export async function runIntegrationWorkflow(
     pushBufferedInput(bufferedInputs, token.nodeId, token.viaHandle, token.payload);
 
     if (isRelationshipNode(node)) {
-      const outputs = executeRelationshipNode(node, bufferedInputs, graph);
+      const outputs = await executeRelationshipNode(node, bufferedInputs, graph, activityFns);
       if (!outputs) {
         continue;
       }
@@ -174,14 +174,9 @@ export async function runIntegrationWorkflow(
     visitOrder.push(node.id);
     nodeResults[node.id] = result;
 
-    const outputs =
-      node.type === "checkCondition"
-        ? {
-            [((result as { result?: boolean }).result ? "true" : "false")]: [result],
-          }
-        : {
-            [DEFAULT_PORT]: [result],
-          };
+    const outputs = {
+      [DEFAULT_PORT]: [result],
+    };
 
     enqueueOutputs(graph, queue, terminalOutputs, node.id, outputs);
   }

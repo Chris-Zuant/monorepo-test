@@ -16,9 +16,7 @@ export const IntegrationSyncComponent = () => {
     () => ({
       id,
       name: name.trim() || 'Untitled Integration',
-      nodes: nodes
-        .filter((node) => node.data.nodeKind === 'integration')
-        .map((node) => ({
+      nodes: nodes.map((node) => ({
           id: node.id,
           type: node.data.type,
           name: node.data.name,

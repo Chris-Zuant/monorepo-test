@@ -1,13 +1,17 @@
+import type { HttpRequestNode } from "@monorepo/shared"
 import axios from "axios";
 
-export interface HttpRequestInput {
-  url: string
-  method?: "GET" | "POST" | "PUT" | "DELETE"
-  headers?: Record<string, string>
-  body?: unknown
+export interface HttpRequestActivityInput {
+  node: HttpRequestNode
+  payload?: unknown
 }
 
-export async function httpRequestActivity(input: HttpRequestInput) {
+export async function httpRequestActivity({ node, payload }: HttpRequestActivityInput) {
+  const input = {
+    ...node.config,
+    body: node.config.body ?? payload,
+  }
+
   const res = await axios.request({
     url: input.url,
     method: input.method ?? "GET",

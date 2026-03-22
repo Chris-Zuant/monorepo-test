@@ -1,5 +1,5 @@
 import type { ActionGraphNode } from "@monorepo/shared";
-import type * as activities from "../temporal/activities";
+import type * as activities from "../temporal/activities/index";
 import type { ExecutableGraphNode } from "./integrationWorkflowBuilder.service";
 
 export type ActivityFns = Pick<
@@ -10,7 +10,6 @@ export type ActivityFns = Pick<
   | "randomFailureActivity"
   | "logActivity"
   | "createContactActivity"
-  | "checkConditionActivity"
   | "batchActivity"
 >;
 
@@ -23,50 +22,18 @@ export async function executeActionNode(
 ) {
   switch (node.type) {
     case "httpRequest":
-      return activityFns.httpRequestActivity({
-        ...node.config,
-        body: node.config.body ?? payload,
-      });
+      return activityFns.httpRequestActivity({ node, payload });
     case "delay":
-      return activityFns.delayActivity(node.config);
+      return activityFns.delayActivity({ node });
     case "transform":
-      return activityFns.transformActivity({ data: payload });
+      return activityFns.transformActivity({ node, payload });
     case "randomFailure":
-      return activityFns.randomFailureActivity(node.config);
+      return activityFns.randomFailureActivity({ node });
     case "log":
-      return activityFns.logActivity(
-        node.config.level
-          ? {
-              message:
-                node.config.message ||
-                (typeof payload === "string" ? payload : JSON.stringify(payload)),
-              level: node.config.level,
-            }
-          : {
-              message:
-                node.config.message ||
-                (typeof payload === "string" ? payload : JSON.stringify(payload)),
-            }
-      );
-    case "createContact": {
-      const payloadRecord =
-        payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {};
-
-      return activityFns.createContactActivity({
-        email: node.config.email || String(payloadRecord.email ?? ""),
-        name: node.config.name || String(payloadRecord.name ?? ""),
-      });
-    }
-    case "checkCondition":
-      return activityFns.checkConditionActivity({
-        value:
-          typeof node.config.value === "number"
-            ? node.config.value
-            : Number(payload ?? 0),
-      });
+      return activityFns.logActivity({ node, payload });
+    case "createContact":
+      return activityFns.createContactActivity({ node, payload });
     case "batch":
-      return activityFns.batchActivity({
-        items: Array.isArray(payload) ? payload : [payload],
-      });
+      return activityFns.batchActivity({ node, payload });
   }
 }

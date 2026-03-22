@@ -9,8 +9,9 @@ import type {
   ReactFlowNodeData,
   RelationshipNodeDefinition,
 } from '../../../models/reactFlowNodeData.types';
-import { NODE_DEFINITIONS, RELATIONSHIP_NODE_DEFINITIONS } from '../nodes';
+import { ACTION_NODE_DEFINITIONS, RELATIONSHIP_NODE_DEFINITIONS } from '../nodes';
 import { addNode } from '../../../store/integrations.slice';
+import { buildInitialConfig } from '@/features/integrations/functions/buildInitalNodeConfig';
 
 interface IntegrationsFlowDiagramSidePanelProps {
   open: boolean;
@@ -23,7 +24,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
 }: IntegrationsFlowDiagramSidePanelProps) => {
   const dispatch = useDispatch();
   const nodes = useSelector((state: RootState) => state.integrations.nodes);
-  const integrationNodes = Object.values(NODE_DEFINITIONS);
+  const actionNodes = Object.values(ACTION_NODE_DEFINITIONS);
   const relationshipNodes = Object.values(RELATIONSHIP_NODE_DEFINITIONS);
 
   const handleAddNode = (
@@ -45,7 +46,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
         type: definition.type,
         nodeKind: isRelationshipNode ? 'relationship' : 'integration',
         description: definition.description,
-        config: {},
+        config: buildInitialConfig(definition),
         category: definition.category,
         activityName: 'activityName' in definition ? definition.activityName : undefined,
         inputs: definition.inputs,
@@ -82,33 +83,37 @@ export const IntegrationsFlowDiagramSidePanel = ({
         <div className="flex items-start gap-4 p-4">
           <div>
             <h2 className="text-base font-semibold">Flow Nodes</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            {/* <p className="mt-1 text-sm text-muted-foreground">
               Choose a node from the list to add it to the flow.
-            </p>
+            </p> */}
           </div>
         </div>
         <Separator />
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
           <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Integration
+            Action
           </div>
-          {integrationNodes.map((nodeDefinition) => {
+          {actionNodes.map((nodeDefinition) => {
             const Icon = nodeDefinition.icon;
 
             return (
               <CoreButton
                 key={nodeDefinition.type}
                 variant="outline"
-                className="h-auto w-full justify-start rounded-xl px-3 py-3 text-left"
+                className="h-auto w-full justify-start whitespace-normal rounded-xl px-3 py-3 text-left"
                 onClick={() => handleAddNode(nodeDefinition)}
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className="flex w-full min-w-0 items-center gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon className="size-4" />
                   </div>
-                  <div>
-                    <div className="font-medium">{nodeDefinition.label}</div>
-                    <div className="text-xs text-muted-foreground">{nodeDefinition.description}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="wrap-break-word text-sm font-medium leading-tight">
+                      {nodeDefinition.label}
+                    </div>
+                    <div className="wrap-break-word text-xs leading-snug text-muted-foreground">
+                      {nodeDefinition.description}
+                    </div>
                   </div>
                 </div>
               </CoreButton>
@@ -124,16 +129,20 @@ export const IntegrationsFlowDiagramSidePanel = ({
               <CoreButton
                 key={nodeDefinition.type}
                 variant="outline"
-                className="h-auto w-full justify-start rounded-xl border-sky-200 px-3 py-3 text-left hover:border-sky-300"
+                className="h-auto w-full justify-start whitespace-normal rounded-xl border-sky-200 px-3 py-3 text-left hover:border-sky-300"
                 onClick={() => handleAddNode(nodeDefinition)}
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                <div className="flex w-full min-w-0 items-center gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
                     <Icon className="size-4" />
                   </div>
-                  <div>
-                    <div className="font-medium">{nodeDefinition.label}</div>
-                    <div className="text-xs text-muted-foreground">{nodeDefinition.description}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="break-words text-sm font-medium leading-tight">
+                      {nodeDefinition.label}
+                    </div>
+                    <div className="break-words text-xs leading-snug text-muted-foreground">
+                      {nodeDefinition.description}
+                    </div>
                   </div>
                 </div>
               </CoreButton>

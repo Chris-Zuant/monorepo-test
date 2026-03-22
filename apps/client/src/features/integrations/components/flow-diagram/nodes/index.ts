@@ -9,10 +9,8 @@ import {
   Funnel,
   Clock3,
   GitBranch,
-  GitCompareArrows,
   GitFork,
   Logs,
-  PauseOctagon,
   RefreshCcwDot,
   ScanSearch,
   Send,
@@ -23,9 +21,7 @@ import { IntegrationNodeType, type RelationshipNodeType } from "@monorepo/shared
 import { IntegrationNode } from "./IntegrationNode.component";
 import { RelationshipNode } from "./RelationshipNode.component";
 
-const GitMergeIconShim = GitBranch
-
-export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefinition> = {
+export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefinition> = {
   [IntegrationNodeType.HttpRequest]: {
     type: IntegrationNodeType.HttpRequest,
     label: "HTTP Request",
@@ -90,12 +86,15 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
       { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
-      { key: "mode", label: "Mode", kind: "select", defaultValue: "appendTimestamp", options: [
-        { label: "Append Timestamp", value: "appendTimestamp" }
-      ]}
+      {
+        key: "mode",
+        label: "Mode",
+        kind: "select",
+        defaultValue: "appendTimestamp",
+        options: [{ label: "Append Timestamp", value: "appendTimestamp" }]
+      }
     ]
   },
-
   [IntegrationNodeType.RandomFailure]: {
     type: IntegrationNodeType.RandomFailure,
     label: "Random Failure",
@@ -162,25 +161,6 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
     ]
   },
 
-  [IntegrationNodeType.CheckCondition]: {
-    type: IntegrationNodeType.CheckCondition,
-    label: "Condition",
-    description: "Route based on a condition",
-    category: "control",
-    activityName: "checkConditionActivity",
-    icon: Split,
-    inputs: [
-      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
-    ],
-    outputs: [
-      { id: "true", label: "True", direction: "output", cardinality: "one", dataType: "boolean" },
-      { id: "false", label: "False", direction: "output", cardinality: "one", dataType: "boolean" }
-    ],
-    configSchema: [
-      { key: "value", label: "Value", kind: "number", required: true }
-    ]
-  },
-
   [IntegrationNodeType.Batch]: {
     type: IntegrationNodeType.Batch,
     label: "Batch",
@@ -195,27 +175,14 @@ export const NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefini
       { id: "items", label: "Items", direction: "output", cardinality: "one", dataType: "array" }
     ],
     configSchema: []
-  }
+  },
+ 
 }
 
 export const RELATIONSHIP_NODE_DEFINITIONS: Record<
   RelationshipNodeType,
   RelationshipNodeDefinition
 > = {
-  passThrough: {
-    type: "passThrough",
-    label: "Pass Through",
-    description: "Forward input directly to the next step.",
-    category: "relationship",
-    icon: GitCompareArrows,
-    inputs: [
-      { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "any" },
-    ],
-    outputs: [
-      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
-    ],
-    configSchema: [],
-  },
   condition: {
     type: "condition",
     label: "Condition",
@@ -243,8 +210,7 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
       { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "any" },
     ],
     outputs: [
-      { id: "branch-a", label: "Branch A", direction: "output", cardinality: "one", dataType: "any" },
-      { id: "branch-b", label: "Branch B", direction: "output", cardinality: "one", dataType: "any" },
+      { id: "branch-a", label: "Branch A", direction: "output", cardinality: "one", dataType: "any" }
     ],
     configSchema: [
       {
@@ -259,10 +225,10 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
       },
     ],
   },
-  joinAll: {
-    type: "joinAll",
-    label: "Join All",
-    description: "Wait for multiple branches and emit one result.",
+  join: {
+    type: "join",
+    label: "Join",
+    description: "Combine branch coordination using all, any, or barrier modes.",
     category: "relationship",
     icon: FolderGit2,
     inputs: [
@@ -274,6 +240,17 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
     ],
     configSchema: [
       {
+        key: "mode",
+        label: "Mode",
+        kind: "select",
+        defaultValue: "all",
+        options: [
+          { label: "All", value: "all" },
+          { label: "Any", value: "any" },
+          { label: "Barrier", value: "barrier" },
+        ],
+      },
+      {
         key: "emitMode",
         label: "Emit Mode",
         kind: "select",
@@ -284,21 +261,6 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
         ],
       },
     ],
-  },
-  mergeAny: {
-    type: "mergeAny",
-    label: "Merge Any",
-    description: "Continue once any upstream branch completes.",
-    category: "relationship",
-    icon: GitMergeIconShim,
-    inputs: [
-      { id: "a", label: "A", direction: "input", cardinality: "one", dataType: "any" },
-      { id: "b", label: "B", direction: "input", cardinality: "one", dataType: "any" },
-    ],
-    outputs: [
-      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
-    ],
-    configSchema: [],
   },
   collect: {
     type: "collect",
@@ -358,21 +320,6 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
         ],
       },
     ],
-  },
-  barrier: {
-    type: "barrier",
-    label: "Barrier",
-    description: "Pause until all declared branches have reached the gate.",
-    category: "relationship",
-    icon: PauseOctagon,
-    inputs: [
-      { id: "a", label: "A", direction: "input", cardinality: "one", dataType: "any" },
-      { id: "b", label: "B", direction: "input", cardinality: "one", dataType: "any" },
-    ],
-    outputs: [
-      { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "any" },
-    ],
-    configSchema: [],
   },
 }
 

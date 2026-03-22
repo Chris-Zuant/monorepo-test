@@ -7,15 +7,12 @@ export type RelationshipGraphNode = Extract<
   IntegrationGraphNode,
   {
     type:
-      | "passThrough"
       | "condition"
       | "fanOut"
-      | "joinAll"
-      | "mergeAny"
+      | "join"
       | "collect"
       | "map"
-      | "reduce"
-      | "barrier";
+      | "reduce";
   }
 >;
 

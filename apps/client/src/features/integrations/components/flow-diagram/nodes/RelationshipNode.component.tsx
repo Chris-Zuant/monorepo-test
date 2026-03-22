@@ -11,6 +11,10 @@ function getHandleOffset(index: number, total: number) {
 
 export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>) => {
   const nodeData = data as ReactFlowNodeData
+  const mode =
+    nodeData.config && typeof nodeData.config === "object" && "mode" in nodeData.config
+      ? String(nodeData.config.mode)
+      : null
 
   return (
     <div
@@ -43,6 +47,7 @@ export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>)
         <div className="flex flex-col">
           <span className="text-sm font-medium">{nodeData.label}</span>
           <span className="text-xs text-sky-700/80">{nodeData.type}</span>
+          {mode ? <span className="text-xs text-sky-400">{mode}</span> : null}
         </div>
       </div>
 

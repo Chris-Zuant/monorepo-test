@@ -1,26 +1,18 @@
 import type { IntegrationGraphNodeBase } from "./integration.types";
 
 export type RelationshipNodeType =
-  | "passThrough"
   | "condition"
   | "fanOut"
-  | "joinAll"
-  | "mergeAny"
+  | "join"
   | "collect"
   | "map"
-  | "reduce"
-  | "barrier";
+  | "reduce";
 
 export interface BaseRelationshipNode<
   TType extends RelationshipNodeType,
   TConfig
 > extends IntegrationGraphNodeBase<TType> {
   config: TConfig;
-}
-
-export interface PassThroughRelationshipNode
-  extends BaseRelationshipNode<"passThrough", Record<string, never>> {
-  type: "passThrough";
 }
 
 export interface ConditionRelationshipConfig {
@@ -43,23 +35,15 @@ export interface FanOutRelationshipNode
   type: "fanOut";
 }
 
-export interface JoinAllRelationshipConfig {
-  expectedPorts: string[];
+export interface JoinRelationshipConfig {
+  mode: "all" | "any" | "barrier";
+  inputPorts: string[];
   emitMode?: "array" | "object";
 }
 
-export interface JoinAllRelationshipNode
-  extends BaseRelationshipNode<"joinAll", JoinAllRelationshipConfig> {
-  type: "joinAll";
-}
-
-export interface MergeAnyRelationshipConfig {
-  inputPorts: string[];
-}
-
-export interface MergeAnyRelationshipNode
-  extends BaseRelationshipNode<"mergeAny", MergeAnyRelationshipConfig> {
-  type: "mergeAny";
+export interface JoinRelationshipNode
+  extends BaseRelationshipNode<"join", JoinRelationshipConfig> {
+  type: "join";
 }
 
 export interface CollectRelationshipConfig {
@@ -92,22 +76,10 @@ export interface ReduceRelationshipNode
   type: "reduce";
 }
 
-export interface BarrierRelationshipConfig {
-  branches: string[];
-}
-
-export interface BarrierRelationshipNode
-  extends BaseRelationshipNode<"barrier", BarrierRelationshipConfig> {
-  type: "barrier";
-}
-
 export type RelationshipGraphNode =
-  | PassThroughRelationshipNode
   | ConditionRelationshipNode
   | FanOutRelationshipNode
-  | JoinAllRelationshipNode
-  | MergeAnyRelationshipNode
+  | JoinRelationshipNode
   | CollectRelationshipNode
   | MapRelationshipNode
-  | ReduceRelationshipNode
-  | BarrierRelationshipNode;
+  | ReduceRelationshipNode;

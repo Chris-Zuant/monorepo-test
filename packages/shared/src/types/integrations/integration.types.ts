@@ -1,4 +1,4 @@
-import { RelationshipGraphNode } from "./relationshipNode.types"
+import type { RelationshipGraphNode } from "./relationshipNode.types"
 
 export const IntegrationNodeType = {
   HttpRequest: "httpRequest",
@@ -7,7 +7,6 @@ export const IntegrationNodeType = {
   RandomFailure: "randomFailure",
   Log: "log",
   CreateContact: "createContact",
-  CheckCondition: "checkCondition",
   Batch: "batch",
 } as const
 
@@ -71,13 +70,6 @@ export interface CreateContactNode extends BaseActionNode<"createContact"> {
   };
 }
 
-export interface CheckConditionNode extends BaseActionNode<"checkCondition"> {
-  type: "checkCondition";
-  config: {
-    value: number;
-  };
-}
-
 export interface BatchNode extends BaseActionNode<"batch"> {
   type: "batch";
   config: {};
@@ -90,7 +82,6 @@ export type ActionGraphNode =
   | RandomFailureNode
   | LogNode
   | CreateContactNode
-  | CheckConditionNode
   | BatchNode;
 
 export type IntegrationGraphNode = ActionGraphNode | RelationshipGraphNode;
