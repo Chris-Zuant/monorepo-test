@@ -3,6 +3,15 @@ import type {
   IntegrationGraphNode,
 } from "@monorepo/shared";
 
+export type TriggerGraphNode = Extract<
+  IntegrationGraphNode,
+  {
+    type:
+      | "internalLeadForm"
+      | "webhookLead";
+  }
+>;
+
 export type RelationshipGraphNode = Extract<
   IntegrationGraphNode,
   {
@@ -39,14 +48,18 @@ export function buildIntegrationWorkflow(
   graph: IntegrationGraphDefinition
 ): BuiltIntegrationWorkflow {
   const executableNodes = graph.nodes as ExecutableGraphNode[];
+  const triggerNodeIds = executableNodes
+    .filter((node) => node.nodeKind === "trigger")
+    .map((node) => node.id);
+  const rootNodeIds = executableNodes
+    .filter((node) => getIncomingEdges(graph, node.id).length === 0)
+    .map((node) => node.id);
 
   return {
     graph,
     nodeMap: new Map<string, ExecutableGraphNode>(
       executableNodes.map((node) => [node.id, node] as const)
     ),
-    startNodeIds: executableNodes
-      .filter((node) => getIncomingEdges(graph, node.id).length === 0)
-      .map((node) => node.id),
+    startNodeIds: triggerNodeIds.length > 0 ? triggerNodeIds : rootNodeIds,
   };
 }

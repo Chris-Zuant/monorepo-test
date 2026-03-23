@@ -8,7 +8,6 @@ export type {
   FanOutRelationshipNode,
   JoinRelationshipConfig,
   JoinRelationshipNode,
-  MapRelationshipConfig,
   MapRelationshipNode,
   ReduceRelationshipConfig,
   ReduceRelationshipNode,

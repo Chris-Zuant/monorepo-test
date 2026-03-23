@@ -1,5 +1,6 @@
-import type { ActionGraphNode } from "@monorepo/shared";
+import type { ActionGraphNode, WaitForExternalLinkNode } from "@monorepo/shared";
 import type * as activities from "../temporal/activities/index";
+import { type actionRuntimeFactories } from "../temporal/runtime";
 import type { ExecutableGraphNode } from "./integrationWorkflowBuilder.service";
 
 export type ActivityFns = Pick<
@@ -15,10 +16,17 @@ export type ActivityFns = Pick<
 
 type ExecutableActionNode = ActionGraphNode & ExecutableGraphNode;
 
+type ActionRuntimeFactoryMap = Pick<typeof actionRuntimeFactories, "waitForExternalLinkClick">;
+
+export type ActionRuntimeFns = {
+  [K in keyof ActionRuntimeFactoryMap]: ReturnType<ActionRuntimeFactoryMap[K]>;
+};
+
 export async function executeActionNode(
   node: ExecutableActionNode,
   payload: unknown,
-  activityFns: ActivityFns
+  activityFns: ActivityFns,
+  runtimeFns: ActionRuntimeFns
 ) {
   switch (node.type) {
     case "httpRequest":
@@ -35,5 +43,10 @@ export async function executeActionNode(
       return activityFns.createContactActivity({ node, payload });
     case "batch":
       return activityFns.batchActivity({ node, payload });
+    case "waitForExternalLink":
+      return runtimeFns.waitForExternalLinkClick(
+        node as WaitForExternalLinkNode & ExecutableGraphNode,
+        payload
+      );
   }
 }

@@ -13,6 +13,7 @@ const integrationGraphSchema = new mongoose.Schema<IntegrationGraphDefinition>(
       new mongoose.Schema(
         {
           id: { type: String, required: true },
+          nodeKind: { type: String, required: true },
           type: { type: String, required: true },
           name: { type: String, required: true },
           position: {
@@ -51,8 +52,40 @@ const IntegrationGraphValidationModel =
     integrationGraphSchema
   );
 
+const inferNodeKind = (
+  nodeType: IntegrationGraphDefinition['nodes'][number]['type']
+): IntegrationGraphDefinition['nodes'][number]['nodeKind'] => {
+  switch (nodeType) {
+    case 'internalLeadForm':
+    case 'webhookLead':
+      return 'trigger';
+    case 'condition':
+    case 'fanOut':
+    case 'join':
+    case 'collect':
+    case 'map':
+    case 'reduce':
+      return 'relationship';
+    default:
+      return 'action';
+  }
+};
+
 const validateIntegrationGraph = (graph: IntegrationGraphDefinition): IntegrationGraphDefinition => {
-  const document = new IntegrationGraphValidationModel(graph);
+  const normalizedGraph: IntegrationGraphDefinition = {
+    ...graph,
+    nodes: graph.nodes.map((node) => ({
+      ...(node as IntegrationGraphDefinition['nodes'][number] & {
+        nodeKind?: IntegrationGraphDefinition['nodes'][number]['nodeKind']
+      }),
+      nodeKind:
+        (node as IntegrationGraphDefinition['nodes'][number] & {
+          nodeKind?: IntegrationGraphDefinition['nodes'][number]['nodeKind']
+        }).nodeKind ?? inferNodeKind(node.type),
+    })) as IntegrationGraphDefinition['nodes'],
+  };
+
+  const document = new IntegrationGraphValidationModel(normalizedGraph);
   const validationError = document.validateSync();
 
   if (validationError) {

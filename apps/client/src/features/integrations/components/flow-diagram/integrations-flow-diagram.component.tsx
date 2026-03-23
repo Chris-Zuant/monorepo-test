@@ -12,12 +12,17 @@ import {
   useNodesState,
   type Connection,
 } from "@xyflow/react";
+import {
+  Toaster,
+  type ToasterNotification,
+} from "@/core/shadcn/components/ui/Toaster.component";
 import { nodeTypes } from './nodes';
 import type { RootState } from '@app/providers/theme/store';
 import { setEdges, setNodes } from "../../store/integrations.slice";
 import { NodeConfigEditorModal } from "./modals/nodeConfigEditorModal.component";
 import type { ReactFlowNodeData } from "../../models/reactFlowNodeData.types";
 import { DeletableEdge } from "./edges/DeletableEdge.component";
+import { getConnectionValidationError } from "../../functions/edgeConnectionValidation";
 
 const edgeTypes = {
   deletableEdge: DeletableEdge,
@@ -38,6 +43,8 @@ export function LogicTreeCanvas() {
   const [edges, setLocalEdges, onEdgesChange] = useEdgesState(withDeletableEdgeType(reduxEdges));
   const [, startTransition] = useTransition();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [validationNotification, setValidationNotification] =
+    useState<ToasterNotification | null>(null);
 
   useEffect(() => {
     setLocalNodes(reduxNodes);
@@ -80,8 +87,27 @@ export function LogicTreeCanvas() {
     }
   }, []);
 
+  // const isValidConnection = useCallback<IsValidConnection>(
+  //   (connection) =>
+  //     "source" in connection && "target" in connection
+  //       ? getConnectionValidationError(connection, nodes) === null
+  //       : false,
+  //   [nodes]
+  // )
+
   const onConnect = useCallback(
     (connection: Connection) => {
+      const validationError = getConnectionValidationError(connection, nodes, edges)
+      if (validationError) {
+        setValidationNotification({
+          id: `invalid-connection-${Date.now()}`,
+          title: "Invalid connection",
+          description: validationError,
+          variant: "error",
+        })
+        return
+      }
+
       const newEdges = addEdgeUtil({ ...connection, type: "deletableEdge" }, edges);
       setLocalEdges(newEdges);
 
@@ -89,11 +115,19 @@ export function LogicTreeCanvas() {
         dispatch(setEdges(newEdges));
       });
     },
-    [dispatch, edges, setLocalEdges, startTransition]
+    [dispatch, edges, nodes, setLocalEdges, startTransition]
   );
 
   return (
     <div className="h-full w-full">
+      <Toaster
+        notification={validationNotification}
+        onNotificationHandled={(notificationId) => {
+          setValidationNotification((currentNotification) =>
+            currentNotification?.id === notificationId ? null : currentNotification
+          )
+        }}
+      />
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -103,6 +137,7 @@ export function LogicTreeCanvas() {
         onEdgesChange={onEdgesChangeHandler}
         onNodeDragStop={handleDragStop}
         onNodeClick={handleNodeClick}
+        // isValidConnection={isValidConnection}
         onConnect={onConnect}
         fitView
       >

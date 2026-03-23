@@ -1,7 +1,11 @@
-import type { IntegrationNodeDefinition, RelationshipNodeDefinition } from "../models/reactFlowNodeData.types";
+import type {
+  IntegrationNodeDefinition,
+  RelationshipNodeDefinition,
+  TriggerNodeDefinition,
+} from "../models/reactFlowNodeData.types";
 
 export function buildInitialConfig(
-  definition: IntegrationNodeDefinition | RelationshipNodeDefinition
+  definition: IntegrationNodeDefinition | RelationshipNodeDefinition | TriggerNodeDefinition
 ) {
   const schemaDefaults = Object.fromEntries(
     definition.configSchema
@@ -9,36 +13,24 @@ export function buildInitialConfig(
       .map((field) => [field.key, field.defaultValue])
   );
 
-  if (definition.category !== 'relationship') {
+  if (definition.nodeKind !== 'relationship') {
     return schemaDefaults;
   }
 
   switch (definition.type) {
     case 'condition':
-      return {
-        ...schemaDefaults,
-        outputPorts: definition.outputs.map((port) => port.id),
-      };
+      return schemaDefaults;
     case 'fanOut':
-      return {
-        ...schemaDefaults,
-        outputPorts: definition.outputs.map((port) => port.id),
-      };
+      return schemaDefaults;
     case 'join':
-      return {
-        ...schemaDefaults,
-        inputPorts: definition.inputs.map((port) => port.id),
-      };
+      return schemaDefaults;
     case 'collect':
       return {
         emitMode: 'array',
         ...schemaDefaults,
       };
     case 'map':
-      return {
-        ...schemaDefaults,
-        itemPortId: definition.outputs[0]?.id ?? 'item',
-      };
+      return schemaDefaults;
     case 'reduce':
       return {
         ...schemaDefaults,

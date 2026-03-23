@@ -1,9 +1,11 @@
 import type {
   IntegrationNodeDefinition,
   RelationshipNodeDefinition,
+  TriggerNodeDefinition,
 } from "@/features/integrations/models/reactFlowNodeData.types";
 import {
   Blocks,
+  ClipboardPlus,
   Filter,
   FolderGit2,
   Funnel,
@@ -11,18 +13,79 @@ import {
   GitBranch,
   GitFork,
   Logs,
+  MousePointerClick,
   RefreshCcwDot,
   ScanSearch,
   Send,
   Split,
   UserRoundPlus,
+  Webhook,
 } from "lucide-react";
-import { IntegrationNodeType, type RelationshipNodeType } from "@monorepo/shared";
-import { IntegrationNode } from "./IntegrationNode.component";
+import {
+  IntegrationNodeType,
+  TriggerNodeType,
+  type RelationshipNodeType,
+} from "@monorepo/shared";
+import { ActionNode } from "./IntegrationNode.component";
 import { RelationshipNode } from "./RelationshipNode.component";
+import { TriggerNode } from "./TriggerNode.component";
+
+export const TRIGGER_NODE_DEFINITIONS: Record<TriggerNodeType, TriggerNodeDefinition> = {
+  [TriggerNodeType.InternalLeadForm]: {
+    nodeKind: "trigger",
+    type: TriggerNodeType.InternalLeadForm,
+    label: "Internal Lead Form",
+    description: "Start the workflow from a fake internal lead submission.",
+    category: "trigger",
+    activityName: "internalLeadFormTriggerActivity",
+    icon: ClipboardPlus,
+    inputs: [],
+    outputs: [
+      { id: "out", label: "Lead", direction: "output", cardinality: "one", dataType: "object" },
+    ],
+    configSchema: [
+      { key: "firstName", label: "First Name", kind: "text", required: true, defaultValue: "Ada" },
+      { key: "lastName", label: "Last Name", kind: "text", required: true, defaultValue: "Lovelace" },
+      { key: "company", label: "Company", kind: "text", required: true, defaultValue: "Analytical Engines Ltd" },
+      {
+        key: "emailAddress",
+        label: "Email Address",
+        kind: "text",
+        required: true,
+        defaultValue: "ada.lovelace@example.com",
+      },
+    ],
+  },
+  [TriggerNodeType.WebhookLead]: {
+    nodeKind: "trigger",
+    type: TriggerNodeType.WebhookLead,
+    label: "Webhook Lead",
+    description: "Start the workflow from an incoming webhook lead payload.",
+    category: "trigger",
+    activityName: "webhookLeadTriggerActivity",
+    icon: Webhook,
+    inputs: [],
+    outputs: [
+      { id: "out", label: "Lead", direction: "output", cardinality: "one", dataType: "object" },
+    ],
+    configSchema: [
+      { key: "firstName", label: "First Name", kind: "text", required: true, defaultValue: "Grace" },
+      { key: "lastName", label: "Last Name", kind: "text", required: true, defaultValue: "Hopper" },
+      { key: "company", label: "Company", kind: "text", required: true, defaultValue: "Compiler Systems" },
+      {
+        key: "emailAddress",
+        label: "Email Address",
+        kind: "text",
+        required: true,
+        defaultValue: "grace.hopper@example.com",
+      },
+    ],
+  },
+};
 
 export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNodeDefinition> = {
   [IntegrationNodeType.HttpRequest]: {
+    nodeKind: "action",
     type: IntegrationNodeType.HttpRequest,
     label: "HTTP Request",
     description: "Send an HTTP request",
@@ -33,7 +96,7 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
       { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
     ],
     outputs: [
-      { id: "success", label: "Success", direction: "output", cardinality: "one", dataType: "object" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
       { key: "url", label: "URL", kind: "text", required: true },
@@ -55,6 +118,7 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
   },
 
   [IntegrationNodeType.Delay]: {
+    nodeKind: "action",
     type: IntegrationNodeType.Delay,
     label: "Delay",
     description: "Pause execution for a period",
@@ -73,6 +137,7 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
   },
 
   [IntegrationNodeType.Transform]: {
+    nodeKind: "action",
     type: IntegrationNodeType.Transform,
     label: "Transform",
     description: "Transform input data",
@@ -96,6 +161,7 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
     ]
   },
   [IntegrationNodeType.RandomFailure]: {
+    nodeKind: "action",
     type: IntegrationNodeType.RandomFailure,
     label: "Random Failure",
     description: "Fails randomly for retry testing",
@@ -106,7 +172,7 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
       { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "any" }
     ],
     outputs: [
-      { id: "success", label: "Success", direction: "output", cardinality: "one", dataType: "object" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
       { key: "failureRate", label: "Failure Rate", kind: "number", defaultValue: 0.5 }
@@ -114,6 +180,7 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
   },
 
   [IntegrationNodeType.Log]: {
+    nodeKind: "action",
     type: IntegrationNodeType.Log,
     label: "Log",
     description: "Write a log line",
@@ -143,9 +210,10 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
   },
 
   [IntegrationNodeType.CreateContact]: {
+    nodeKind: "action",
     type: IntegrationNodeType.CreateContact,
     label: "Create Contact",
-    description: "Create a fake CRM contact",
+    description: "Create a fake CRM contact from the incoming payload",
     category: "crm",
     activityName: "createContactActivity",
     icon: UserRoundPlus,
@@ -153,15 +221,15 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
       { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
     ],
     outputs: [
-      { id: "contact", label: "Contact", direction: "output", cardinality: "one", dataType: "object" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "object" }
     ],
     configSchema: [
-      { key: "email", label: "Email", kind: "text", required: true },
-      { key: "name", label: "Name", kind: "text", required: true }
+      { key: "email", label: "Email Override", kind: "text" }
     ]
   },
 
   [IntegrationNodeType.Batch]: {
+    nodeKind: "action",
     type: IntegrationNodeType.Batch,
     label: "Batch",
     description: "Process a list of items",
@@ -172,9 +240,39 @@ export const ACTION_NODE_DEFINITIONS: Record<IntegrationNodeType, IntegrationNod
       { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "array" }
     ],
     outputs: [
-      { id: "items", label: "Items", direction: "output", cardinality: "one", dataType: "array" }
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "array" }
     ],
     configSchema: []
+  },
+  [IntegrationNodeType.WaitForExternalLink]: {
+    nodeKind: "action",
+    type: IntegrationNodeType.WaitForExternalLink,
+    label: "Wait for Link Click",
+    description: "Pause the workflow until an external link is clicked.",
+    category: "control",
+    activityName: "waitForExternalLink",
+    icon: MousePointerClick,
+    inputs: [
+      { id: "in", label: "Input", direction: "input", cardinality: "one", dataType: "object" }
+    ],
+    outputs: [
+      { id: "out", label: "Output", direction: "output", cardinality: "one", dataType: "object" }
+    ],
+    configSchema: [
+      {
+        key: "linkText",
+        label: "Link Text",
+        kind: "text",
+        required: true,
+        defaultValue: "Continue workflow"
+      },
+      {
+        key: "completionMessage",
+        label: "Completion Message",
+        kind: "text",
+        defaultValue: "The workflow has been resumed."
+      }
+    ]
   },
  
 }
@@ -184,6 +282,7 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
   RelationshipNodeDefinition
 > = {
   condition: {
+    nodeKind: "relationship",
     type: "condition",
     label: "Condition",
     description: "Branch flow to one of several outputs.",
@@ -201,6 +300,7 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
     ],
   },
   fanOut: {
+    nodeKind: "relationship",
     type: "fanOut",
     label: "Fan Out",
     description: "Duplicate or partition a payload to multiple branches.",
@@ -210,7 +310,7 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
       { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "any" },
     ],
     outputs: [
-      { id: "branch-a", label: "Branch A", direction: "output", cardinality: "one", dataType: "any" }
+      { id: "out", label: "Out", direction: "output", cardinality: "many", dataType: "any" }
     ],
     configSchema: [
       {
@@ -226,14 +326,14 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
     ],
   },
   join: {
+    nodeKind: "relationship",
     type: "join",
     label: "Join",
     description: "Combine branch coordination using all, any, or barrier modes.",
     category: "relationship",
     icon: FolderGit2,
     inputs: [
-      { id: "a", label: "A", direction: "input", cardinality: "one", dataType: "any" },
-      { id: "b", label: "B", direction: "input", cardinality: "one", dataType: "any" },
+      { id: "in", label: "In", direction: "input", cardinality: "many", dataType: "any" },
     ],
     outputs: [
       { id: "out", label: "Out", direction: "output", cardinality: "one", dataType: "array" },
@@ -251,6 +351,12 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
         ],
       },
       {
+        key: "expectedCount",
+        label: "Expected Count",
+        kind: "number",
+        defaultValue: 2,
+      },
+      {
         key: "emitMode",
         label: "Emit Mode",
         kind: "select",
@@ -263,6 +369,7 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
     ],
   },
   collect: {
+    nodeKind: "relationship",
     type: "collect",
     label: "Collect",
     description: "Gather many items before emitting an array.",
@@ -279,6 +386,7 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
     ],
   },
   map: {
+    nodeKind: "relationship",
     type: "map",
     label: "Map",
     description: "Split an array into individual item branches.",
@@ -288,13 +396,12 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
       { id: "in", label: "In", direction: "input", cardinality: "one", dataType: "array" },
     ],
     outputs: [
-      { id: "item", label: "Item", direction: "output", cardinality: "many", dataType: "any" },
+      { id: "out", label: "Out", direction: "output", cardinality: "many", dataType: "any" },
     ],
-    configSchema: [
-      { key: "itemPortId", label: "Item Port Id", kind: "text" },
-    ],
+    configSchema: [],
   },
   reduce: {
+    nodeKind: "relationship",
     type: "reduce",
     label: "Reduce",
     description: "Aggregate many inputs into a single output.",
@@ -324,7 +431,8 @@ export const RELATIONSHIP_NODE_DEFINITIONS: Record<
 }
 
 export const nodeTypes = {
-  integrationNode: IntegrationNode,
+  triggerNode: TriggerNode,
+  integrationNode: ActionNode,
   relationshipNode: RelationshipNode,
 };
 

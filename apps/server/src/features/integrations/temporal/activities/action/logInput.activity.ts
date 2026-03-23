@@ -6,8 +6,7 @@ export interface LogActivityInput {
 }
 
 export async function logActivity({ node, payload }: LogActivityInput) {
-  const message =
-    node.config.message || (typeof payload === "string" ? payload : JSON.stringify(payload))
+  const message = node.config.message || (typeof payload === "string" ? payload : JSON.stringify(payload))
   const level = node.config.level ?? "info"
 
   console.log(`[${level.toUpperCase()}] ${message}`)

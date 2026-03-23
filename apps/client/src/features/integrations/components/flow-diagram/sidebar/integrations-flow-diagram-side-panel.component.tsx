@@ -8,8 +8,13 @@ import type {
   IntegrationNodeDefinition,
   ReactFlowNodeData,
   RelationshipNodeDefinition,
+  TriggerNodeDefinition,
 } from '../../../models/reactFlowNodeData.types';
-import { ACTION_NODE_DEFINITIONS, RELATIONSHIP_NODE_DEFINITIONS } from '../nodes';
+import {
+  ACTION_NODE_DEFINITIONS,
+  RELATIONSHIP_NODE_DEFINITIONS,
+  TRIGGER_NODE_DEFINITIONS,
+} from '../nodes';
 import { addNode } from '../../../store/integrations.slice';
 import { buildInitialConfig } from '@/features/integrations/functions/buildInitalNodeConfig';
 
@@ -24,17 +29,20 @@ export const IntegrationsFlowDiagramSidePanel = ({
 }: IntegrationsFlowDiagramSidePanelProps) => {
   const dispatch = useDispatch();
   const nodes = useSelector((state: RootState) => state.integrations.nodes);
+  const triggerNodes = Object.values(TRIGGER_NODE_DEFINITIONS);
   const actionNodes = Object.values(ACTION_NODE_DEFINITIONS);
   const relationshipNodes = Object.values(RELATIONSHIP_NODE_DEFINITIONS);
 
   const handleAddNode = (
-    definition: IntegrationNodeDefinition | RelationshipNodeDefinition
+    definition: IntegrationNodeDefinition | RelationshipNodeDefinition | TriggerNodeDefinition
   ) => {
-    const isRelationshipNode = definition.category === 'relationship';
-    const nodeId = `${isRelationshipNode ? 'relationship' : 'integration'}-node-${Date.now()}`;
+    const isTriggerNode = definition.nodeKind === 'trigger';
+    const isRelationshipNode = definition.nodeKind === 'relationship';
+    const nodePrefix = isTriggerNode ? 'trigger' : isRelationshipNode ? 'relationship' : 'action';
+    const nodeId = `${nodePrefix}-node-${Date.now()}`;
     const newNode: Node<ReactFlowNodeData> = {
       id: nodeId,
-      type: isRelationshipNode ? 'relationshipNode' : 'integrationNode',
+      type: isTriggerNode ? 'triggerNode' : isRelationshipNode ? 'relationshipNode' : 'integrationNode',
       position: {
         x: 120 + (nodes.length % 3) * 220,
         y: 80 + Math.floor(nodes.length / 3) * 140,
@@ -44,7 +52,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
         name: definition.label,
         label: definition.label,
         type: definition.type,
-        nodeKind: isRelationshipNode ? 'relationship' : 'integration',
+        nodeKind: definition.nodeKind,
         description: definition.description,
         config: buildInitialConfig(definition),
         category: definition.category,
@@ -90,6 +98,35 @@ export const IntegrationsFlowDiagramSidePanel = ({
         </div>
         <Separator />
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
+          <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Trigger
+          </div>
+          {triggerNodes.map((nodeDefinition) => {
+            const Icon = nodeDefinition.icon;
+
+            return (
+              <CoreButton
+                key={nodeDefinition.type}
+                variant="outline"
+                className="h-auto w-full justify-start whitespace-normal rounded-xl border-emerald-200 px-3 py-3 text-left hover:border-emerald-300"
+                onClick={() => handleAddNode(nodeDefinition)}
+              >
+                <div className="flex w-full min-w-0 items-center gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+                    <Icon className="size-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="break-words text-sm font-medium leading-tight">
+                      {nodeDefinition.label}
+                    </div>
+                    <div className="break-words text-xs leading-snug text-muted-foreground">
+                      {nodeDefinition.description}
+                    </div>
+                  </div>
+                </div>
+              </CoreButton>
+            );
+          })}
           <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Action
           </div>

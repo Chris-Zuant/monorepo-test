@@ -11,12 +11,11 @@ export type RelationshipNodeType =
 export interface BaseRelationshipNode<
   TType extends RelationshipNodeType,
   TConfig
-> extends IntegrationGraphNodeBase<TType> {
+> extends IntegrationGraphNodeBase<TType, "relationship"> {
   config: TConfig;
 }
 
 export interface ConditionRelationshipConfig {
-  outputPorts: string[];
   expression?: string;
 }
 
@@ -26,7 +25,6 @@ export interface ConditionRelationshipNode
 }
 
 export interface FanOutRelationshipConfig {
-  outputPorts: string[];
   mode: "clone" | "partition";
 }
 
@@ -37,7 +35,7 @@ export interface FanOutRelationshipNode
 
 export interface JoinRelationshipConfig {
   mode: "all" | "any" | "barrier";
-  inputPorts: string[];
+  expectedCount?: number;
   emitMode?: "array" | "object";
 }
 
@@ -56,12 +54,8 @@ export interface CollectRelationshipNode
   type: "collect";
 }
 
-export interface MapRelationshipConfig {
-  itemPortId?: string;
-}
-
 export interface MapRelationshipNode
-  extends BaseRelationshipNode<"map", MapRelationshipConfig> {
+  extends BaseRelationshipNode<"map", Record<string, never>> {
   type: "map";
 }
 

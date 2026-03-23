@@ -1,4 +1,4 @@
-import { ApiResponse } from "@monorepo/shared";
+import { ApiResponse, IntegrationNodeType } from "@monorepo/shared";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { getTemporalClient } from "../../../app/temporal/client";
 import { getOneIntegrationGraph } from "../repo";
@@ -23,11 +23,20 @@ export const integrationRunHandler = async (request: FastifyRequest, reply: Fast
             args: [integration],
         });
 
-        const response: ApiResponse<{id: string; workflowId: string}> = {
+        const waitLinks = integration.nodes
+            .filter((node) => node.nodeKind === 'action' && node.type === IntegrationNodeType.WaitForExternalLink)
+            .map((node) => ({
+                nodeId: node.id,
+                label: node.name,
+                url: `${request.protocol}://${request.headers.host}/integrations/link/${handle.workflowId}/${node.id}`
+            }));
+
+        const response: ApiResponse<{id: string; workflowId: string; waitLinks: {nodeId: string; label: string; url: string}[]}> = {
             success: true,
             data: {
                 id: integration.id,
-                workflowId: handle.workflowId
+                workflowId: handle.workflowId,
+                waitLinks
             }
         };
 

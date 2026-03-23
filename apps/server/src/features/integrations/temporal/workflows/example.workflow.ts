@@ -13,6 +13,7 @@ const {
 export async function demoIntegrationWorkflow() {
   const logNode: LogNode = {
     id: "example-log",
+    nodeKind: "action",
     type: "log",
     name: "Example Log",
     position: { x: 0, y: 0 },
@@ -20,6 +21,7 @@ export async function demoIntegrationWorkflow() {
   }
   const httpNode: HttpRequestNode = {
     id: "example-http",
+    nodeKind: "action",
     type: "httpRequest",
     name: "Example Request",
     position: { x: 0, y: 0 },
@@ -27,6 +29,7 @@ export async function demoIntegrationWorkflow() {
   }
   const delayNode: DelayNode = {
     id: "example-delay",
+    nodeKind: "action",
     type: "delay",
     name: "Example Delay",
     position: { x: 0, y: 0 },
@@ -54,6 +57,7 @@ export async function welcomeWorkflow(name: string = "world") {
   await logActivity({
     node: {
       id: "welcome-log",
+      nodeKind: "action",
       type: "log",
       name: "Welcome Log",
       position: { x: 0, y: 0 },

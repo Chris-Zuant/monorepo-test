@@ -9,11 +9,16 @@ export async function createContactActivity({
   node,
   payload,
 }: CreateContactActivityInput) {
-  const payloadRecord =
-    payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {}
+  const payloadRecord = payload && typeof payload === "object" ? (payload as Record<string, unknown>) : {}
+  const firstName = String(payloadRecord.firstName ?? "").trim()
+  const lastName = String(payloadRecord.lastName ?? "").trim()
+  const combinedName = [firstName, lastName].filter(Boolean).join(" ").trim()
+
   const input = {
-    email: node.config.email || String(payloadRecord.email ?? ""),
-    name: node.config.name || String(payloadRecord.name ?? ""),
+    email:
+      String(payloadRecord.email ?? payloadRecord.emailAddress ?? "") || "TEST@evoite.com",
+    name:
+      String(payloadRecord.name ?? combinedName ?? "").trim() || "TEST Man",
   }
 
   await new Promise((r) => setTimeout(r, 500))

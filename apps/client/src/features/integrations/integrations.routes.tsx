@@ -12,11 +12,10 @@ export const integrationsRoutes: RouteObject[] = [
     element: <IntegrationsPage />,
   },
   {
-    path: '/integrations/editor',
+    path: '/integrations/editor/:integrationId',
     element: <IntegrationEditorPage />,
   },
 ];
 
 export default integrationsRoutes;
-
 

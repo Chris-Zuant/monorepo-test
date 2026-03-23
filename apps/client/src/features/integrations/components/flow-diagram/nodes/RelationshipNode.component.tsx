@@ -9,6 +9,10 @@ function getHandleOffset(index: number, total: number) {
   return `${((index + 1) / (total + 1)) * 100}%`
 }
 
+function getHandleLabel(port: ReactFlowNodeData["inputs"][number]) {
+  return port.dataType ?? "any"
+}
+
 export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>) => {
   const nodeData = data as ReactFlowNodeData
   const mode =
@@ -30,14 +34,22 @@ export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>)
       }}
     >
       {nodeData.inputs.map((input, index) => (
-        <Handle
+        <div
           key={input.id}
-          id={input.id}
-          type="target"
-          position={Position.Left}
-          style={{ top: getHandleOffset(index, nodeData.inputs.length) }}
-          className="size-2 border-2 border-background bg-sky-500"
-        />
+          className="pointer-events-none absolute left-0 flex items-center"
+          style={{ top: getHandleOffset(index, nodeData.inputs.length), transform: "translateY(-50%)" }}
+        >
+          <Handle
+            id={input.id}
+            type="target"
+            position={Position.Left}
+            style={{ top: "50%", transform: "translate(-50%, -50%)" }}
+            className="pointer-events-auto size-2 border-2 border-background bg-sky-500"
+          />
+          <span className="-translate-x-[calc(100%+0.5rem)] rounded bg-background px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-sky-700 shadow-sm whitespace-nowrap">
+            {getHandleLabel(input)}
+          </span>
+        </div>
       ))}
 
       <div className="flex items-center gap-2">
@@ -52,14 +64,22 @@ export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>)
       </div>
 
       {nodeData.outputs.map((output, index) => (
-        <Handle
+        <div
           key={output.id}
-          id={output.id}
-          type="source"
-          position={Position.Right}
-          style={{ top: getHandleOffset(index, nodeData.outputs.length) }}
-          className="size-2 border-2 border-background bg-sky-500"
-        />
+          className="pointer-events-none absolute right-0 flex items-center"
+          style={{ top: getHandleOffset(index, nodeData.outputs.length), transform: "translateY(-50%)" }}
+        >
+          <Handle
+            id={output.id}
+            type="source"
+            position={Position.Right}
+            style={{ top: "50%", transform: "translate(50%, -50%)" }}
+            className="pointer-events-auto size-2 border-2 border-background bg-sky-500"
+          />
+          <span className="translate-x-[calc(100%+0.5rem)] rounded bg-background px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-sky-700 shadow-sm whitespace-nowrap">
+            {getHandleLabel(output)}
+          </span>
+        </div>
       ))}
     </div>
   )

@@ -3,14 +3,17 @@ import type { User, ApiResponse, IntegrationGraphDefinition } from '@monorepo/sh
 import { fakeAuth } from '../../app/auth/middleware/auth';
 import { exampleHandler } from './routeHandlers/example.handler';
 import { integrationSyncHandler } from './routeHandlers';
-import { getIntegrationGraphsHandler } from './routeHandlers/getIntergration.handler';
+import { getAllIntegrationGraphsHandler } from './routeHandlers/getAllIntergrations.handler';
+import { getIntegrationGraphHandler } from './routeHandlers/getIntergrationGraph.handler';
 import { integrationRunHandler } from './routeHandlers/runIntegration.handler';
+import { externalLinkClickHandler } from './routeHandlers/externalLinkClick.handler';
 
 export const integrationRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
   app.post<{ Reply: ApiResponse<User> }>('/', { preHandler: fakeAuth}, exampleHandler);
 
   app.post<{ Reply: ApiResponse<User> }>('/run', { preHandler: fakeAuth}, integrationRunHandler);
+  app.get('/link/:workflowId/:nodeId', externalLinkClickHandler);
 
   app.register(integrationSyncRoutes, {prefix: '/sync'});
 
@@ -19,6 +22,7 @@ export const integrationRoutes: FastifyPluginAsync = async (app: FastifyInstance
 const integrationSyncRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
   app.post<{Reply: ApiResponse<IntegrationGraphDefinition>}>('/', { preHandler: fakeAuth}, integrationSyncHandler)
-  app.get<{Reply: ApiResponse<IntegrationGraphDefinition[]>}>('/', { preHandler: fakeAuth}, getIntegrationGraphsHandler)
+  app.get<{Reply: ApiResponse<IntegrationGraphDefinition[]>}>('/', { preHandler: fakeAuth}, getAllIntegrationGraphsHandler)
+  app.get<{Params: { integrationId: string }; Reply: ApiResponse<IntegrationGraphDefinition>}>('/:integrationId', { preHandler: fakeAuth}, getIntegrationGraphHandler )
 
 }

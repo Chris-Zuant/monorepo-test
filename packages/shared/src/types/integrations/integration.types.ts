@@ -1,4 +1,5 @@
 import type { RelationshipGraphNode } from "./relationshipNode.types"
+import type { TriggerGraphNode } from "./triggerNodes.types"
 
 export const IntegrationNodeType = {
   HttpRequest: "httpRequest",
@@ -8,9 +9,11 @@ export const IntegrationNodeType = {
   Log: "log",
   CreateContact: "createContact",
   Batch: "batch",
+  WaitForExternalLink: "waitForExternalLink",
 } as const
 
 export type IntegrationNodeType = (typeof IntegrationNodeType)[keyof typeof IntegrationNodeType]
+export type IntegrationGraphNodeKind = "trigger" | "action" | "relationship"
 
 export interface IntegrationGraphDefinition {
   id: string
@@ -21,7 +24,7 @@ export interface IntegrationGraphDefinition {
 
 export interface BaseActionNode<
   TType extends IntegrationNodeType
-> extends IntegrationGraphNodeBase<TType> {}
+> extends IntegrationGraphNodeBase<TType, "action"> {}
 
 export interface HttpRequestNode extends BaseActionNode<"httpRequest"> {
   type: "httpRequest";
@@ -75,6 +78,14 @@ export interface BatchNode extends BaseActionNode<"batch"> {
   config: {};
 }
 
+export interface WaitForExternalLinkNode extends BaseActionNode<"waitForExternalLink"> {
+  type: "waitForExternalLink";
+  config: {
+    linkText: string;
+    completionMessage?: string;
+  };
+}
+
 export type ActionGraphNode =
   | HttpRequestNode
   | DelayNode
@@ -82,12 +93,20 @@ export type ActionGraphNode =
   | RandomFailureNode
   | LogNode
   | CreateContactNode
-  | BatchNode;
+  | BatchNode
+  | WaitForExternalLinkNode;
 
-export type IntegrationGraphNode = ActionGraphNode | RelationshipGraphNode;
+export type IntegrationGraphNode =
+  | TriggerGraphNode
+  | ActionGraphNode
+  | RelationshipGraphNode;
 
-export interface IntegrationGraphNodeBase<TType extends string = IntegrationNodeType> {
+export interface IntegrationGraphNodeBase<
+  TType extends string = IntegrationNodeType,
+  TNodeKind extends IntegrationGraphNodeKind = "action"
+> {
   id: string;
+  nodeKind: TNodeKind;
   type: TType;
   name: string;
   position: {

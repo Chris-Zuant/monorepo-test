@@ -11,8 +11,8 @@ export interface IntegrationsState {
   edges: Edge[];
 }
 
-const createInitialState = (): IntegrationsState => ({
-  id: globalThis.crypto?.randomUUID?.() ?? `integration-${Date.now()}`,
+const createInitialState = (id?: string): IntegrationsState => ({
+  id: id ?? (globalThis.crypto?.randomUUID?.() ?? `integration-${Date.now()}`),
   name: '',
   nodes: [],
   edges: [],
@@ -35,6 +35,16 @@ export const integrationsSlice = createSlice({
       state.name = graph.name;
       state.nodes = nodes;
       state.edges = edges;
+    },
+    initializeNewIntegrationGraph: (state, action: PayloadAction<{ id?: string } | undefined>) => {
+      const nextState = createInitialState(action.payload?.id);
+      state.id = nextState.id;
+      state.name = nextState.name;
+      state.nodes = nextState.nodes;
+      state.edges = nextState.edges;
+    },
+    setIntegrationName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
     },
     setNodes: (state, action: PayloadAction<Node<ReactFlowNodeData>[]>) => {
       state.nodes = action.payload;
@@ -81,6 +91,8 @@ export const integrationsSlice = createSlice({
 
 export const {
   setIntegrationGraph,
+  initializeNewIntegrationGraph,
+  setIntegrationName,
   setNodes,
   setEdges,
   addNode,

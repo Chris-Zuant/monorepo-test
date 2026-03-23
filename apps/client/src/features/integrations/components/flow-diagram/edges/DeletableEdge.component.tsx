@@ -38,11 +38,14 @@ export const DeletableEdge = memo(
         <EdgeLabelRenderer>
           <button
             type="button"
-            className="nodrag nopan absolute flex size-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground"
+            className="nodrag nopan absolute flex size-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:border-destructive hover:cursor-pointer"
             style={{
+              pointerEvents: "all",
               transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+              zIndex: 10,
             }}
             onClick={(event) => {
+              event.preventDefault()
               event.stopPropagation()
               dispatch(removeEdge(id))
             }}

@@ -3,6 +3,7 @@ import type { IntegrationGraphDefinition } from "@monorepo/shared"
 import type * as activities from "../activities/index"
 import { buildIntegrationWorkflow } from "../../services/integrationWorkflowBuilder.service"
 import { runIntegrationWorkflow } from "../../services/runIntegrationWorkflow.service"
+import { createWaitForExternalLinkClickRuntime } from "../runtime"
 
 const {
   httpRequestActivity,
@@ -12,12 +13,6 @@ const {
   randomFailureActivity,
   createContactActivity,
   batchActivity,
-  conditionRelationshipActivity,
-  fanOutRelationshipActivity,
-  joinRelationshipActivity,
-  collectRelationshipActivity,
-  mapRelationshipActivity,
-  reduceRelationshipActivity,
 } = proxyActivities<typeof activities>({
   startToCloseTimeout: "1 minute",
 })
@@ -27,6 +22,7 @@ export async function runIntegrationGraphWorkflow(
   initialInput: unknown = null
 ) {
   const builtWorkflow = buildIntegrationWorkflow(graph)
+  const waitForExternalLinkClick = createWaitForExternalLinkClickRuntime()
 
   return runIntegrationWorkflow(
     builtWorkflow,
@@ -38,12 +34,9 @@ export async function runIntegrationGraphWorkflow(
       randomFailureActivity,
       createContactActivity,
       batchActivity,
-      conditionRelationshipActivity,
-      fanOutRelationshipActivity,
-      joinRelationshipActivity,
-      collectRelationshipActivity,
-      mapRelationshipActivity,
-      reduceRelationshipActivity,
+    },
+    {
+      waitForExternalLinkClick,
     },
     initialInput
   )

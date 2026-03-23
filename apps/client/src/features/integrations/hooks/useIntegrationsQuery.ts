@@ -5,7 +5,7 @@ import {
   type UseQueryOptions,
 } from '@tanstack/react-query';
 import type { IntegrationGraphDefinition } from '@monorepo/shared';
-import { fetchIntegrations, runIntegration, updateIntegration } from '../api';
+import { fetchIntegration, fetchIntegrations, runIntegration, updateIntegration } from '../api';
 import { integrationTemporalTest } from '../api/integrationTest.api';
 
 // export const integrationsQueryKeys = {
@@ -23,6 +23,17 @@ export const useIntegrationsQuery = (
     ...options,
   });
 
+export const useIntegrationQuery = (
+  integrationId: string,
+  options?: Omit<UseQueryOptions<IntegrationGraphDefinition, Error>, 'queryKey' | 'queryFn'>
+) =>
+  useQuery({
+    queryKey: ['integrations', 'detail', integrationId],
+    queryFn: () => fetchIntegration(integrationId),
+    enabled: Boolean(integrationId),
+    ...options,
+  });
+
 export const useUpdateIntegrationMutation = (
   options?: UseMutationOptions<boolean, Error, IntegrationGraphDefinition>
 ) =>
@@ -32,7 +43,11 @@ export const useUpdateIntegrationMutation = (
   });
 
 export const useRunIntegrationMutation = (
-  options?: UseMutationOptions<{ id: string }, Error, { id: string }>
+  options?: UseMutationOptions<
+    { id: string; workflowId: string; waitLinks: {nodeId: string; label: string; url: string}[] },
+    Error,
+    { id: string }
+  >
 ) =>
   useMutation({
     mutationFn: runIntegration,

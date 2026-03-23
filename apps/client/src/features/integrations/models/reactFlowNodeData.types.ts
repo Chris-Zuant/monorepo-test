@@ -1,7 +1,9 @@
 import type {
+  IntegrationGraphNodeKind,
   IntegrationNodeType,
   PortDefinition,
   RelationshipNodeType,
+  TriggerNodeType,
 } from "@monorepo/shared"
 import type { LucideIcon } from "lucide-react"
 
@@ -23,8 +25,8 @@ export interface ReactFlowNodeData extends Record<string, unknown> {
   nodeId: string
   name: string
   label: string
-  type: IntegrationNodeType | RelationshipNodeType
-  nodeKind: "integration" | "relationship"
+  type: IntegrationNodeType | RelationshipNodeType | TriggerNodeType
+  nodeKind: IntegrationGraphNodeKind
   description: string
   config: Record<string, unknown>
   category: string
@@ -35,6 +37,7 @@ export interface ReactFlowNodeData extends Record<string, unknown> {
 }
 
 export interface IntegrationNodeDefinition {
+  nodeKind: "action"
   label: string
   type: IntegrationNodeType
   description: string
@@ -47,10 +50,24 @@ export interface IntegrationNodeDefinition {
 }
 
 export interface RelationshipNodeDefinition {
+  nodeKind: "relationship"
   label: string
   type: RelationshipNodeType
   description: string
   category: "relationship"
+  icon: LucideIcon
+  inputs: PortDefinition[]
+  outputs: PortDefinition[]
+  configSchema: NodeConfigFieldDefinition[]
+}
+
+export interface TriggerNodeDefinition {
+  nodeKind: "trigger"
+  label: string
+  type: TriggerNodeType
+  description: string
+  category: "trigger"
+  activityName: string
   icon: LucideIcon
   inputs: PortDefinition[]
   outputs: PortDefinition[]

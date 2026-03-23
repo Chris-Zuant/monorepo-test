@@ -5,6 +5,25 @@ import type { RootState } from '@app/providers/theme/store';
 import { Spinner } from '@/core/shadcn/components/ui/Spinner.component';
 import { useUpdateIntegrationMutation } from '../../hooks';
 
+function inferNodeKind(
+  nodeType: IntegrationGraphDefinition['nodes'][number]['type']
+): IntegrationGraphDefinition['nodes'][number]['nodeKind'] {
+  switch (nodeType) {
+    case 'internalLeadForm':
+    case 'webhookLead':
+      return 'trigger';
+    case 'condition':
+    case 'fanOut':
+    case 'join':
+    case 'collect':
+    case 'map':
+    case 'reduce':
+      return 'relationship';
+    default:
+      return 'action';
+  }
+}
+
 export const IntegrationSyncComponent = () => {
   const { id, name, nodes, edges } = useSelector((state: RootState) => state.integrations);
   const { mutate, isPending } = useUpdateIntegrationMutation();
@@ -18,6 +37,7 @@ export const IntegrationSyncComponent = () => {
       name: name.trim() || 'Untitled Integration',
       nodes: nodes.map((node) => ({
           id: node.id,
+          nodeKind: node.data.nodeKind ?? inferNodeKind(node.data.type),
           type: node.data.type,
           name: node.data.name,
           position: node.position,
