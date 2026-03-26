@@ -4,11 +4,35 @@
       "title": "Users",
       "description": "Welcome to the Users feature. Manage and view user information."
     },
-    "fetchData": "Fetch Data",
     "fetching": "Fetching...",
+    "loading": "Loading...",
     "name": "Name",
     "email": "Email",
     "noData": "No data in response",
-    "errorFetching": "Error fetching user"
+    "errorFetching": "Error fetching user",
+    "profile": {
+      "page": {
+        "title": "Profile",
+        "description": "View your account details and connected sign-in methods."
+      },
+      "details": "User Details",
+      "createdAt": "Created At",
+      "authMethods": "Authentication Methods",
+      "noAuthMethods": "No authentication methods found for this user."
+    },
+    "settings": {
+      "page": {
+        "title": "Settings",
+        "description": "Manage your account settings."
+      },
+      "placeholder": "Settings options can be added here as the account feature grows."
+    },
+    "preferences": {
+      "page": {
+        "title": "Preferences",
+        "description": "Manage your account preferences."
+      },
+      "placeholder": "Preference controls can be added here as the account feature grows."
+    }
   }
 }

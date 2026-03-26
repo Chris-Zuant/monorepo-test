@@ -22,11 +22,11 @@ function getHandleLabel(port: IntegrationNodeData["inputs"][number]) {
 export const ActionNode = memo(({ data }: NodeProps<IntegrationFlowNode>) => {
   const nodeData = data as IntegrationNodeData
   const Icon = ACTION_NODE_DEFINITIONS[nodeData.type]?.icon
+  const nodeTitle = nodeData.name || nodeData.label
 
   return (
     <div
       className="min-w-44 cursor-pointer rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-950 shadow-sm transition-colors hover:border-amber-400 hover:bg-amber-100"
-      onClick={() => console.log(nodeData)}
       role="button"
       tabIndex={0}
       onKeyDown={(event) => {
@@ -59,7 +59,7 @@ export const ActionNode = memo(({ data }: NodeProps<IntegrationFlowNode>) => {
           {Icon ? <Icon className="size-4" /> : null}
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium">{nodeData.label}</span>
+          <span className="text-sm font-medium">{nodeTitle}</span>
           <span className="text-xs text-amber-700/80">{nodeData.type}</span>
         </div>
       </div>

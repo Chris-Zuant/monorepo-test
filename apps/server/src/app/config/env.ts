@@ -8,9 +8,20 @@ const envFile =
       ? ".env.production"
       : ".env.development";
 
-// Load base first, then env-specific overrides
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
-dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+const envPaths = [
+  ".env",
+  ".env.local",
+  envFile,
+  `${envFile}.local`,
+];
+
+// Load from lowest to highest priority, allowing later files to override earlier values.
+for (const envPath of envPaths) {
+  dotenv.config({
+    path: path.resolve(process.cwd(), envPath),
+    override: true,
+  });
+}
 
 const NODE_ENV = process.env.NODE_ENV;
 const CLIENT_URL = process.env.CLIENT_URL!;

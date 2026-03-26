@@ -3,3 +3,5 @@ dist/
 .env
 .env.local
 *.log
+apps/server/.env.local
+apps/server/.env.development.local

@@ -1,5 +1,6 @@
 import type { TriggerGraphNode } from "@monorepo/shared";
 import type { ExecutableGraphNode } from "./integrationWorkflowBuilder.service";
+import { startNode } from "../nodes/trigger/start.node";
 import { internalLeadFormNode } from "../nodes/trigger/internalLeadForm.node";
 import { webhookLeadNode } from "../nodes/trigger/webhookLead.node";
 
@@ -10,6 +11,8 @@ export async function executeTriggerNode(
   initialInput: unknown = null
 ) {
   switch (node.type) {
+    case "start":
+      return startNode(node);
     case "internalLeadForm":
       return internalLeadFormNode(node);
     case "webhookLead":

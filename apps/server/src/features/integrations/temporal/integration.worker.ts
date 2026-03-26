@@ -1,5 +1,5 @@
 import { Worker } from "@temporalio/worker";
-import * as activities from "./activities";
+import * as activities from "./activities/index";
 import path from "node:path";
 
 export async function integrationWorkerRun() {

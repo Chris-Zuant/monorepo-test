@@ -1,10 +1,12 @@
 'use strict';
 
+import '../config/env';
 import { MongoClient } from 'mongodb';
 
+const getConnectionString = () =>
+  'mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_OPTIONS;
 
-const connectionString = 'mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_OPTIONS
-const client = new MongoClient(connectionString);
+const client = new MongoClient(getConnectionString());
 
 let mongoClientConnection: MongoClient; // This will be used as the only Mongo connection - it will be lazily instantiated
 
@@ -28,6 +30,7 @@ let EnsureMongoDBConnection = async () => {
 
   if (!mongoClientConnection) {
 
+    const connectionString = getConnectionString();
     console.log(`MongoDB will try to connect to ${connectionString} `)
     mongoClientConnection = await client.connect();
     console.log(`MongoDB connection successfully created for ${connectionString} `)
@@ -75,3 +78,4 @@ let closeAllConnections = async function () {
 
 
 export const DBConnectionManager = { startSession, acquireDBReference, closeAllConnections, aquireClient };
+export const getMongoClient = () => client;

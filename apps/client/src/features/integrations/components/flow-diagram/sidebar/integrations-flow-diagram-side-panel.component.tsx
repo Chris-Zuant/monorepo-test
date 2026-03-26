@@ -3,7 +3,9 @@ import type { Node } from '@xyflow/react';
 import type { RootState } from '@app/providers/theme/store';
 import { CoreButton } from '@/core/components';
 import { Separator } from '@/core/shadcn/components/ui/Seperator.component';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/shadcn/components/ui/Tabs.component';
 import { Workflow } from 'lucide-react';
+import { useState } from 'react';
 import type {
   IntegrationNodeDefinition,
   ReactFlowNodeData,
@@ -29,6 +31,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
 }: IntegrationsFlowDiagramSidePanelProps) => {
   const dispatch = useDispatch();
   const nodes = useSelector((state: RootState) => state.integrations.nodes);
+  const [activeTab, setActiveTab] = useState<'trigger' | 'action' | 'relationship'>('trigger');
   const triggerNodes = Object.values(TRIGGER_NODE_DEFINITIONS);
   const actionNodes = Object.values(ACTION_NODE_DEFINITIONS);
   const relationshipNodes = Object.values(RELATIONSHIP_NODE_DEFINITIONS);
@@ -97,95 +100,112 @@ export const IntegrationsFlowDiagramSidePanel = ({
           </div>
         </div>
         <Separator />
-        <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
-          <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Trigger
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as 'trigger' | 'action' | 'relationship')}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="p-4 pb-2">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="trigger">Trigger</TabsTrigger>
+              <TabsTrigger value="action">Action</TabsTrigger>
+              <TabsTrigger value="relationship">Relationship</TabsTrigger>
+            </TabsList>
           </div>
-          {triggerNodes.map((nodeDefinition) => {
-            const Icon = nodeDefinition.icon;
 
-            return (
-              <CoreButton
-                key={nodeDefinition.type}
-                variant="outline"
-                className="h-auto w-full justify-start whitespace-normal rounded-xl border-emerald-200 px-3 py-3 text-left hover:border-emerald-300"
-                onClick={() => handleAddNode(nodeDefinition)}
-              >
-                <div className="flex w-full min-w-0 items-center gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                    <Icon className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="break-words text-sm font-medium leading-tight">
-                      {nodeDefinition.label}
-                    </div>
-                    <div className="break-words text-xs leading-snug text-muted-foreground">
-                      {nodeDefinition.description}
-                    </div>
-                  </div>
-                </div>
-              </CoreButton>
-            );
-          })}
-          <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Action
-          </div>
-          {actionNodes.map((nodeDefinition) => {
-            const Icon = nodeDefinition.icon;
+          <TabsContent value="trigger" className="mt-0 flex-1 overflow-y-auto p-4 pt-2">
+            <div className="space-y-2">
+              {triggerNodes.map((nodeDefinition) => {
+                const Icon = nodeDefinition.icon;
 
-            return (
-              <CoreButton
-                key={nodeDefinition.type}
-                variant="outline"
-                className="h-auto w-full justify-start whitespace-normal rounded-xl px-3 py-3 text-left"
-                onClick={() => handleAddNode(nodeDefinition)}
-              >
-                <div className="flex w-full min-w-0 items-center gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="wrap-break-word text-sm font-medium leading-tight">
-                      {nodeDefinition.label}
+                return (
+                  <CoreButton
+                    key={nodeDefinition.type}
+                    variant="outline"
+                    className="h-auto w-full justify-start whitespace-normal rounded-xl border-emerald-200 px-3 py-3 text-left hover:border-emerald-300"
+                    onClick={() => handleAddNode(nodeDefinition)}
+                  >
+                    <div className="flex w-full min-w-0 items-center gap-3">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="break-words text-sm font-medium leading-tight">
+                          {nodeDefinition.label}
+                        </div>
+                        <div className="break-words text-xs leading-snug text-muted-foreground">
+                          {nodeDefinition.description}
+                        </div>
+                      </div>
                     </div>
-                    <div className="wrap-break-word text-xs leading-snug text-muted-foreground">
-                      {nodeDefinition.description}
-                    </div>
-                  </div>
-                </div>
-              </CoreButton>
-            );
-          })}
-          <div className="mt-4 px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Relationship
-          </div>
-          {relationshipNodes.map((nodeDefinition) => {
-            const Icon = nodeDefinition.icon;
+                  </CoreButton>
+                );
+              })}
+            </div>
+          </TabsContent>
 
-            return (
-              <CoreButton
-                key={nodeDefinition.type}
-                variant="outline"
-                className="h-auto w-full justify-start whitespace-normal rounded-xl border-sky-200 px-3 py-3 text-left hover:border-sky-300"
-                onClick={() => handleAddNode(nodeDefinition)}
-              >
-                <div className="flex w-full min-w-0 items-center gap-3">
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
-                    <Icon className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="break-words text-sm font-medium leading-tight">
-                      {nodeDefinition.label}
+          <TabsContent value="action" className="mt-0 flex-1 overflow-y-auto p-4 pt-2">
+            <div className="space-y-2">
+              {actionNodes.map((nodeDefinition) => {
+                const Icon = nodeDefinition.icon;
+
+                return (
+                  <CoreButton
+                    key={nodeDefinition.type}
+                    variant="outline"
+                    className="h-auto w-full justify-start whitespace-normal rounded-xl px-3 py-3 text-left"
+                    onClick={() => handleAddNode(nodeDefinition)}
+                  >
+                    <div className="flex w-full min-w-0 items-center gap-3">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="break-words text-sm font-medium leading-tight">
+                          {nodeDefinition.label}
+                        </div>
+                        <div className="break-words text-xs leading-snug text-muted-foreground">
+                          {nodeDefinition.description}
+                        </div>
+                      </div>
                     </div>
-                    <div className="break-words text-xs leading-snug text-muted-foreground">
-                      {nodeDefinition.description}
+                  </CoreButton>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="relationship" className="mt-0 flex-1 overflow-y-auto p-4 pt-2">
+            <div className="space-y-2">
+              {relationshipNodes.map((nodeDefinition) => {
+                const Icon = nodeDefinition.icon;
+
+                return (
+                  <CoreButton
+                    key={nodeDefinition.type}
+                    variant="outline"
+                    className="h-auto w-full justify-start whitespace-normal rounded-xl border-sky-200 px-3 py-3 text-left hover:border-sky-300"
+                    onClick={() => handleAddNode(nodeDefinition)}
+                  >
+                    <div className="flex w-full min-w-0 items-center gap-3">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="break-words text-sm font-medium leading-tight">
+                          {nodeDefinition.label}
+                        </div>
+                        <div className="break-words text-xs leading-snug text-muted-foreground">
+                          {nodeDefinition.description}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </CoreButton>
-            );
-          })}
-        </div>
+                  </CoreButton>
+                );
+              })}
+            </div>
+          </TabsContent>
+        </Tabs>
       </aside>
     </>
   );

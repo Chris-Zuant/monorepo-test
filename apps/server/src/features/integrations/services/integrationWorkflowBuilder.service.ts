@@ -7,6 +7,7 @@ export type TriggerGraphNode = Extract<
   IntegrationGraphNode,
   {
     type:
+      | "start"
       | "internalLeadForm"
       | "webhookLead";
   }

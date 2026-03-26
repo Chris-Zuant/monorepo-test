@@ -35,7 +35,7 @@ function getOutgoingEdges(graph: IntegrationGraphDefinition, nodeId: string) {
   return graph.edges.filter((edge) => edge.source === nodeId);
 }
 
-async function enqueueOutputs(
+async function executeOutputNodes(
   graph: IntegrationGraphDefinition,
   terminalOutputs: Record<string, unknown[]>,
   nodeId: string,
@@ -98,7 +98,7 @@ export async function runIntegrationWorkflow(
       const result = await executeTriggerNode(node, initialInput);
       visitOrder.push(node.id);
       nodeResults[node.id] = result;
-      await enqueueOutputs(graph, terminalOutputs, node.id, { out: [result] }, executeNode);
+      await executeOutputNodes(graph, terminalOutputs, node.id, { out: [result] }, executeNode);
       return;
     }
 
@@ -113,14 +113,14 @@ export async function runIntegrationWorkflow(
 
       visitOrder.push(node.id);
       nodeResults[node.id] = outputs;
-      await enqueueOutputs(graph, terminalOutputs, node.id, outputs, executeNode);
+      await executeOutputNodes(graph, terminalOutputs, node.id, outputs, executeNode);
       return;
     }
 
     const result = await executeActionNode(node, payload, activityFns, runtimeFns);
     visitOrder.push(node.id);
     nodeResults[node.id] = result;
-    await enqueueOutputs(graph, terminalOutputs, node.id, { out: [result] }, executeNode);
+    await executeOutputNodes(graph, terminalOutputs, node.id, { out: [result] }, executeNode);
   };
 
   await Promise.all(startNodeIds.map((nodeId) => executeNode(nodeId, initialInput)));

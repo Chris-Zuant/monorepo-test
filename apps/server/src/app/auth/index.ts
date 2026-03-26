@@ -1,3 +1,3 @@
-export * from './auth.routes';
+export * from './betterAuth';
 export * from './middleware';
 export * from './routeHandlers';

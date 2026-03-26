@@ -22,6 +22,7 @@ function getHandleLabel(port: TriggerNodeData["outputs"][number]) {
 export const TriggerNode = memo(({ data }: NodeProps<TriggerFlowNode>) => {
   const nodeData = data as TriggerNodeData
   const Icon = TRIGGER_NODE_DEFINITIONS[nodeData.type]?.icon
+  const nodeTitle = nodeData.name || nodeData.label
 
   return (
     <div
@@ -41,7 +42,7 @@ export const TriggerNode = memo(({ data }: NodeProps<TriggerFlowNode>) => {
           {Icon ? <Icon className="size-4" /> : null}
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium">{nodeData.label}</span>
+          <span className="text-sm font-medium">{nodeTitle}</span>
           <span className="text-xs text-emerald-700/80">{nodeData.type}</span>
         </div>
       </div>

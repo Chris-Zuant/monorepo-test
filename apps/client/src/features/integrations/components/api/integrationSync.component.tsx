@@ -9,6 +9,7 @@ function inferNodeKind(
   nodeType: IntegrationGraphDefinition['nodes'][number]['type']
 ): IntegrationGraphDefinition['nodes'][number]['nodeKind'] {
   switch (nodeType) {
+    case 'start':
     case 'internalLeadForm':
     case 'webhookLead':
       return 'trigger';

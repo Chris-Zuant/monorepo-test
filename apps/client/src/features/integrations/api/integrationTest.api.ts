@@ -7,9 +7,7 @@ import type { User } from '@monorepo/shared';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
-  headers: {
-    Authorization: 'Bearer faketoken',
-  },
+  withCredentials: true,
 });
 
 export const integrationTemporalTest = async (): Promise<User | null> => {

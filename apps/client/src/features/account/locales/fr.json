@@ -4,11 +4,35 @@
       "title": "Utilisateurs",
       "description": "Bienvenue dans la fonctionnalité Utilisateurs. Gérez et consultez les informations utilisateur."
     },
-    "fetchData": "Récupérer les données",
     "fetching": "Récupération...",
+    "loading": "Chargement...",
     "name": "Nom",
     "email": "E-mail",
     "noData": "Aucune donnée dans la réponse",
-    "errorFetching": "Erreur lors de la récupération de l'utilisateur"
+    "errorFetching": "Erreur lors de la récupération de l'utilisateur",
+    "profile": {
+      "page": {
+        "title": "Profil",
+        "description": "Consultez les détails de votre compte et les méthodes de connexion liées."
+      },
+      "details": "Détails de l'utilisateur",
+      "createdAt": "Créé le",
+      "authMethods": "Méthodes d'authentification",
+      "noAuthMethods": "Aucune méthode d'authentification trouvée pour cet utilisateur."
+    },
+    "settings": {
+      "page": {
+        "title": "Paramètres",
+        "description": "Gérez les paramètres de votre compte."
+      },
+      "placeholder": "Les options de paramètres peuvent être ajoutées ici au fur et à mesure de l'évolution de la fonctionnalité compte."
+    },
+    "preferences": {
+      "page": {
+        "title": "Préférences",
+        "description": "Gérez les préférences de votre compte."
+      },
+      "placeholder": "Les contrôles de préférences peuvent être ajoutés ici au fur et à mesure de l'évolution de la fonctionnalité compte."
+    }
   }
 }

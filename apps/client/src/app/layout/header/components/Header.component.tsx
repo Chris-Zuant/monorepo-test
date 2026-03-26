@@ -5,6 +5,7 @@ import { CircleUserRound, Globe, LayoutGrid, Moon, Sun } from 'lucide-react';
 import { CoreButton } from '@/core/components/buttons';
 import { SearchBar } from '@/core/components/inputs/searchbar.component';
 import { CoreDropdownMenu, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
+import { authClient } from '@app/providers/auth';
 import { useTheme } from '@app/providers/theme/hooks';
 
 interface SearchItem {
@@ -24,10 +25,14 @@ export const Header: React.FC = () => {
     i18n.changeLanguage(lng);
   };
 
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    navigate('/login', { replace: true });
+  };
+
   const currentLanguage = i18n.language.toUpperCase();
 
   const features = [
-    { translationKey: 'users.page.title', namespace: 'users', path: '/users', label: 'Users' },
     { translationKey: 'formBuilder.page.title', namespace: 'formBuilder', path: '/forms', label: 'Form Builder' },
     { translationKey: 'integrations.page.title', namespace: 'integrations', path: '/integrations', label: 'Integrations' },
     { translationKey: 'title', namespace: 'condLogic', path: '/conditional-logic', label: 'Conditional Logic' },
@@ -62,9 +67,10 @@ export const Header: React.FC = () => {
 
   const accountMenuConfig = [
     { id: 'account-label', labelKey: 'header.accountMenu', isLabel: true },
-    { id: 'profile', labelKey: 'header.profile', path: '/users' },
-    { id: 'settings', labelKey: 'header.settings' },
-    { id: 'preferences', labelKey: 'header.preferences' },
+    { id: 'users', labelKey: 'users.page.title', path: '/users', namespace: 'users' },
+    { id: 'profile', labelKey: 'header.profile', path: '/account/profile' },
+    { id: 'settings', labelKey: 'header.settings', path: '/account/settings' },
+    { id: 'preferences', labelKey: 'header.preferences', path: '/account/preferences' },
     { id: 'account-separator', separator: true },
     { id: 'sign-out', labelKey: 'header.signOut' },
   ] as const;
@@ -78,13 +84,21 @@ export const Header: React.FC = () => {
       };
     }
 
-    const translatedLabel = t(item.labelKey);
+    const translatedLabel = t(item.labelKey, {
+      ns: 'namespace' in item ? item.namespace : undefined,
+      defaultValue: item.labelKey,
+    });
 
     return {
       id: item.id,
       label: translatedLabel,
       isLabel: 'isLabel' in item ? item.isLabel : false,
-      onClick: 'path' in item && item.path ? () => navigate(item.path) : undefined,
+      onClick:
+        item.id === 'sign-out'
+          ? handleSignOut
+          : 'path' in item && item.path
+            ? () => navigate(item.path)
+            : undefined,
     };
   });
 

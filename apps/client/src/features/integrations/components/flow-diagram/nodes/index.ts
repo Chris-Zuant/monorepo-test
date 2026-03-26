@@ -14,6 +14,7 @@ import {
   GitFork,
   Logs,
   MousePointerClick,
+  Play,
   RefreshCcwDot,
   ScanSearch,
   Send,
@@ -31,6 +32,20 @@ import { RelationshipNode } from "./RelationshipNode.component";
 import { TriggerNode } from "./TriggerNode.component";
 
 export const TRIGGER_NODE_DEFINITIONS: Record<TriggerNodeType, TriggerNodeDefinition> = {
+  [TriggerNodeType.Start]: {
+    nodeKind: "trigger",
+    type: TriggerNodeType.Start,
+    label: "Start",
+    description: "Start the workflow with a basic trigger.",
+    category: "trigger",
+    activityName: "startTriggerActivity",
+    icon: Play,
+    inputs: [],
+    outputs: [
+      { id: "out", label: "Start", direction: "output", cardinality: "one", dataType: "object" },
+    ],
+    configSchema: [],
+  },
   [TriggerNodeType.InternalLeadForm]: {
     nodeKind: "trigger",
     type: TriggerNodeType.InternalLeadForm,

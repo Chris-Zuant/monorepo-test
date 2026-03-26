@@ -15,6 +15,7 @@ function getHandleLabel(port: ReactFlowNodeData["inputs"][number]) {
 
 export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>) => {
   const nodeData = data as ReactFlowNodeData
+  const nodeTitle = nodeData.name || nodeData.label
   const mode =
     nodeData.config && typeof nodeData.config === "object" && "mode" in nodeData.config
       ? String(nodeData.config.mode)
@@ -57,7 +58,7 @@ export const RelationshipNode = memo(({ data }: NodeProps<RelationshipFlowNode>)
           <Workflow className="size-4" />
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium">{nodeData.label}</span>
+          <span className="text-sm font-medium">{nodeTitle}</span>
           <span className="text-xs text-sky-700/80">{nodeData.type}</span>
           {mode ? <span className="text-xs text-sky-400">{mode}</span> : null}
         </div>

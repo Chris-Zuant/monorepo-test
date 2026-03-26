@@ -7,18 +7,28 @@ import type { User } from '@monorepo/shared';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
-  headers: {
-    Authorization: 'Bearer faketoken',
-  },
+  withCredentials: true,
 });
 
-export const fetchUser = async (): Promise<User | null> => {
+export const fetchCurrentUser = async (): Promise<User | null> => {
   try {
-    const res = await apiClient.get('/user');
+    const res = await apiClient.get('/user/me');
     return res.data?.data || null;
   } catch (error) {
     throw error;
   }
 };
+
+export const fetchCurrentAuthMethods = async (): Promise<string[]> => {
+  const res = await apiClient.get('/user/auth-methods');
+  return res.data?.data ?? [];
+};
+
+export const fetchUsers = async (): Promise<User[]> => {
+  const res = await apiClient.get('/user');
+  return res.data?.data ?? [];
+};
+
+export const fetchUser = fetchCurrentUser;
 
 export default apiClient;

@@ -1,6 +1,7 @@
 import type { IntegrationGraphNodeBase } from "./integration.types"
 
 export const TriggerNodeType = {
+  Start: "start",
   InternalLeadForm: "internalLeadForm",
   WebhookLead: "webhookLead",
 } as const
@@ -21,6 +22,11 @@ export interface BaseTriggerNode<
   config: TConfig
 }
 
+export interface StartTriggerNode
+  extends BaseTriggerNode<"start", Record<string, never>> {
+  type: "start"
+}
+
 export interface InternalLeadFormTriggerNode
   extends BaseTriggerNode<"internalLeadForm", LeadTriggerConfig> {
   type: "internalLeadForm"
@@ -32,5 +38,6 @@ export interface WebhookLeadTriggerNode
 }
 
 export type TriggerGraphNode =
+  | StartTriggerNode
   | InternalLeadFormTriggerNode
   | WebhookLeadTriggerNode

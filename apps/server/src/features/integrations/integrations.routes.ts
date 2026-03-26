@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import type { User, ApiResponse, IntegrationGraphDefinition } from '@monorepo/shared';
-import { fakeAuth } from '../../app/auth/middleware/auth';
+import { requireAuth } from '../../app/auth/middleware/auth';
 import { exampleHandler } from './routeHandlers/example.handler';
 import { integrationSyncHandler } from './routeHandlers';
 import { getAllIntegrationGraphsHandler } from './routeHandlers/getAllIntergrations.handler';
@@ -10,9 +10,9 @@ import { externalLinkClickHandler } from './routeHandlers/externalLinkClick.hand
 
 export const integrationRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
-  app.post<{ Reply: ApiResponse<User> }>('/', { preHandler: fakeAuth}, exampleHandler);
+  app.post<{ Reply: ApiResponse<User> }>('/', { preHandler: requireAuth}, exampleHandler);
 
-  app.post<{ Reply: ApiResponse<User> }>('/run', { preHandler: fakeAuth}, integrationRunHandler);
+  app.post<{ Reply: ApiResponse<User> }>('/run', { preHandler: requireAuth}, integrationRunHandler);
   app.get('/link/:workflowId/:nodeId', externalLinkClickHandler);
 
   app.register(integrationSyncRoutes, {prefix: '/sync'});
@@ -21,8 +21,8 @@ export const integrationRoutes: FastifyPluginAsync = async (app: FastifyInstance
 
 const integrationSyncRoutes: FastifyPluginAsync = async (app: FastifyInstance) => {
 
-  app.post<{Reply: ApiResponse<IntegrationGraphDefinition>}>('/', { preHandler: fakeAuth}, integrationSyncHandler)
-  app.get<{Reply: ApiResponse<IntegrationGraphDefinition[]>}>('/', { preHandler: fakeAuth}, getAllIntegrationGraphsHandler)
-  app.get<{Params: { integrationId: string }; Reply: ApiResponse<IntegrationGraphDefinition>}>('/:integrationId', { preHandler: fakeAuth}, getIntegrationGraphHandler )
+  app.post<{Reply: ApiResponse<IntegrationGraphDefinition>}>('/', { preHandler: requireAuth}, integrationSyncHandler)
+  app.get<{Reply: ApiResponse<IntegrationGraphDefinition[]>}>('/', { preHandler: requireAuth}, getAllIntegrationGraphsHandler)
+  app.get<{Params: { integrationId: string }; Reply: ApiResponse<IntegrationGraphDefinition>}>('/:integrationId', { preHandler: requireAuth}, getIntegrationGraphHandler )
 
 }

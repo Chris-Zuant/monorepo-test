@@ -60,6 +60,8 @@ export function NodeConfigEditorModal({
 }: NodeConfigEditorModalProps) {
   const dispatch = useDispatch();
   const schema = node?.data.configSchema ?? [];
+  const nodeTitle = node?.data.name || node?.data.label || "Node Config";
+  const [draftName, setDraftName] = useState("");
   const [draftConfig, setDraftConfig] = useState<Record<string, string>>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -68,11 +70,16 @@ export function NodeConfigEditorModal({
       return;
     }
 
+    setDraftName(node.data.name);
     setDraftConfig(getInitialDraft(schema, node.data.config));
     setErrorMessage(null);
   }, [node, open, schema]);
 
   const canSave = useMemo(() => {
+    if (draftName.trim().length === 0) {
+      return false;
+    }
+
     return schema.every((field) => {
       if (!field.required) {
         return true;
@@ -81,7 +88,7 @@ export function NodeConfigEditorModal({
       const value = draftConfig[field.key]?.trim() ?? "";
       return value.length > 0;
     });
-  }, [draftConfig, schema]);
+  }, [draftConfig, draftName, schema]);
 
   const handleValueChange = (key: string, value: string) => {
     setDraftConfig((current) => ({
@@ -107,7 +114,13 @@ export function NodeConfigEditorModal({
         return acc;
       }, {});
 
-      dispatch(updateNodeConfig({ nodeId: node.id, config: nextConfig }));
+      dispatch(
+        updateNodeConfig({
+          nodeId: node.id,
+          name: draftName.trim(),
+          config: nextConfig,
+        })
+      );
       onOpenChange(false);
     } catch (error) {
       setErrorMessage(
@@ -129,13 +142,28 @@ export function NodeConfigEditorModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden p-0">
         <DialogHeader className="border-b px-6 pt-6 pb-4">
-          <DialogTitle>{node?.data.label ?? "Node Config"}</DialogTitle>
+          <DialogTitle>{nodeTitle}</DialogTitle>
           <DialogDescription>
             {node?.data.description ?? "Configure this node before running the integration."}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex max-h-[60vh] flex-col gap-4 overflow-y-auto px-6 py-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">
+              Node Name
+              <span className="text-destructive"> *</span>
+            </label>
+            <Input
+              value={draftName}
+              onChange={(event) => {
+                setDraftName(event.target.value);
+                setErrorMessage(null);
+              }}
+              placeholder="Enter node name"
+            />
+          </div>
+
           {schema.length === 0 ? (
             <p className="text-muted-foreground text-sm">
               This node does not expose configurable fields.

@@ -59,6 +59,7 @@ export const integrationsSlice = createSlice({
       state,
       action: PayloadAction<{
         nodeId: string;
+        name: string;
         config: Record<string, unknown>;
       }>
     ) => {
@@ -70,6 +71,7 @@ export const integrationsSlice = createSlice({
 
       node.data = {
         ...node.data,
+        name: action.payload.name,
         config: action.payload.config,
       };
     },

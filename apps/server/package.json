@@ -19,12 +19,14 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "^1.5.6",
     "@fastify/cors": "^9.0.0",
     "@monorepo/shared": "workspace:*",
     "@temporalio/client": "^1.15.0",
     "@temporalio/worker": "^1.15.0",
     "@temporalio/workflow": "^1.15.0",
     "axios": "^1.13.5",
+    "better-auth": "^1.5.6",
     "dotenv": "^16.1.4",
     "fastify": "^4.25.2",
     "mongodb": "^7.1.0",
