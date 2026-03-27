@@ -21,6 +21,9 @@ export const integrationRunHandler = async (request: FastifyRequest, reply: Fast
             taskQueue: "integration-task-queue",
             workflowId: `integration-run-${integration.id}-${Date.now()}`,
             args: [integration],
+            searchAttributes: {
+                tenantId: ["acme"], // for per tenant filtering
+            },
         });
 
         const waitLinks = integration.nodes

@@ -6,14 +6,15 @@ import type {
   RelationshipGraphNode,
 } from "./integrationWorkflowBuilder.service";
 import {
-  executeActionNode,
+  ActionNodeExecutor,
   type ActivityFns,
   type ActionRuntimeFns,
 } from "./executeActionNode.service";
 import {
-  executeRelationshipNode,
+  RelationshipNodeExecutor,
 } from "./executeRelationshipNode.service";
-import { executeTriggerNode } from "./executeTriggerNode.service";
+import { TriggerNodeExecutor } from "./executeTriggerNode.service";
+import type { RelationshipNodeRuntimeState } from "../nodes/relationship/runtime";
 type ExecutableTriggerNode = TriggerGraphNode & ExecutableGraphNode;
 type ExecutableRelationshipNode = RelationshipGraphNode & ExecutableGraphNode;
 
@@ -23,111 +24,142 @@ export interface IntegrationWorkflowExecutionResult {
   visitOrder: string[];
 }
 
-function isRelationshipNode(node: ExecutableGraphNode): node is ExecutableRelationshipNode {
-  return node.nodeKind === "relationship";
-}
+// Context object pattern:
+// a workflow run has shared mutable state. Wrapping it in a class keeps that
+// state in one place instead of passing several Maps and Records through
+// every method call.
+class WorkflowExecutionContext {
+  readonly terminalOutputs: Record<string, unknown[]> = {};
+  readonly nodeResults: Record<string, unknown> = {};
+  readonly visitOrder: string[] = [];
+  readonly relationshipRuntimeState = new Map<string, RelationshipNodeRuntimeState>();
 
-function isTriggerNode(node: ExecutableGraphNode): node is ExecutableTriggerNode {
-  return node.nodeKind === "trigger";
-}
+  constructor(readonly builtWorkflow: BuiltIntegrationWorkflow) {}
 
-function getOutgoingEdges(graph: IntegrationGraphDefinition, nodeId: string) {
-  return graph.edges.filter((edge) => edge.source === nodeId);
-}
-
-async function executeOutputNodes(
-  graph: IntegrationGraphDefinition,
-  terminalOutputs: Record<string, unknown[]>,
-  nodeId: string,
-  outputsByPort: Record<string, unknown[]>,
-  executeNode: (nodeId: string, payload: unknown, viaHandle?: string) => Promise<void>
-) {
-  const outgoingEdges = getOutgoingEdges(graph, nodeId);
-  const fallbackPort =
-    Object.keys(outputsByPort).length === 1 ? Object.keys(outputsByPort)[0] : undefined;
-  const tasks: Promise<void>[] = [];
-
-  for (const [outputPort, payloads] of Object.entries(outputsByPort)) {
-    const matchingEdges = outgoingEdges.filter((edge) => {
-      const sourceHandle = edge.sourceHandle ?? fallbackPort;
-      return sourceHandle === outputPort;
-    });
-
-    if (matchingEdges.length === 0) {
-      terminalOutputs[nodeId] = [...(terminalOutputs[nodeId] ?? []), ...payloads];
-      continue;
-    }
-
-    for (const payload of payloads) {
-      for (const edge of matchingEdges) {
-        tasks.push(executeNode(edge.target, payload, edge.targetHandle));
-      }
-    }
+  get graph() {
+    return this.builtWorkflow.graph;
   }
 
-  await Promise.all(tasks);
-}
+  get nodeMap() {
+    return this.builtWorkflow.nodeMap;
+  }
 
-export async function runIntegrationWorkflow(
-  builtWorkflow: BuiltIntegrationWorkflow,
-  activityFns: ActivityFns,
-  runtimeFns: ActionRuntimeFns,
-  initialInput: unknown = null
-): Promise<IntegrationWorkflowExecutionResult> {
+  get startNodeIds() {
+    return this.builtWorkflow.startNodeIds;
+  }
 
-  const { graph, nodeMap, startNodeIds } = builtWorkflow;
-  const terminalOutputs: Record<string, unknown[]> = {};
-  const nodeResults: Record<string, unknown> = {};
-  const visitOrder: string[] = [];
-  const relationshipRuntimeState = new Map<
-    string,
-    { values: unknown[]; waiters: Array<() => void>; executed: boolean }
-  >();
+  recordNodeResult(nodeId: string, result: unknown) {
+    this.visitOrder.push(nodeId);
+    this.nodeResults[nodeId] = result;
+  }
 
-  const executeNode = async (
+  async executeOutputNodes(
     nodeId: string,
-    payload: unknown,
-    viaHandle?: string
-  ): Promise<void> => {
-    const node = nodeMap.get(nodeId)!;
-    void viaHandle;
+    outputsByPort: Record<string, unknown[]>,
+    executeNode: (nodeId: string, payload: unknown, viaHandle?: string) => Promise<void>
+  ) {
+    const outgoingEdges = this.getOutgoingEdges(this.graph, nodeId);
+    const fallbackPort =
+      Object.keys(outputsByPort).length === 1 ? Object.keys(outputsByPort)[0] : undefined;
+    const tasks: Promise<void>[] = [];
 
-    console.log(`Node Executed: ${node.nodeKind}:${node.type}:${node.id.slice(-5)}`);
+    for (const [outputPort, payloads] of Object.entries(outputsByPort)) {
+      const matchingEdges = outgoingEdges.filter((edge) => {
+        const sourceHandle = edge.sourceHandle ?? fallbackPort;
+        return sourceHandle === outputPort;
+      });
 
-    if (isTriggerNode(node)) {
-      const result = await executeTriggerNode(node, initialInput);
-      visitOrder.push(node.id);
-      nodeResults[node.id] = result;
-      await executeOutputNodes(graph, terminalOutputs, node.id, { out: [result] }, executeNode);
-      return;
+      if (matchingEdges.length === 0) {
+        this.terminalOutputs[nodeId] = [...(this.terminalOutputs[nodeId] ?? []), ...payloads];
+        continue;
+      }
+
+      for (const payload of payloads) {
+        for (const edge of matchingEdges) {
+          tasks.push(executeNode(edge.target, payload, edge.targetHandle));
+        }
+      }
     }
 
-    if (isRelationshipNode(node)) {
-      const outputs = await executeRelationshipNode(node, payload, {
-        graph,
-        runtimeState: relationshipRuntimeState,
-      });
-      if (!outputs) {
+    await Promise.all(tasks);
+  }
+
+  private getOutgoingEdges(graph: IntegrationGraphDefinition, nodeId: string) {
+    return graph.edges.filter((edge) => edge.source === nodeId);
+  }
+}
+
+export interface IntegrationWorkflowRunnerDependencies {
+  actionExecutor: ActionNodeExecutor;
+  relationshipExecutor: RelationshipNodeExecutor;
+  triggerExecutor: TriggerNodeExecutor;
+}
+
+// Orchestrator pattern:
+// this class coordinates the run from start nodes through downstream edges,
+// but delegates node-specific behavior to the executors above.
+export class IntegrationWorkflowRunner {
+  constructor(private readonly dependencies: IntegrationWorkflowRunnerDependencies) {}
+
+  async run(
+    builtWorkflow: BuiltIntegrationWorkflow,
+    initialInput: unknown = null
+  ): Promise<IntegrationWorkflowExecutionResult> {
+    const context = new WorkflowExecutionContext(builtWorkflow);
+
+    const executeNode = async (
+      nodeId: string,
+      payload: unknown,
+      viaHandle?: string
+    ): Promise<void> => {
+      const node = context.nodeMap.get(nodeId);
+      if (!node) {
         return;
       }
 
-      visitOrder.push(node.id);
-      nodeResults[node.id] = outputs;
-      await executeOutputNodes(graph, terminalOutputs, node.id, outputs, executeNode);
-      return;
-    }
+      void viaHandle;
+      console.log(`Node Executed: ${node.nodeKind}:${node.type}:${node.id.slice(-5)}`);
 
-    const result = await executeActionNode(node, payload, activityFns, runtimeFns);
-    visitOrder.push(node.id);
-    nodeResults[node.id] = result;
-    await executeOutputNodes(graph, terminalOutputs, node.id, { out: [result] }, executeNode);
-  };
+      if (this.isTriggerNode(node)) {
+        const result = await this.dependencies.triggerExecutor.execute(node, initialInput);
+        context.recordNodeResult(node.id, result);
+        await context.executeOutputNodes(node.id, { out: [result] }, executeNode);
+        return;
+      }
 
-  await Promise.all(startNodeIds.map((nodeId) => executeNode(nodeId, initialInput)));
+      if (this.isRelationshipNode(node)) {
+        const outputs = await this.dependencies.relationshipExecutor.execute(node, payload, {
+          graph: context.graph,
+          runtimeState: context.relationshipRuntimeState,
+        });
+        if (!outputs) {
+          return;
+        }
 
-  return {
-    nodeResults,
-    terminalOutputs,
-    visitOrder,
-  };
+        context.recordNodeResult(node.id, outputs);
+        await context.executeOutputNodes(node.id, outputs, executeNode);
+        return;
+      }
+
+      const result = await this.dependencies.actionExecutor.execute(node, payload);
+      context.recordNodeResult(node.id, result);
+      await context.executeOutputNodes(node.id, { out: [result] }, executeNode);
+    };
+
+    await Promise.all(context.startNodeIds.map((nodeId) => executeNode(nodeId, initialInput)));
+
+    return {
+      nodeResults: context.nodeResults,
+      terminalOutputs: context.terminalOutputs,
+      visitOrder: context.visitOrder,
+    };
+  }
+
+  private isRelationshipNode(node: ExecutableGraphNode): node is ExecutableRelationshipNode {
+    return node.nodeKind === "relationship";
+  }
+
+  private isTriggerNode(node: ExecutableGraphNode): node is ExecutableTriggerNode {
+    return node.nodeKind === "trigger";
+  }
 }
