@@ -1,10 +1,5 @@
 import type { CollectRelationshipNode } from "@monorepo/shared";
-import type { ExecuteRelationshipNodeContext } from "./runtime";
-import {
-  getRuntimeState,
-  resolveRelationshipWaiters,
-  waitForRelationshipExecution,
-} from "./runtime";
+import { WorkflowExecutionContext } from "../../services/runIntegrationWorkflow.service";
 
 function buildCollectOutputs(values: unknown[]) {
   return {
@@ -15,9 +10,9 @@ function buildCollectOutputs(values: unknown[]) {
 export async function executeCollectNode(
   node: CollectRelationshipNode,
   payload: unknown,
-  context: ExecuteRelationshipNodeContext
+  context: WorkflowExecutionContext
 ) {
-  const runtimeState = getRuntimeState(context.runtimeState, node.id);
+  const runtimeState = context.getRuntimeState(node.id);
 
   if (runtimeState.executed) {
     return null;
@@ -26,12 +21,12 @@ export async function executeCollectNode(
   runtimeState.values.push(payload);
 
   if (runtimeState.values.length < node.config.count) {
-    await waitForRelationshipExecution(runtimeState);
+    await context.waitForRelationshipExecution(node.id);
     return null;
   }
 
   runtimeState.executed = true;
   const outputs = buildCollectOutputs(runtimeState.values.slice(0, node.config.count));
-  resolveRelationshipWaiters(runtimeState);
+  context.resolveRelationshipWaiters(node.id);
   return outputs;
 }

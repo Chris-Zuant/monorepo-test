@@ -1,5 +1,5 @@
 import type { ConditionRelationshipNode } from "@monorepo/shared";
-import type { ExecuteRelationshipNodeContext } from "./runtime";
+import { WorkflowExecutionContext } from "../../services/runIntegrationWorkflow.service";
 
 function evaluateCondition(value: unknown) {
   if (typeof value === "boolean") {
@@ -16,7 +16,7 @@ function evaluateCondition(value: unknown) {
 export async function executeConditionNode(
   _node: ConditionRelationshipNode,
   value: unknown,
-  _context: ExecuteRelationshipNodeContext
+  _context: WorkflowExecutionContext
 ) {
   const result = evaluateCondition(value);
 

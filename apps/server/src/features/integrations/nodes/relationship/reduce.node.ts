@@ -1,11 +1,5 @@
 import type { ReduceRelationshipNode } from "@monorepo/shared";
-import type { ExecuteRelationshipNodeContext } from "./runtime";
-import {
-  getIncomingEdges,
-  getRuntimeState,
-  resolveRelationshipWaiters,
-  waitForRelationshipExecution,
-} from "./runtime";
+import { WorkflowExecutionContext } from "../../services/runIntegrationWorkflow.service";
 
 function reduceValues(
   values: unknown[],
@@ -48,10 +42,10 @@ function buildReduceOutputs(node: ReduceRelationshipNode, values: unknown[]) {
 export async function executeReduceNode(
   node: ReduceRelationshipNode,
   payload: unknown,
-  context: ExecuteRelationshipNodeContext
+  context: WorkflowExecutionContext
 ) {
-  const incomingEdges = getIncomingEdges(context.graph, node.id);
-  const runtimeState = getRuntimeState(context.runtimeState, node.id);
+  const incomingEdges = context.getIncomingEdges(node.id);
+  const runtimeState = context.getRuntimeState(node.id);
 
   if (runtimeState.executed) {
     return null;
@@ -61,12 +55,12 @@ export async function executeReduceNode(
 
   const expectedCount = node.config.expectedCount ?? Math.max(incomingEdges.length, 1);
   if (runtimeState.values.length < expectedCount || expectedCount === 0) {
-    await waitForRelationshipExecution(runtimeState);
+    await context.waitForRelationshipExecution(node.id);
     return null;
   }
 
   runtimeState.executed = true;
   const outputs = buildReduceOutputs(node, runtimeState.values.slice(0, expectedCount));
-  resolveRelationshipWaiters(runtimeState);
+  context.resolveRelationshipWaiters(node.id);
   return outputs;
 }

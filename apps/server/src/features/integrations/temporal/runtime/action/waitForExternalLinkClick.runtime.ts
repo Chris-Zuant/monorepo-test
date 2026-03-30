@@ -3,8 +3,7 @@ import {
   defineSignal,
   setHandler,
 } from "@temporalio/workflow";
-import type { WaitForExternalLinkNode } from "@monorepo/shared";
-import type { ExecutableGraphNode } from "../../../services/integrationWorkflowBuilder.service";
+import type { ActionGraphNode, WaitForExternalLinkNode } from "@monorepo/shared";
 
 export const EXTERNAL_LINK_CLICKED_SIGNAL = "externalLinkClicked";
 
@@ -26,13 +25,16 @@ export function createWaitForExternalLinkClickRuntime() {
   });
 
   return async (
-    node: WaitForExternalLinkNode & ExecutableGraphNode,
+    node: ActionGraphNode,
     payload: unknown
   ) => {
-    await condition(() => clickedLinksByNodeId.has(node.id));
 
-    const clickPayload = clickedLinksByNodeId.get(node.id)!;
-    clickedLinksByNodeId.delete(node.id);
+    const waitNode = node as WaitForExternalLinkNode;
+
+    await condition(() => clickedLinksByNodeId.has(waitNode.id));
+
+    const clickPayload = clickedLinksByNodeId.get(waitNode.id)!;
+    clickedLinksByNodeId.delete(waitNode.id);
 
     const payloadRecord =
       payload && typeof payload === "object" && !Array.isArray(payload)
@@ -44,7 +46,7 @@ export function createWaitForExternalLinkClickRuntime() {
       linkClicked: true,
       clickedAt: clickPayload.clickedAt,
       clickUrl: clickPayload.requestUrl,
-      clickedNodeId: node.id,
+      clickedNodeId: waitNode.id,
     };
   };
 }

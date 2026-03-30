@@ -1,10 +1,10 @@
 import type { FanOutRelationshipNode } from "@monorepo/shared";
-import type { ExecuteRelationshipNodeContext } from "./runtime";
+import { WorkflowExecutionContext } from "../../services/runIntegrationWorkflow.service";
 
 export async function executeFanOutNode(
   node: FanOutRelationshipNode,
   value: unknown,
-  _context: ExecuteRelationshipNodeContext
+  _context: WorkflowExecutionContext
 ) {
   if (node.config.mode === "partition" && Array.isArray(value)) {
     return {
