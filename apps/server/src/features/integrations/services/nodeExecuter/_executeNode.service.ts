@@ -15,7 +15,8 @@ const {
   createContactActivity,
   batchActivity,
 } = proxyActivities<typeof activities>({
-  startToCloseTimeout: "1 minute",
+    // taskQueue: `activity-tenant-${tenantId}`,
+    startToCloseTimeout: "1 minute",
 })
 
 export interface IntegrationWorkflowRunnerDependencies {

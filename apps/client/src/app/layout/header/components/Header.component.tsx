@@ -7,6 +7,7 @@ import { SearchBar } from '@/core/components/inputs/searchbar.component';
 import { CoreDropdownMenu, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
 import { authClient } from '@app/providers/auth';
 import { useTheme } from '@app/providers/theme/hooks';
+import { OrganizationSwitcher } from './OrganizationSwitcher.component';
 
 interface SearchItem {
   id: string;
@@ -68,6 +69,7 @@ export const Header: React.FC = () => {
   const accountMenuConfig = [
     { id: 'account-label', labelKey: 'header.accountMenu', isLabel: true },
     { id: 'users', labelKey: 'users.page.title', path: '/users', namespace: 'users' },
+    { id: 'organizations', labelKey: 'users.organizations.page.title', path: '/account/organizations', namespace: 'users' },
     { id: 'profile', labelKey: 'header.profile', path: '/account/profile' },
     { id: 'settings', labelKey: 'header.settings', path: '/account/settings' },
     { id: 'preferences', labelKey: 'header.preferences', path: '/account/preferences' },
@@ -149,6 +151,7 @@ export const Header: React.FC = () => {
 
         {/* Right Section: Search Toggle, Theme, Features, and Language Controls */}
         <div className="flex items-center gap-2">
+          <OrganizationSwitcher />
 
           {/* Theme Toggle Button */}
           <CoreButton

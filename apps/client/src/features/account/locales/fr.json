@@ -20,6 +20,57 @@
       "authMethods": "Méthodes d'authentification",
       "noAuthMethods": "Aucune méthode d'authentification trouvée pour cet utilisateur."
     },
+    "organizations": {
+      "page": {
+        "title": "Organisations",
+        "description": "Créez des organisations, changez d'organisation active et invitez des collègues."
+      },
+      "fields": {
+        "name": "Nom de l'organisation",
+        "slug": "Slug de l'organisation",
+        "inviteEmail": "E-mail à inviter"
+      },
+      "create": {
+        "title": "Créer une organisation",
+        "description": "Créez une nouvelle organisation et rendez-la disponible dans le sélecteur d'en-tête.",
+        "submit": "Créer l'organisation",
+        "submitting": "Création de l'organisation..."
+      },
+      "invite": {
+        "title": "Inviter un membre",
+        "descriptionActive": "Invitez un membre dans {{organization}}.",
+        "descriptionInactive": "Sélectionnez ou créez une organisation avant d'envoyer des invitations.",
+        "submit": "Envoyer l'invitation",
+        "submitting": "Envoi de l'invitation...",
+        "sentInvites": "Invitations envoyées",
+        "noSentInvites": "Aucune invitation n'a encore été envoyée depuis l'organisation active.",
+        "status": "Statut",
+        "expiresAt": "Expire le"
+      },
+      "current": {
+        "title": "Organisation active",
+        "memberCount": "Nombre de membres",
+        "none": "Aucune organisation active n'est sélectionnée."
+      },
+      "list": {
+        "title": "Vos organisations",
+        "empty": "Vous n'appartenez encore à aucune organisation."
+      },
+      "received": {
+        "title": "Invitations reçues",
+        "empty": "Vous n'avez aucune invitation d'organisation en attente.",
+        "organization": "Organisation",
+        "accept": "Accepter",
+        "reject": "Refuser"
+      },
+      "refresh": "Rafraîchir",
+      "errors": {
+        "load": "Impossible de charger les données d'organisation.",
+        "create": "Impossible de créer l'organisation.",
+        "invite": "Impossible d'inviter le membre.",
+        "respond": "Impossible de répondre à l'invitation."
+      }
+    },
     "settings": {
       "page": {
         "title": "Paramètres",

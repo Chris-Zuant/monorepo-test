@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { authClient } from '@/app/providers/auth';
 import { Button } from '@/core/shadcn/components/ui/Button.component';
 import { Input } from '@/core/shadcn/components/ui/Input.component';
-import { Chrome } from 'lucide-react';
+import { Building2, Chrome } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -13,16 +13,19 @@ export default function LoginPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [ssoIdentifier, setSsoIdentifier] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [isSSOSubmitting, setIsSSOSubmitting] = useState(false);
+
+  const callbackURL = (location.state as { from?: string } | null)?.from ?? '/users';
 
   useEffect(() => {
     if (sessionData?.session && sessionData.user) {
-      const nextPath = (location.state as { from?: string } | null)?.from ?? '/users';
-      navigate(nextPath, { replace: true });
+      navigate(callbackURL, { replace: true });
     }
-  }, [location.state, navigate, sessionData]);
+  }, [callbackURL, navigate, sessionData]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,7 +56,7 @@ export default function LoginPage() {
         }
       }
 
-      navigate('/users', { replace: true });
+      navigate(callbackURL, { replace: true });
     } finally {
       setIsSubmitting(false);
     }
@@ -66,7 +69,7 @@ export default function LoginPage() {
     try {
       const result = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: `${window.location.origin}/integrations`,
+        callbackURL: `${window.location.origin}${callbackURL}`,
       });
 
       if (result.error) {
@@ -76,6 +79,39 @@ export default function LoginPage() {
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : 'Unable to sign in with Google');
       setIsGoogleSubmitting(false);
+    }
+  };
+
+  const handleSSOSignIn = async () => {
+    const identifier = ssoIdentifier.trim();
+
+    if (!identifier) {
+      return;
+    }
+
+    setErrorMessage(null);
+    setIsSSOSubmitting(true);
+
+    try {
+      const result = await authClient.signIn.sso(
+        identifier.includes('@')
+          ? {
+              email: identifier,
+              callbackURL: `${window.location.origin}${callbackURL}`,
+            }
+          : {
+              organizationSlug: identifier,
+              callbackURL: `${window.location.origin}${callbackURL}`,
+            }
+      );
+
+      if (result.error) {
+        setErrorMessage(result.error.message ?? 'Unable to sign in with SSO');
+        setIsSSOSubmitting(false);
+      }
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Unable to sign in with SSO');
+      setIsSSOSubmitting(false);
     }
   };
 
@@ -135,6 +171,7 @@ export default function LoginPage() {
             disabled={
               isSubmitting ||
               isGoogleSubmitting ||
+              isSSOSubmitting ||
               email.trim().length === 0 ||
               password.trim().length === 0 ||
               (mode === 'sign-up' && name.trim().length === 0)
@@ -160,12 +197,41 @@ export default function LoginPage() {
           type="button"
           variant="outline"
           className="w-full gap-2"
-          disabled={isSubmitting || isGoogleSubmitting}
+          disabled={isSubmitting || isGoogleSubmitting || isSSOSubmitting}
           onClick={handleGoogleSignIn}
         >
           <Chrome className="size-4" />
           {isGoogleSubmitting ? 'Redirecting to Google...' : 'Continue with Google'}
         </Button>
+
+        <div className="mt-4 space-y-3 rounded-xl border border-border bg-muted/40 p-4">
+          <div>
+            <h2 className="text-sm font-medium text-foreground">Work SSO</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Enter your work email or organization slug to continue with enterprise SSO.
+            </p>
+          </div>
+          <Input
+            value={ssoIdentifier}
+            onChange={(event) => setSsoIdentifier(event.target.value)}
+            placeholder="name@company.com or company-slug"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full gap-2"
+            disabled={
+              isSubmitting ||
+              isGoogleSubmitting ||
+              isSSOSubmitting ||
+              ssoIdentifier.trim().length === 0
+            }
+            onClick={handleSSOSignIn}
+          >
+            <Building2 className="size-4" />
+            {isSSOSubmitting ? 'Redirecting to SSO...' : 'Continue with SSO'}
+          </Button>
+        </div>
 
         <div className="mt-4 text-center text-sm text-muted-foreground">
           {mode === 'sign-in' ? 'Need an account?' : 'Already have an account?'}{' '}

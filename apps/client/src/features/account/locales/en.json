@@ -20,6 +20,57 @@
       "authMethods": "Authentication Methods",
       "noAuthMethods": "No authentication methods found for this user."
     },
+    "organizations": {
+      "page": {
+        "title": "Organizations",
+        "description": "Create organizations, switch between them, and invite teammates."
+      },
+      "fields": {
+        "name": "Organization Name",
+        "slug": "Organization Slug",
+        "inviteEmail": "Invite Email"
+      },
+      "create": {
+        "title": "Create Organization",
+        "description": "Create a new organization and make it available in the header switcher.",
+        "submit": "Create Organization",
+        "submitting": "Creating organization..."
+      },
+      "invite": {
+        "title": "Invite Member",
+        "descriptionActive": "Invite a member into {{organization}}.",
+        "descriptionInactive": "Select or create an organization before sending invites.",
+        "submit": "Send Invitation",
+        "submitting": "Sending invitation...",
+        "sentInvites": "Sent Invitations",
+        "noSentInvites": "No invitations have been sent from the active organization yet.",
+        "status": "Status",
+        "expiresAt": "Expires At"
+      },
+      "current": {
+        "title": "Current Organization",
+        "memberCount": "Member Count",
+        "none": "No active organization is selected."
+      },
+      "list": {
+        "title": "Your Organizations",
+        "empty": "You do not belong to any organizations yet."
+      },
+      "received": {
+        "title": "Received Invitations",
+        "empty": "You do not have any pending organization invitations.",
+        "organization": "Organization",
+        "accept": "Accept",
+        "reject": "Reject"
+      },
+      "refresh": "Refresh",
+      "errors": {
+        "load": "Unable to load organization data.",
+        "create": "Unable to create organization.",
+        "invite": "Unable to invite member.",
+        "respond": "Unable to respond to invitation."
+      }
+    },
     "settings": {
       "page": {
         "title": "Settings",

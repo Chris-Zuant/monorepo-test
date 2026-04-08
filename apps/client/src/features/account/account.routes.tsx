@@ -3,6 +3,7 @@ import type { RouteObject } from 'react-router-dom';
 
 // Lazy load user pages
 const LoginPage = lazy(() => import('./pages/Login.page'));
+const OrganizationsPage = lazy(() => import('./pages/Organizations.page'));
 const PreferencesPage = lazy(() => import('./pages/Preferences.page'));
 const ProfilePage = lazy(() => import('./pages/Profile.page'));
 const SettingsPage = lazy(() => import('./pages/Settings.page'));
@@ -17,6 +18,10 @@ export const usersRoutes: RouteObject[] = [
   {
     path: '/users',
     element: <UsersPage />,
+  },
+  {
+    path: '/account/organizations',
+    element: <OrganizationsPage />,
   },
   {
     path: '/account/profile',

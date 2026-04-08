@@ -29,8 +29,7 @@ type ActionNodeExecutorFn<TNode extends ActionGraphNode = ActionGraphNode> = (
 // functions instead of wrapper classes.
 export class ActionNodeExecutor {
   private readonly actionNodeExecutors = {
-    httpRequest: (node, payload) =>
-      this.activityFns.httpRequestActivity({ node, payload }),
+    httpRequest: (node, payload) => this.activityFns.httpRequestActivity({ node, payload }),
     delay: (node) => this.activityFns.delayActivity({ node }),
     transform: (node, payload) => this.activityFns.transformActivity({ node, payload }),
     randomFailure: (node) => this.activityFns.randomFailureActivity({ node }),

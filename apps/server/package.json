@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.5.6",
+    "@better-auth/sso": "1.5.6",
     "@fastify/cors": "^9.0.0",
     "@monorepo/shared": "workspace:*",
     "@temporalio/client": "^1.15.0",
