@@ -2,14 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { CoreButton } from '@/core/components';
 import { SearchBar } from '@/core/components/inputs/searchbar.component';
 import {
+  Button,
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/core/shadcn/components/ui/Card.component';
+} from '@/core/shadcn/components/ui';
 import { useIntegrationTemporalTestMutation, useIntegrationsQuery } from '../hooks';
 import { initializeNewIntegrationGraph } from '../store/integrations.slice';
 
@@ -42,11 +42,11 @@ export const IntegrationsPage: React.FC = () => {
   const filteredIntegrations = React.useMemo(
     () =>
       integrations.filter((integration) =>
-        (integration.name || 'Untitled Integration')
+        (integration.name || t('integrations.page.untitledIntegration', 'Untitled Integration'))
           .toLowerCase()
           .includes(query.trim().toLowerCase())
       ),
-    [integrations, query]
+    [integrations, query, t]
   );
 
   return (
@@ -61,18 +61,20 @@ export const IntegrationsPage: React.FC = () => {
           />
         </div>
 
-        <CoreButton
+        <Button
           onClick={handleTemporalTestClicked}
           disabled={temporalTestMutation.isPending}
         >
-          {temporalTestMutation.isPending ? 'Testing...' : 'TEST'}
-        </CoreButton>
-        <CoreButton variant="outline" onClick={handleCreateIntegration}>
+          {temporalTestMutation.isPending
+            ? t('integrations.page.testing', 'Testing...')
+            : t('integrations.page.testButton', 'Test')}
+        </Button>
+        <Button variant="outline" onClick={handleCreateIntegration}>
           {t('integrations.page.newIntegration', 'New Integration')}
-        </CoreButton>
+        </Button>
       </div>
 
-      <p className="mb-6 text-gray-600">{t('integrations.page.description')}</p>
+      <p className="mb-6 text-muted-foreground">{t('integrations.page.description')}</p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {filteredIntegrations.map((integration) => (
@@ -82,7 +84,7 @@ export const IntegrationsPage: React.FC = () => {
             onClick={() => navigate(`/integrations/editor/${integration.id}`)}
           >
             <CardHeader>
-              <CardTitle>{integration.name || 'Untitled Integration'}</CardTitle>
+              <CardTitle>{integration.name || t('integrations.page.untitledIntegration', 'Untitled Integration')}</CardTitle>
               <CardDescription>
                 {integration.nodes.length} nodes, {integration.edges.length} edges
               </CardDescription>

@@ -20,10 +20,56 @@
       "authMethods": "Authentication Methods",
       "noAuthMethods": "No authentication methods found for this user."
     },
+    "login": {
+      "loadingSession": "Loading session...",
+      "signInTitle": "Sign in",
+      "signUpTitle": "Create account",
+      "signInDescription": "Use your email and password to access the app.",
+      "signUpDescription": "Create a simple account to get started.",
+      "password": "Password",
+      "signingIn": "Signing in...",
+      "creatingAccount": "Creating account...",
+      "signInAction": "Sign in",
+      "signUpAction": "Create account",
+      "or": "or",
+      "redirectingGoogle": "Redirecting to Google...",
+      "continueGoogle": "Continue with Google",
+      "workSsoTitle": "Work SSO",
+      "workSsoDescription": "Enter your work email or organization slug to continue with enterprise SSO.",
+      "workSsoPlaceholder": "name@company.com or company-slug",
+      "redirectingSso": "Redirecting to SSO...",
+      "continueSso": "Continue with SSO",
+      "needAccount": "Need an account?",
+      "haveAccount": "Already have an account?",
+      "createOne": "Create one",
+      "errors": {
+        "createAccount": "Unable to create account",
+        "signIn": "Unable to sign in",
+        "google": "Unable to sign in with Google",
+        "sso": "Unable to sign in with SSO"
+      }
+    },
     "organizations": {
       "page": {
         "title": "Organizations",
         "description": "Create organizations, switch between them, and invite teammates."
+      },
+      "tabs": {
+        "organizations": "Organizations",
+        "sso": "SSO Management"
+      },
+      "placeholders": {
+        "organizationName": "Acme Ltd",
+        "organizationSlug": "acme",
+        "inviteEmail": "teammate@company.com",
+        "providerId": "samltest",
+        "providerDomain": "samltest.local",
+        "providerIssuer": "https://samltest.id/saml/idp",
+        "providerEntryPoint": "https://samltest.id/idp/profile/SAML2/Redirect/SSO",
+        "providerCallbackUrl": "/users",
+        "providerAudience": "http://localhost:3000",
+        "providerCertificate": "-----BEGIN CERTIFICATE-----",
+        "providerMetadataXml": "<EntityDescriptor>...</EntityDescriptor>"
       },
       "fields": {
         "name": "Organization Name",
@@ -63,12 +109,41 @@
         "accept": "Accept",
         "reject": "Reject"
       },
+      "sso": {
+        "title": "SSO Providers",
+        "descriptionActive": "Register SAML or SSO providers for {{organization}}.",
+        "descriptionInactive": "Select or create an organization before registering an SSO provider.",
+        "useSamltestDefaults": "Use SAMLtest Defaults",
+        "submit": "Register Provider",
+        "submitting": "Registering provider...",
+        "registeredTitle": "Registered Providers",
+        "registeredDescription": "Review the providers connected to the active organization and use the SP metadata URL for your IdP setup.",
+        "empty": "No SSO providers have been registered for the active organization yet.",
+        "defaults": {
+          "type": "saml"
+        },
+        "fields": {
+          "providerId": "Provider ID",
+          "domain": "Domain",
+          "issuer": "Issuer",
+          "entryPoint": "Entry Point",
+          "callbackUrl": "Callback URL",
+          "audience": "Audience",
+          "certificate": "Signing Certificate",
+          "metadataXml": "IdP Metadata XML",
+          "metadataHint": "Paste the IdP metadata XML here if you have it. For SAMLtest, this lets Better Auth store the metadata alongside the core SAML fields.",
+          "type": "Type",
+          "spMetadataUrl": "SP Metadata URL"
+        }
+      },
       "refresh": "Refresh",
       "errors": {
         "load": "Unable to load organization data.",
         "create": "Unable to create organization.",
         "invite": "Unable to invite member.",
-        "respond": "Unable to respond to invitation."
+        "respond": "Unable to respond to invitation.",
+        "ssoLoad": "Unable to load SSO providers.",
+        "ssoRegister": "Unable to register the SSO provider."
       }
     },
     "settings": {

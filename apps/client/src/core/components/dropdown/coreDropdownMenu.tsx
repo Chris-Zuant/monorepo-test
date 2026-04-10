@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from '@/core/shadcn/components/ui/DropdownMenu.component';
-import { CoreButton } from '@/core/components/buttons';
+import { Button } from '@/core/shadcn/components/ui';
 import { ChevronDown } from 'lucide-react';
 
 export interface CoreDropdownMenuItem {
@@ -63,11 +63,11 @@ export const CoreDropdownMenu: React.FC<CoreDropdownMenuProps> = ({
               key={item.id}
               onClick={item.onClick}
               disabled={item.disabled}
-              className={item.selected ? 'bg-neutral-100' : ''}
+              className={item.selected ? 'bg-accent text-accent-foreground' : undefined}
             >
               <span>{item.label}</span>
               {item.selected && (
-                <span className="ml-auto text-blue-600">✓</span>
+                <span className="ml-auto text-primary">✓</span>
               )}
             </DropdownMenuItem>
           );
@@ -96,11 +96,11 @@ export const CoreDropdownButton: React.FC<CoreDropdownButtonProps> = ({
     <CoreDropdownMenu
       {...dropdownProps}
       trigger={
-        <CoreButton variant={buttonVariant} size={buttonSize} className="flex items-center gap-2">
+        <Button variant={buttonVariant} size={buttonSize} className="flex items-center gap-2">
           {icon}
           <span>{buttonText}</span>
           <ChevronDown className="w-4 h-4" />
-        </CoreButton>
+        </Button>
       }
     />
   );

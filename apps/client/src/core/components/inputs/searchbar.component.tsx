@@ -2,6 +2,7 @@ import { Input, cn } from "@/core/shadcn";
 import type { InputProps } from "@/core/shadcn/components/ui/Input.component";
 import { Search } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Popover,
   PopoverContent,
@@ -28,9 +29,10 @@ export function SearchBar({
   items = [],
   onChange,
   onItemSelect,
-  placeholder = "Search...",
+  placeholder,
   ...props
 }: SearchBarProps) {
+  const { t } = useTranslation();
   const [value, setValue] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -73,17 +75,17 @@ export function SearchBar({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               ref={inputRef}
               className={cn(
-                "rounded-full",
+                "rounded-xl",
                 "pl-10 pr-4 h-9 text-sm",
                 className
               )}
               value={value}
               onChange={handleInputChange}
-              placeholder={placeholder}
+              placeholder={placeholder ?? t('common.search')}
               {...props}
             />
           </div>

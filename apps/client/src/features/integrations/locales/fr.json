@@ -2,7 +2,12 @@
   "integrations": {
     "page": {
       "title": "Intégrations",
-      "description": "Bienvenue dans la fonctionnalité Intégrations. Connectez et gérez les intégrations."
+      "description": "Bienvenue dans la fonctionnalité Intégrations. Connectez et gérez les intégrations.",
+      "searchPlaceholder": "Rechercher des intégrations...",
+      "newIntegration": "Nouvelle intégration",
+      "testing": "Test en cours...",
+      "testButton": "Tester",
+      "untitledIntegration": "Intégration sans titre"
     },
     "title": "Intégrations",
     "available": "Intégrations disponibles",
@@ -15,7 +20,22 @@
     "editor": {
       "open": "Ouvrir l'éditeur",
       "title": "Éditeur d'intégration",
-      "description": "Choisissez un nœud dans la barre latérale pour l'ajouter au flux."
+      "description": "Choisissez un nœud dans la barre latérale pour l'ajouter au flux.",
+      "back": "Retour aux intégrations"
+    },
+    "run": {
+      "submit": "Lancer l'intégration",
+      "running": "Exécution..."
+    },
+    "sidebar": {
+      "title": "Nœuds du flux",
+      "openPanel": "Ouvrir le panneau des nœuds",
+      "closePanel": "Fermer le panneau des nœuds",
+      "tabs": {
+        "trigger": "Déclencheur",
+        "action": "Action",
+        "relationship": "Relation"
+      }
     }
   }
 }

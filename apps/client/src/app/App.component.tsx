@@ -13,9 +13,7 @@ function AppShell() {
   const isLoginRoute = location.pathname === '/login';
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-background text-foreground" style={{
-      transition: 'background-color 200ms, color 200ms'
-    }}>
+    <div className="flex min-h-screen w-full flex-col bg-background text-foreground transition-colors">
       {!isLoginRoute ? <Header /> : null}
       <main className="flex-1 w-full">
         <Suspense fallback={<div className="p-4">{t('common.loading')}</div>}>

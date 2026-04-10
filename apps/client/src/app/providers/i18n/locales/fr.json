@@ -32,8 +32,17 @@
   },
   "devtools": {
     "title": "Outils de développement",
+    "toggle": "Afficher ou masquer les outils de développement",
     "themesTab": "Thèmes",
+    "waitLinksTab": "Liens d'attente",
     "selectTheme": "Sélectionner un thème",
-    "currentTheme": "Thème actuel"
+    "currentTheme": "Thème actuel",
+    "currentRun": "Exécution actuelle",
+    "currentWorkflow": "Workflow : {{workflowId}}",
+    "runToGenerateWaitLinks": "Lancez une intégration pour générer des liens d'attente.",
+    "noPendingWaitLinks": "Aucun lien d'attente en cours pour cette exécution.",
+    "nodeId": "Nœud : {{nodeId}}",
+    "triggering": "Déclenchement...",
+    "triggerLink": "Déclencher le lien"
   }
 }

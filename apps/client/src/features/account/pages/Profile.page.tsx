@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '@/core/shadcn/components/ui';
 import { useAuthMethodsQuery, useUserQuery } from '../hooks';
 
 export default function ProfilePage() {
@@ -16,8 +17,11 @@ export default function ProfilePage() {
       <p className="mb-6 text-muted-foreground">{t('users.profile.page.description')}</p>
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <section className="rounded-2xl border border-border bg-card p-6">
-          <h2 className="mb-4 text-lg font-semibold">{t('users.profile.details')}</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('users.profile.details')}</CardTitle>
+          </CardHeader>
+          <CardContent>
 
           {isUserPending ? <p className="text-sm text-muted-foreground">{t('users.loading')}</p> : null}
           {userError ? <p className="text-sm text-destructive">{t('users.errorFetching')}</p> : null}
@@ -36,10 +40,14 @@ export default function ProfilePage() {
               </div>
             </div>
           ) : null}
-        </section>
+          </CardContent>
+        </Card>
 
-        <aside className="rounded-2xl border border-border bg-card p-6">
-          <h2 className="mb-4 text-lg font-semibold">{t('users.profile.authMethods')}</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('users.profile.authMethods')}</CardTitle>
+          </CardHeader>
+          <CardContent>
 
           {isAuthMethodsPending ? (
             <p className="text-sm text-muted-foreground">{t('users.loading')}</p>
@@ -50,16 +58,18 @@ export default function ProfilePage() {
           ) : (
             <div className="flex flex-wrap gap-2">
               {authMethods.map((method) => (
-                <span
+                <Badge
                   key={method}
-                  className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium capitalize"
+                  variant="outline"
+                  className="px-3 py-1 capitalize"
                 >
                   {method === 'credential' ? 'email/password' : method}
-                </span>
+                </Badge>
               ))}
             </div>
           )}
-        </aside>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

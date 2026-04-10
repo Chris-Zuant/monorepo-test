@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { authClient } from '@/app/providers/auth';
 import { Button } from '@/core/shadcn/components/ui/Button.component';
@@ -6,6 +7,7 @@ import { Input } from '@/core/shadcn/components/ui/Input.component';
 import { Building2, Chrome } from 'lucide-react';
 
 export default function LoginPage() {
+  const { t } = useTranslation('users');
   const navigate = useNavigate();
   const location = useLocation();
   const { data: sessionData, isPending } = authClient.useSession();
@@ -41,7 +43,7 @@ export default function LoginPage() {
         });
 
         if (result.error) {
-          setErrorMessage(result.error.message ?? 'Unable to create account');
+          setErrorMessage(result.error.message ?? t('users.login.errors.createAccount'));
           return;
         }
       } else {
@@ -51,7 +53,7 @@ export default function LoginPage() {
         });
 
         if (result.error) {
-          setErrorMessage(result.error.message ?? 'Unable to sign in');
+          setErrorMessage(result.error.message ?? t('users.login.errors.signIn'));
           return;
         }
       }
@@ -73,11 +75,11 @@ export default function LoginPage() {
       });
 
       if (result.error) {
-        setErrorMessage(result.error.message ?? 'Unable to sign in with Google');
+        setErrorMessage(result.error.message ?? t('users.login.errors.google'));
         setIsGoogleSubmitting(false);
       }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Unable to sign in with Google');
+      setErrorMessage(error instanceof Error ? error.message : t('users.login.errors.google'));
       setIsGoogleSubmitting(false);
     }
   };
@@ -106,17 +108,17 @@ export default function LoginPage() {
       );
 
       if (result.error) {
-        setErrorMessage(result.error.message ?? 'Unable to sign in with SSO');
+        setErrorMessage(result.error.message ?? t('users.login.errors.sso'));
         setIsSSOSubmitting(false);
       }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Unable to sign in with SSO');
+      setErrorMessage(error instanceof Error ? error.message : t('users.login.errors.sso'));
       setIsSSOSubmitting(false);
     }
   };
 
   if (isPending) {
-    return <div className="p-6 text-sm text-muted-foreground">Loading session...</div>;
+    return <div className="p-6 text-sm text-muted-foreground">{t('users.login.loadingSession')}</div>;
   }
 
   return (
@@ -124,25 +126,25 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-card-foreground">
-            {mode === 'sign-in' ? 'Sign in' : 'Create account'}
+            {mode === 'sign-in' ? t('users.login.signInTitle') : t('users.login.signUpTitle')}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {mode === 'sign-in'
-              ? 'Use your email and password to access the app.'
-              : 'Create a simple account to get started.'}
+              ? t('users.login.signInDescription')
+              : t('users.login.signUpDescription')}
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {mode === 'sign-up' ? (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Name</label>
+              <label className="text-sm font-medium text-foreground">{t('users.name')}</label>
               <Input value={name} onChange={(event) => setName(event.target.value)} />
             </div>
           ) : null}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Email</label>
+            <label className="text-sm font-medium text-foreground">{t('users.email')}</label>
             <Input
               type="email"
               value={email}
@@ -151,7 +153,7 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Password</label>
+            <label className="text-sm font-medium text-foreground">{t('users.login.password')}</label>
             <Input
               type="password"
               value={password}
@@ -179,17 +181,17 @@ export default function LoginPage() {
           >
             {isSubmitting
               ? mode === 'sign-in'
-                ? 'Signing in...'
-                : 'Creating account...'
+                ? t('users.login.signingIn')
+                : t('users.login.creatingAccount')
               : mode === 'sign-in'
-                ? 'Sign in'
-                : 'Create account'}
+                ? t('users.login.signInAction')
+                : t('users.login.signUpAction')}
           </Button>
         </form>
 
         <div className="my-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-xs uppercase tracking-wide text-muted-foreground">or</span>
+          <span className="text-xs uppercase tracking-wide text-muted-foreground">{t('users.login.or')}</span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
@@ -201,20 +203,20 @@ export default function LoginPage() {
           onClick={handleGoogleSignIn}
         >
           <Chrome className="size-4" />
-          {isGoogleSubmitting ? 'Redirecting to Google...' : 'Continue with Google'}
+          {isGoogleSubmitting ? t('users.login.redirectingGoogle') : t('users.login.continueGoogle')}
         </Button>
 
         <div className="mt-4 space-y-3 rounded-xl border border-border bg-muted/40 p-4">
           <div>
-            <h2 className="text-sm font-medium text-foreground">Work SSO</h2>
+            <h2 className="text-sm font-medium text-foreground">{t('users.login.workSsoTitle')}</h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Enter your work email or organization slug to continue with enterprise SSO.
+              {t('users.login.workSsoDescription')}
             </p>
           </div>
           <Input
             value={ssoIdentifier}
             onChange={(event) => setSsoIdentifier(event.target.value)}
-            placeholder="name@company.com or company-slug"
+            placeholder={t('users.login.workSsoPlaceholder')}
           />
           <Button
             type="button"
@@ -229,12 +231,12 @@ export default function LoginPage() {
             onClick={handleSSOSignIn}
           >
             <Building2 className="size-4" />
-            {isSSOSubmitting ? 'Redirecting to SSO...' : 'Continue with SSO'}
+            {isSSOSubmitting ? t('users.login.redirectingSso') : t('users.login.continueSso')}
           </Button>
         </div>
 
         <div className="mt-4 text-center text-sm text-muted-foreground">
-          {mode === 'sign-in' ? 'Need an account?' : 'Already have an account?'}{' '}
+          {mode === 'sign-in' ? t('users.login.needAccount') : t('users.login.haveAccount')}{' '}
           <button
             type="button"
             className="font-medium text-foreground underline underline-offset-4"
@@ -243,7 +245,7 @@ export default function LoginPage() {
               setErrorMessage(null);
             }}
           >
-            {mode === 'sign-in' ? 'Create one' : 'Sign in'}
+            {mode === 'sign-in' ? t('users.login.createOne') : t('users.login.signInAction')}
           </button>
         </div>
       </div>

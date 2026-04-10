@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@app/providers/theme/hooks';
 import { AVAILABLE_THEMES } from '@app/providers/theme/store/theme.slice';
-import { CoreButton } from '@/core/components/buttons';
+import { Button } from '@/core/shadcn/components/ui';
 
 export const ThemeSwitcher = () => {
   const { t } = useTranslation();
@@ -15,14 +15,14 @@ export const ThemeSwitcher = () => {
         </h3>
         <div className="flex flex-col gap-2">
           {AVAILABLE_THEMES.map((theme) => (
-            <CoreButton
+            <Button
               key={theme.id}
               onClick={() => setTheme(theme.id)}
               variant={currentTheme.id === theme.id ? 'default' : 'outline'}
               className="w-full justify-start text-left"
             >
               <div className="font-medium">{theme.name}</div>
-            </CoreButton>
+            </Button>
           ))}
         </div>
       </div>

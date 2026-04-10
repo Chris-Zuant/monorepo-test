@@ -32,8 +32,17 @@
   },
   "devtools": {
     "title": "DevTools",
+    "toggle": "Toggle DevTools",
     "themesTab": "Themes",
+    "waitLinksTab": "Wait Links",
     "selectTheme": "Select Theme",
-    "currentTheme": "Current Theme"
+    "currentTheme": "Current Theme",
+    "currentRun": "Current Run",
+    "currentWorkflow": "Workflow: {{workflowId}}",
+    "runToGenerateWaitLinks": "Run an integration to generate wait links.",
+    "noPendingWaitLinks": "No pending wait links for the current execution.",
+    "nodeId": "Node: {{nodeId}}",
+    "triggering": "Triggering...",
+    "triggerLink": "Trigger Link"
   }
 }

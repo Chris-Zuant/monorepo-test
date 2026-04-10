@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle2, ChevronRight, ExternalLink, X } from 'lucide-react';
 import type { RootState } from '@app/providers/theme/store';
-import { CoreButton } from '@/core/components/buttons';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/shadcn/components/ui/Tabs.component';
+import { Button, Card, CardContent, CardHeader, CardTitle, Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/shadcn/components/ui';
 import { removeWaitLink } from '../store/devTools.slice';
 import { useTriggerWaitLinkMutation } from '../hooks/useDevTools.hook';
 import { ThemeSwitcher } from './ThemeSwitcher.component';
@@ -40,47 +39,31 @@ export const DevTools = () => {
 
   return (
     <>
-      {/* Toggle Button - Bottom Right */}
-      <div style={{ position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 9999 }}>
-        <CoreButton
+      <div className="fixed bottom-4 right-4 z-[9999]">
+        <Button
           onClick={() => setIsOpen(!isOpen)}
-          title="Toggle DevTools"
+          title={t('devtools.toggle')}
+          className="shadow-lg"
         >
           <ChevronRight className={`w-5 h-5 transition-transform ${isOpen ? '' : 'rotate-180'}`} />
-        </CoreButton>
+        </Button>
       </div>
 
-      {/* Side Panel */}
       <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          right: 0,
-          top: 0,
-          zIndex: 9998,
-          transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 300ms, background-color 200ms, color 200ms, border-color 200ms'
-        }}
-        className="shadow-lg bg-background w-100"
+        className={`fixed inset-y-0 right-0 z-[9998] w-[25rem] border-l border-border bg-background shadow-2xl transition-transform duration-300 ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
       >
-        {/* Header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '1rem',
-          borderBottom: '1px solid var(--border-color)',
-          transition: 'border-color 200ms'
-        }}>
-          <h2 style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>DevTools</h2>
-          <CoreButton
+        <div className="flex items-center justify-between border-b border-border px-4 py-4">
+          <h2 className="text-lg font-semibold text-foreground">{t('devtools.title')}</h2>
+          <Button
             onClick={() => setIsOpen(false)}
             variant="ghost"
             size="sm"
-            className="p-0 w-8 h-8"
+            className="h-8 w-8 p-0"
           >
             <X className="w-4 h-4" />
-          </CoreButton>
+          </Button>
         </div>
 
         <Tabs
@@ -88,19 +71,13 @@ export const DevTools = () => {
           onValueChange={setActiveTab}
           className="flex h-[calc(100%-65px)] flex-col"
         >
-          <div
-            style={{
-              padding: '1rem',
-              borderBottom: '1px solid var(--border-color)',
-              transition: 'border-color 200ms'
-            }}
-          >
+          <div className="border-b border-border p-4">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="themes">
                 {t('devtools.themesTab')}
               </TabsTrigger>
               <TabsTrigger value="waitLinks">
-                Wait Links
+                {t('devtools.waitLinksTab')}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -112,16 +89,18 @@ export const DevTools = () => {
           <TabsContent value="waitLinks" className="flex-1 overflow-y-auto p-4">
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-semibold text-foreground">Current Run</h3>
+                <h3 className="text-sm font-semibold text-foreground">{t('devtools.currentRun')}</h3>
                 <p className="text-xs text-muted-foreground">
-                  {workflowId ? `Workflow: ${workflowId}` : 'Run an integration to generate wait links.'}
+                  {workflowId ? t('devtools.currentWorkflow', { workflowId }) : t('devtools.runToGenerateWaitLinks')}
                 </p>
               </div>
 
               {waitLinks.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
-                  No pending wait links for the current execution.
-                </div>
+                <Card className="border-dashed">
+                  <CardContent className="pt-4 text-sm text-muted-foreground">
+                    {t('devtools.noPendingWaitLinks')}
+                  </CardContent>
+                </Card>
               ) : (
                 <div className="space-y-3">
                   {waitLinks.map((waitLink) => {
@@ -129,38 +108,34 @@ export const DevTools = () => {
                       triggerWaitLinkMutation.isPending && activeWaitLinkUrl === waitLink.url;
 
                     return (
-                      <div
-                        key={waitLink.nodeId}
-                        className="rounded-xl border border-border bg-card p-3"
-                      >
-                        <div className="mb-2">
+                      <Card key={waitLink.nodeId}>
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-sm">{waitLink.label}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
                           <div className="text-sm font-medium text-card-foreground">
-                            {waitLink.label}
+                            {t('devtools.nodeId', { nodeId: waitLink.nodeId })}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            Node: {waitLink.nodeId}
-                          </div>
-                        </div>
-
-                        <CoreButton
-                          variant="outline"
-                          className="w-full justify-center gap-2"
-                          onClick={() => handleTriggerWaitLink(waitLink.url)}
-                          disabled={isPending}
-                        >
-                          {isPending ? (
-                            <>
-                              <CheckCircle2 className="size-4 animate-pulse" />
-                              <span>Triggering...</span>
-                            </>
-                          ) : (
-                            <>
-                              <ExternalLink className="size-4" />
-                              <span>Trigger Link</span>
-                            </>
-                          )}
-                        </CoreButton>
-                      </div>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-center gap-2"
+                            onClick={() => handleTriggerWaitLink(waitLink.url)}
+                            disabled={isPending}
+                          >
+                            {isPending ? (
+                              <>
+                                <CheckCircle2 className="size-4 animate-pulse" />
+                                <span>{t('devtools.triggering')}</span>
+                              </>
+                            ) : (
+                              <>
+                                <ExternalLink className="size-4" />
+                                <span>{t('devtools.triggerLink')}</span>
+                              </>
+                            )}
+                          </Button>
+                        </CardContent>
+                      </Card>
                     );
                   })}
                 </div>
@@ -170,16 +145,9 @@ export const DevTools = () => {
         </Tabs>
       </div>
 
-      {/* Backdrop */}
       {isOpen && (
         <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 9996,
-            pointerEvents: 'auto'
-          }}
+          className="fixed inset-0 z-[9996] bg-background/60 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         />
       )}

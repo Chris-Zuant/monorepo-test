@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import type { Node } from '@xyflow/react';
 import type { RootState } from '@app/providers/theme/store';
-import { CoreButton } from '@/core/components';
+import { useTranslation } from 'react-i18next';
 import { Separator } from '@/core/shadcn/components/ui/Seperator.component';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/shadcn/components/ui/Tabs.component';
+import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/shadcn/components/ui';
 import { Workflow } from 'lucide-react';
 import { useState } from 'react';
 import type {
@@ -29,6 +29,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
   open,
   onOpenChange,
 }: IntegrationsFlowDiagramSidePanelProps) => {
+  const { t } = useTranslation('integrations');
   const dispatch = useDispatch();
   const nodes = useSelector((state: RootState) => state.integrations.nodes);
   const [activeTab, setActiveTab] = useState<'trigger' | 'action' | 'relationship'>('trigger');
@@ -83,17 +84,17 @@ export const IntegrationsFlowDiagramSidePanel = ({
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <CoreButton
+        <Button
           variant="default"
           className="absolute top-1/2 -right-12 z-10 h-24 w-12 -translate-y-1/2 rounded-l-none rounded-r-xl border-l-0 px-0 shadow-md"
           onClick={() => onOpenChange(!open)}
-          title={open ? 'Close node panel' : 'Open node panel'}
+          title={open ? t('integrations.sidebar.closePanel') : t('integrations.sidebar.openPanel')}
         >
           <Workflow className="size-4" />
-        </CoreButton>
+        </Button>
         <div className="flex items-start gap-4 p-4">
           <div>
-            <h2 className="text-base font-semibold">Flow Nodes</h2>
+            <h2 className="text-base font-semibold">{t('integrations.sidebar.title')}</h2>
             {/* <p className="mt-1 text-sm text-muted-foreground">
               Choose a node from the list to add it to the flow.
             </p> */}
@@ -107,9 +108,9 @@ export const IntegrationsFlowDiagramSidePanel = ({
         >
           <div className="p-4 pb-2">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="trigger">Trigger</TabsTrigger>
-              <TabsTrigger value="action">Action</TabsTrigger>
-              <TabsTrigger value="relationship">Relationship</TabsTrigger>
+              <TabsTrigger value="trigger">{t('integrations.sidebar.tabs.trigger')}</TabsTrigger>
+              <TabsTrigger value="action">{t('integrations.sidebar.tabs.action')}</TabsTrigger>
+              <TabsTrigger value="relationship">{t('integrations.sidebar.tabs.relationship')}</TabsTrigger>
             </TabsList>
           </div>
 
@@ -119,7 +120,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
                 const Icon = nodeDefinition.icon;
 
                 return (
-                  <CoreButton
+                  <Button
                     key={nodeDefinition.type}
                     variant="outline"
                     className="h-auto w-full justify-start whitespace-normal rounded-xl border-emerald-200 px-3 py-3 text-left hover:border-emerald-300"
@@ -138,7 +139,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
                         </div>
                       </div>
                     </div>
-                  </CoreButton>
+                  </Button>
                 );
               })}
             </div>
@@ -150,7 +151,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
                 const Icon = nodeDefinition.icon;
 
                 return (
-                  <CoreButton
+                  <Button
                     key={nodeDefinition.type}
                     variant="outline"
                     className="h-auto w-full justify-start whitespace-normal rounded-xl px-3 py-3 text-left"
@@ -169,7 +170,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
                         </div>
                       </div>
                     </div>
-                  </CoreButton>
+                  </Button>
                 );
               })}
             </div>
@@ -181,7 +182,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
                 const Icon = nodeDefinition.icon;
 
                 return (
-                  <CoreButton
+                  <Button
                     key={nodeDefinition.type}
                     variant="outline"
                     className="h-auto w-full justify-start whitespace-normal rounded-xl border-sky-200 px-3 py-3 text-left hover:border-sky-300"
@@ -200,7 +201,7 @@ export const IntegrationsFlowDiagramSidePanel = ({
                         </div>
                       </div>
                     </div>
-                  </CoreButton>
+                  </Button>
                 );
               })}
             </div>

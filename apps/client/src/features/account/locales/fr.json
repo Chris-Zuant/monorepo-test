@@ -20,10 +20,56 @@
       "authMethods": "Méthodes d'authentification",
       "noAuthMethods": "Aucune méthode d'authentification trouvée pour cet utilisateur."
     },
+    "login": {
+      "loadingSession": "Chargement de la session...",
+      "signInTitle": "Se connecter",
+      "signUpTitle": "Créer un compte",
+      "signInDescription": "Utilisez votre e-mail et votre mot de passe pour accéder à l'application.",
+      "signUpDescription": "Créez un compte simple pour commencer.",
+      "password": "Mot de passe",
+      "signingIn": "Connexion...",
+      "creatingAccount": "Création du compte...",
+      "signInAction": "Se connecter",
+      "signUpAction": "Créer un compte",
+      "or": "ou",
+      "redirectingGoogle": "Redirection vers Google...",
+      "continueGoogle": "Continuer avec Google",
+      "workSsoTitle": "SSO entreprise",
+      "workSsoDescription": "Saisissez votre e-mail professionnel ou le slug de votre organisation pour continuer avec le SSO entreprise.",
+      "workSsoPlaceholder": "nom@entreprise.com ou entreprise-slug",
+      "redirectingSso": "Redirection vers le SSO...",
+      "continueSso": "Continuer avec le SSO",
+      "needAccount": "Besoin d'un compte ?",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "createOne": "En créer un",
+      "errors": {
+        "createAccount": "Impossible de créer le compte",
+        "signIn": "Impossible de se connecter",
+        "google": "Impossible de se connecter avec Google",
+        "sso": "Impossible de se connecter avec le SSO"
+      }
+    },
     "organizations": {
       "page": {
         "title": "Organisations",
         "description": "Créez des organisations, changez d'organisation active et invitez des collègues."
+      },
+      "tabs": {
+        "organizations": "Organisations",
+        "sso": "Gestion SSO"
+      },
+      "placeholders": {
+        "organizationName": "Acme Ltd",
+        "organizationSlug": "acme",
+        "inviteEmail": "collegue@entreprise.com",
+        "providerId": "samltest",
+        "providerDomain": "samltest.local",
+        "providerIssuer": "https://samltest.id/saml/idp",
+        "providerEntryPoint": "https://samltest.id/idp/profile/SAML2/Redirect/SSO",
+        "providerCallbackUrl": "/users",
+        "providerAudience": "http://localhost:3000",
+        "providerCertificate": "-----BEGIN CERTIFICATE-----",
+        "providerMetadataXml": "<EntityDescriptor>...</EntityDescriptor>"
       },
       "fields": {
         "name": "Nom de l'organisation",
@@ -63,12 +109,41 @@
         "accept": "Accepter",
         "reject": "Refuser"
       },
+      "sso": {
+        "title": "Fournisseurs SSO",
+        "descriptionActive": "Enregistrez des fournisseurs SAML ou SSO pour {{organization}}.",
+        "descriptionInactive": "Sélectionnez ou créez une organisation avant d'enregistrer un fournisseur SSO.",
+        "useSamltestDefaults": "Utiliser les valeurs SAMLtest",
+        "submit": "Enregistrer le fournisseur",
+        "submitting": "Enregistrement du fournisseur...",
+        "registeredTitle": "Fournisseurs enregistrés",
+        "registeredDescription": "Consultez les fournisseurs connectés à l'organisation active et utilisez l'URL des métadonnées SP pour configurer votre IdP.",
+        "empty": "Aucun fournisseur SSO n'a encore été enregistré pour l'organisation active.",
+        "defaults": {
+          "type": "saml"
+        },
+        "fields": {
+          "providerId": "ID du fournisseur",
+          "domain": "Domaine",
+          "issuer": "Issuer",
+          "entryPoint": "Point d'entrée",
+          "callbackUrl": "URL de retour",
+          "audience": "Audience",
+          "certificate": "Certificat de signature",
+          "metadataXml": "XML de métadonnées IdP",
+          "metadataHint": "Collez ici le XML de métadonnées IdP si vous l'avez. Pour SAMLtest, cela permet à Better Auth d'enregistrer les métadonnées avec les champs SAML principaux.",
+          "type": "Type",
+          "spMetadataUrl": "URL des métadonnées SP"
+        }
+      },
       "refresh": "Rafraîchir",
       "errors": {
         "load": "Impossible de charger les données d'organisation.",
         "create": "Impossible de créer l'organisation.",
         "invite": "Impossible d'inviter le membre.",
-        "respond": "Impossible de répondre à l'invitation."
+        "respond": "Impossible de répondre à l'invitation.",
+        "ssoLoad": "Impossible de charger les fournisseurs SSO.",
+        "ssoRegister": "Impossible d'enregistrer le fournisseur SSO."
       }
     },
     "settings": {

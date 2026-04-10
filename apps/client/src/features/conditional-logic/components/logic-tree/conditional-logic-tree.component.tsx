@@ -79,8 +79,8 @@ export function LogicTreeCanvas() {
   }));
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <div style={{ position: "absolute", top: 10, left: 10, zIndex: 10 }}>
+    <div className="relative h-full w-full">
+      <div className="absolute left-2.5 top-2.5 z-10">
         <CoreDropdownButton
           buttonText="+ Add Node"
           items={nodeItems}

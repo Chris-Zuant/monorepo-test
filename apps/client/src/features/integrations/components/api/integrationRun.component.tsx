@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import type { RootState } from '@app/providers/theme/store';
-import { CoreButton } from '@/core/components';
 import { Spinner } from '@/core/shadcn/components/ui/Spinner.component';
+import { Button } from '@/core/shadcn/components/ui';
 import { setCurrentRunExecution } from '@/app/layout/devtools/store/devTools.slice';
 import { useRunIntegrationMutation } from '../../hooks';
 
 export const IntegrationRunComponent = () => {
+  const { t } = useTranslation('integrations');
   const dispatch = useDispatch();
   const integrationId = useSelector((state: RootState) => state.integrations.id);
   const runIntegrationMutation = useRunIntegrationMutation({
@@ -32,7 +34,7 @@ export const IntegrationRunComponent = () => {
   };
 
   return (
-    <CoreButton
+    <Button
       variant="default"
       onClick={handleRunIntegration}
       disabled={!integrationId || runIntegrationMutation.isPending}
@@ -40,12 +42,12 @@ export const IntegrationRunComponent = () => {
       {runIntegrationMutation.isPending ? (
         <>
           <Spinner className="size-4" />
-          <span>Running...</span>
+          <span>{t('integrations.run.running')}</span>
         </>
       ) : (
-        'Run Integration'
+        t('integrations.run.submit')
       )}
-    </CoreButton>
+    </Button>
   );
 };
 

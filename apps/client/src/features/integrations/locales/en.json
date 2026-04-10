@@ -2,7 +2,12 @@
   "integrations": {
     "page": {
       "title": "Integrations",
-      "description": "Welcome to the Integrations feature. Connect and manage integrations."
+      "description": "Welcome to the Integrations feature. Connect and manage integrations.",
+      "searchPlaceholder": "Search integrations...",
+      "newIntegration": "New Integration",
+      "testing": "Testing...",
+      "testButton": "Test",
+      "untitledIntegration": "Untitled Integration"
     },
     "title": "Integrations",
     "available": "Available Integrations",
@@ -15,7 +20,22 @@
     "editor": {
       "open": "Open Editor",
       "title": "Integration Editor",
-      "description": "Choose a node from the sidebar to add it to the flow."
+      "description": "Choose a node from the sidebar to add it to the flow.",
+      "back": "Back to integrations"
+    },
+    "run": {
+      "submit": "Run Integration",
+      "running": "Running..."
+    },
+    "sidebar": {
+      "title": "Flow Nodes",
+      "openPanel": "Open node panel",
+      "closePanel": "Close node panel",
+      "tabs": {
+        "trigger": "Trigger",
+        "action": "Action",
+        "relationship": "Relationship"
+      }
     }
   }
 }

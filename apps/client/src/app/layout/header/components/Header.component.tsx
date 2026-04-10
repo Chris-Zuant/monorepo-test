@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CircleUserRound, Globe, LayoutGrid, Moon, Sun } from 'lucide-react';
-import { CoreButton } from '@/core/components/buttons';
+import { Button } from '@/core/shadcn/components/ui';
 import { SearchBar } from '@/core/components/inputs/searchbar.component';
 import { CoreDropdownMenu, type CoreDropdownMenuItem } from '@/core/components/dropdown/coreDropdownMenu';
 import { authClient } from '@app/providers/auth';
@@ -109,18 +109,16 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className='w-full border-b-2 border-accent'>
-      <div className="flex items-center justify-between px-6 py-2">
+    <header className="sticky top-0 z-30 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="flex items-center justify-between px-6 py-3">
         {/* Left Section: Logo and Search */}
         <div className="flex items-center gap-8 flex-1">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{
-              background: `linear-gradient(to bottom right, var(--primary-color), var(--primary-color))`
-            }}>
-              <span className="font-bold text-lg" style={{ color: 'var(--bg-primary)' }}>M</span>
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm ring-1 ring-border/40">
+              <span className="text-base font-bold">M</span>
             </div>
-            <span className="font-semibold text-lg text-neutral-900 dark:text-neutral-100">{t('header.monorepo')}</span>
+            <span className="text-lg font-semibold text-foreground">{t('header.monorepo')}</span>
           </div>
 
           {/* Search Bar - conditionally shown */}
@@ -128,20 +126,20 @@ export const Header: React.FC = () => {
             <SearchBar
               items={searchItems}
               onItemSelect={handleItemSelect}
-              placeholder={t('common.search') || 'Search features...'}
+              placeholder={t('common.search', { defaultValue: 'Search features...' })}
             />
           )}
 
           {/* Features Dropdown */}
           <CoreDropdownMenu
             trigger={
-              <CoreButton
+              <Button
                 variant="icon"
                 size="icon"
                 className="flex items-center gap-2 text-sm"
               >
                 <LayoutGrid className="w-4 h-4" />
-              </CoreButton>
+              </Button>
             }
             items={featuresItems}
             align="end"
@@ -154,10 +152,10 @@ export const Header: React.FC = () => {
           <OrganizationSwitcher />
 
           {/* Theme Toggle Button */}
-          <CoreButton
+          <Button
             variant="default"
             onClick={toggleTheme}
-            className="flex items-center gap-2"
+            className="gap-2"
             title={t('header.toggleTheme')}
           >
             {mode === 'dark' ? (
@@ -165,18 +163,18 @@ export const Header: React.FC = () => {
             ) : (
               <Moon className="w-4 h-4" />
             )}
-          </CoreButton>
+          </Button>
 
           {/* Language Dropdown */}
           <CoreDropdownMenu
             trigger={
-              <CoreButton
+              <Button
                 variant="default"
-                className="flex items-center gap-2"
+                className="gap-2"
               >
                 <Globe className="w-4 h-4" />
                 <span>{currentLanguage}</span>
-              </CoreButton>
+              </Button>
             }
             items={languageItems}
             align="end"
@@ -185,13 +183,13 @@ export const Header: React.FC = () => {
           {/* Account Dropdown */}
           <CoreDropdownMenu
             trigger={
-              <CoreButton
+              <Button
                 variant="default"
-                className="flex items-center gap-2"
+                className="gap-2"
               >
                 <CircleUserRound className="w-4 h-4" />
                 <span>{t('header.account')}</span>
-              </CoreButton>
+              </Button>
             }
             items={accountItems}
             align="end"

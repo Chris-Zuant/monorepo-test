@@ -14,9 +14,9 @@ import {
 } from '../store/integrations.slice';
 import { Separator } from '@/core/shadcn/components/ui/Seperator.component';
 import IntegrationRunComponent from '../components/api/integrationRun.component';
-import { CoreButton } from '@/core/components';
 import { ArrowLeft } from 'lucide-react';
 import { Input } from '@/core/shadcn/components/ui/Input.component';
+import { Button } from '@/core/shadcn/components/ui';
 
 export const IntegrationEditorPage: React.FC = () => {
   const { t } = useTranslation('integrations');
@@ -48,14 +48,14 @@ export const IntegrationEditorPage: React.FC = () => {
       <IntegrationsFlowDiagramSidePanel open={isPanelOpen} onOpenChange={setIsPanelOpen} />
       <div className="absolute flex items-center justify-between border-2 border-border px-4 py-3 top-5 left-5 z-10 bg-background rounded-2xl">
         <div>
-          <CoreButton
+          <Button
             variant="icon"
             onClick={() => navigate('/integrations')}
             title={t('integrations.editor.back', 'Back to integrations')}
             aria-label={t('integrations.editor.back', 'Back to integrations')}
           >
             <ArrowLeft className="size-4" />
-          </CoreButton>
+          </Button>
         </div>
         <Separator orientation='vertical'></Separator>
         <div className="min-w-72">
