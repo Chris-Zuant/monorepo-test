@@ -66,6 +66,9 @@
         "providerDomain": "samltest.local",
         "providerIssuer": "https://samltest.id/saml/idp",
         "providerEntryPoint": "https://samltest.id/idp/profile/SAML2/Redirect/SSO",
+        "oktaDomain": "acme.okta.com",
+        "oktaIssuer": "http://www.okta.com/exk123example",
+        "oktaEntryPoint": "https://acme.okta.com/app/acme_example/sso/saml",
         "providerCallbackUrl": "/users",
         "providerAudience": "http://localhost:3000",
         "providerCertificate": "-----BEGIN CERTIFICATE-----",
@@ -119,19 +122,56 @@
         "registeredTitle": "Registered Providers",
         "registeredDescription": "Review the providers connected to the active organization and use the SP metadata URL for your IdP setup.",
         "empty": "No SSO providers have been registered for the active organization yet.",
+        "openDialog": "Open SAML Setup",
+        "dialogTitle": "SAML Provider Setup",
+        "autofill": {
+          "submit": "Auto-fill from XML"
+        },
+        "sp": {
+          "title": "Service Provider Values",
+          "description": "Use these values when Okta asks for your app's SAML details."
+        },
         "defaults": {
           "type": "saml"
+        },
+        "setups": {
+          "samltest": {
+            "tab": "SAMLtest",
+            "title": "SAMLtest Setup",
+            "description": "Use SAMLtest as a free SAML identity provider for local testing."
+          },
+          "okta": {
+            "tab": "Okta",
+            "title": "Okta Setup",
+            "description": "Register an Okta SAML provider using the values from your Okta application."
+          }
         },
         "fields": {
           "providerId": "Provider ID",
           "domain": "Domain",
+          "domainHelp": "Use your tenant or email domain to identify the provider in Better Auth.",
           "issuer": "Issuer",
           "entryPoint": "Entry Point",
+          "entryPointHelp": "This is the IdP Single Sign-on URL from Okta or your SAML provider.",
           "callbackUrl": "Callback URL",
           "audience": "Audience",
+          "acsUrl": "Single sign-on URL (ACS)",
+          "acsUrlHelp": "Paste this into Okta's Single sign-on URL field.",
+          "spEntityId": "Audience URI (SP Entity ID)",
+          "spEntityIdHelp": "Paste this into Okta's Audience URI (SP Entity ID) field. In this app it is also stored as the provider issuer.",
+          "spMetadataUrlHelp": "Open this URL to inspect the generated SP metadata that Better Auth exposes for this provider.",
+          "idpIssuer": "IdP Issuer / Entity ID",
+          "idpIssuerHelp": "Optional. Use this if your IdP gives you a specific issuer or entity ID value.",
+          "appCallbackPath": "App Callback Path",
+          "appCallbackPathHelp": "Where the user should land in your app after Better Auth finishes the SAML login flow.",
+          "idpAudience": "Audience Override",
+          "idpAudienceHelp": "Optional. Leave this alone unless your IdP setup explicitly tells you to override the audience.",
           "certificate": "Signing Certificate",
+          "certificateHelp": "Paste the X.509 signing certificate from your IdP. Okta provides this in the SAML app sign-on instructions.",
           "metadataXml": "IdP Metadata XML",
           "metadataHint": "Paste the IdP metadata XML here if you have it. For SAMLtest, this lets Better Auth store the metadata alongside the core SAML fields.",
+          "samltestMetadataHint": "Paste the SAMLtest IdP metadata XML here if you want Better Auth to store the metadata alongside the core SAML fields.",
+          "oktaMetadataHint": "Paste the metadata XML exported from your Okta SAML application, or enter the issuer, entry point, and certificate values manually.",
           "type": "Type",
           "spMetadataUrl": "SP Metadata URL"
         }
@@ -143,7 +183,9 @@
         "invite": "Unable to invite member.",
         "respond": "Unable to respond to invitation.",
         "ssoLoad": "Unable to load SSO providers.",
-        "ssoRegister": "Unable to register the SSO provider."
+        "ssoRegister": "Unable to register the SSO provider.",
+        "ssoMetadataInvalid": "The metadata XML could not be parsed. Check that you pasted valid SAML metadata.",
+        "ssoMetadataIncomplete": "The metadata XML is missing a required entity ID, SSO URL, or signing certificate."
       }
     },
     "settings": {

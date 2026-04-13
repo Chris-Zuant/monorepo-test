@@ -29,6 +29,16 @@ export interface SsoProvidersResponse {
   providers?: OrganizationSsoProvider[];
 }
 
+export interface SsoProviderPreset {
+  providerId: string;
+  issuer: string;
+  domain: string;
+  entryPoint: string;
+  callbackUrl: string;
+  audience: string;
+  metadataHintKey: string;
+}
+
 export const SAMLTEST_DEFAULTS = {
   providerId: 'samltest',
   issuer: 'https://samltest.id/saml/idp',
@@ -36,4 +46,15 @@ export const SAMLTEST_DEFAULTS = {
   entryPoint: 'https://samltest.id/idp/profile/SAML2/Redirect/SSO',
   callbackUrl: '/users',
   audience: 'http://localhost:3000',
-};
+  metadataHintKey: 'users.organizations.sso.fields.samltestMetadataHint',
+} satisfies SsoProviderPreset;
+
+export const OKTA_DEFAULTS = {
+  providerId: 'okta',
+  issuer: '',
+  domain: '',
+  entryPoint: '',
+  callbackUrl: '/users',
+  audience: 'http://localhost:3000',
+  metadataHintKey: 'users.organizations.sso.fields.oktaMetadataHint',
+} satisfies SsoProviderPreset;

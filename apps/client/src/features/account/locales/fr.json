@@ -66,6 +66,9 @@
         "providerDomain": "samltest.local",
         "providerIssuer": "https://samltest.id/saml/idp",
         "providerEntryPoint": "https://samltest.id/idp/profile/SAML2/Redirect/SSO",
+        "oktaDomain": "acme.okta.com",
+        "oktaIssuer": "http://www.okta.com/exk123example",
+        "oktaEntryPoint": "https://acme.okta.com/app/acme_example/sso/saml",
         "providerCallbackUrl": "/users",
         "providerAudience": "http://localhost:3000",
         "providerCertificate": "-----BEGIN CERTIFICATE-----",
@@ -119,19 +122,56 @@
         "registeredTitle": "Fournisseurs enregistrés",
         "registeredDescription": "Consultez les fournisseurs connectés à l'organisation active et utilisez l'URL des métadonnées SP pour configurer votre IdP.",
         "empty": "Aucun fournisseur SSO n'a encore été enregistré pour l'organisation active.",
+        "openDialog": "Ouvrir la configuration SAML",
+        "dialogTitle": "Configuration du fournisseur SAML",
+        "autofill": {
+          "submit": "Remplir automatiquement depuis le XML"
+        },
+        "sp": {
+          "title": "Valeurs du fournisseur de service",
+          "description": "Utilisez ces valeurs lorsque Okta demande les détails SAML de votre application."
+        },
         "defaults": {
           "type": "saml"
+        },
+        "setups": {
+          "samltest": {
+            "tab": "SAMLtest",
+            "title": "Configuration SAMLtest",
+            "description": "Utilisez SAMLtest comme fournisseur d'identité SAML gratuit pour les tests locaux."
+          },
+          "okta": {
+            "tab": "Okta",
+            "title": "Configuration Okta",
+            "description": "Enregistrez un fournisseur SAML Okta à l'aide des valeurs de votre application Okta."
+          }
         },
         "fields": {
           "providerId": "ID du fournisseur",
           "domain": "Domaine",
+          "domainHelp": "Utilisez votre domaine de tenant ou d'e-mail pour identifier le fournisseur dans Better Auth.",
           "issuer": "Issuer",
           "entryPoint": "Point d'entrée",
+          "entryPointHelp": "Il s'agit de l'URL de connexion unique IdP fournie par Okta ou votre fournisseur SAML.",
           "callbackUrl": "URL de retour",
           "audience": "Audience",
+          "acsUrl": "URL de connexion unique (ACS)",
+          "acsUrlHelp": "Collez cette valeur dans le champ Single sign-on URL d'Okta.",
+          "spEntityId": "URI d'audience (ID d'entité SP)",
+          "spEntityIdHelp": "Collez cette valeur dans le champ Audience URI (SP Entity ID) d'Okta. Dans cette application, elle est aussi stockée comme issuer du fournisseur.",
+          "spMetadataUrlHelp": "Ouvrez cette URL pour consulter les métadonnées SP générées que Better Auth expose pour ce fournisseur.",
+          "idpIssuer": "Issuer / ID d'entité IdP",
+          "idpIssuerHelp": "Optionnel. Utilisez-le si votre IdP fournit une valeur d'issuer ou d'entity ID spécifique.",
+          "appCallbackPath": "Chemin de retour dans l'application",
+          "appCallbackPathHelp": "Emplacement où l'utilisateur doit arriver dans l'application après la fin du flux SAML Better Auth.",
+          "idpAudience": "Remplacement de l'audience",
+          "idpAudienceHelp": "Optionnel. Laissez cette valeur inchangée sauf si votre configuration IdP vous demande explicitement de remplacer l'audience.",
           "certificate": "Certificat de signature",
+          "certificateHelp": "Collez le certificat de signature X.509 de votre IdP. Okta le fournit dans les instructions de connexion de l'application SAML.",
           "metadataXml": "XML de métadonnées IdP",
           "metadataHint": "Collez ici le XML de métadonnées IdP si vous l'avez. Pour SAMLtest, cela permet à Better Auth d'enregistrer les métadonnées avec les champs SAML principaux.",
+          "samltestMetadataHint": "Collez ici le XML de métadonnées IdP de SAMLtest si vous souhaitez que Better Auth enregistre les métadonnées avec les champs SAML principaux.",
+          "oktaMetadataHint": "Collez le XML de métadonnées exporté depuis votre application SAML Okta, ou saisissez manuellement l'issuer, le point d'entrée et le certificat.",
           "type": "Type",
           "spMetadataUrl": "URL des métadonnées SP"
         }
@@ -143,7 +183,9 @@
         "invite": "Impossible d'inviter le membre.",
         "respond": "Impossible de répondre à l'invitation.",
         "ssoLoad": "Impossible de charger les fournisseurs SSO.",
-        "ssoRegister": "Impossible d'enregistrer le fournisseur SSO."
+        "ssoRegister": "Impossible d'enregistrer le fournisseur SSO.",
+        "ssoMetadataInvalid": "Le XML de métadonnées n'a pas pu être analysé. Vérifiez que vous avez collé des métadonnées SAML valides.",
+        "ssoMetadataIncomplete": "Le XML de métadonnées ne contient pas l'entity ID, l'URL SSO ou le certificat de signature requis."
       }
     },
     "settings": {

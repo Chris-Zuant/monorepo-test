@@ -10,7 +10,7 @@ import {
   CardTitle,
   Input,
 } from '@/core/shadcn/components/ui';
-import type { OrganizationInvitation } from './organizations.types';
+import type { OrganizationInvitation } from '../models/organizations.types';
 
 export function OrganizationManagement() {
   const { t } = useTranslation('users');
