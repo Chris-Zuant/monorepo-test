@@ -95,7 +95,7 @@ function SsoProviderSetupForm({
           samlConfig: {
             entryPoint: providerEntryPoint.trim(),
             cert: providerCertificate.trim(),
-            callbackUrl: providerCallbackUrl.trim(),
+            callbackUrl: providerCallbackUrl.trim() || undefined,
             audience: providerAudience.trim() || undefined,
             idpMetadata: providerMetadataXml.trim()
               ? {
@@ -271,7 +271,7 @@ function SsoProviderSetupForm({
             <Input
               value={providerCallbackUrl}
               onChange={(event) => setProviderCallbackUrl(event.target.value)}
-              placeholder={t('users.organizations.placeholders.providerCallbackUrl')}
+              placeholder={assertionConsumerServiceUrl || t('users.organizations.placeholders.providerCallbackUrl')}
             />
             <p className="text-xs text-muted-foreground">
               {t('users.organizations.sso.fields.appCallbackPathHelp')}
@@ -327,7 +327,6 @@ function SsoProviderSetupForm({
             providerDomain.trim().length === 0 ||
             serviceProviderEntityId.trim().length === 0 ||
             providerEntryPoint.trim().length === 0 ||
-            providerCallbackUrl.trim().length === 0 ||
             providerCertificate.trim().length === 0
           }
         >

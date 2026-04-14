@@ -13,7 +13,7 @@ export const authClient = createAuthClient({
     organizationClient(),
     ssoClient({
       domainVerification: {
-        enabled: true,
+        enabled: import.meta.env.MODE !== 'development',
       },
     }),
   ],

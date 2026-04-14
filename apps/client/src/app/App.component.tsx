@@ -10,11 +10,12 @@ import './App.css';
 function AppShell() {
   const { t } = useTranslation();
   const location = useLocation();
-  const isLoginRoute = location.pathname === '/login';
+  const publicRoutes = new Set(['/login', '/login/sso']);
+  const isPublicRoute = publicRoutes.has(location.pathname);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background text-foreground transition-colors">
-      {!isLoginRoute ? <Header /> : null}
+      {!isPublicRoute ? <Header /> : null}
       <main className="flex-1 w-full">
         <Suspense fallback={<div className="p-4">{t('common.loading')}</div>}>
           <Routes>
@@ -23,7 +24,7 @@ function AppShell() {
                 key={index}
                 path={route.path}
                 element={
-                  route.path === '/login'
+                  publicRoutes.has(route.path ?? '')
                     ? route.element
                     : <RequireAuth>{route.element}</RequireAuth>
                 }
@@ -33,7 +34,7 @@ function AppShell() {
           </Routes>
         </Suspense>
       </main>
-      {!isLoginRoute ? <DevTools /> : null}
+      {!isPublicRoute ? <DevTools /> : null}
     </div>
   );
 }

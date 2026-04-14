@@ -44,7 +44,7 @@ export const SAMLTEST_DEFAULTS = {
   issuer: 'https://samltest.id/saml/idp',
   domain: 'samltest.local',
   entryPoint: 'https://samltest.id/idp/profile/SAML2/Redirect/SSO',
-  callbackUrl: '/users',
+  callbackUrl: '',
   audience: 'http://localhost:3000',
   metadataHintKey: 'users.organizations.sso.fields.samltestMetadataHint',
 } satisfies SsoProviderPreset;
@@ -54,7 +54,7 @@ export const OKTA_DEFAULTS = {
   issuer: '',
   domain: '',
   entryPoint: '',
-  callbackUrl: '/users',
+  callbackUrl: '',
   audience: 'http://localhost:3000',
   metadataHintKey: 'users.organizations.sso.fields.oktaMetadataHint',
 } satisfies SsoProviderPreset;

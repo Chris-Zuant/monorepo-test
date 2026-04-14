@@ -1,1 +1,1 @@
-
+export * from './betterAuth.handler';

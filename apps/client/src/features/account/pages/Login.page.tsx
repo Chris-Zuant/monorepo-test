@@ -15,11 +15,9 @@ export default function LoginPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [ssoIdentifier, setSsoIdentifier] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
-  const [isSSOSubmitting, setIsSSOSubmitting] = useState(false);
 
   const callbackURL = (location.state as { from?: string } | null)?.from ?? '/users';
 
@@ -84,39 +82,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleSSOSignIn = async () => {
-    const identifier = ssoIdentifier.trim();
-
-    if (!identifier) {
-      return;
-    }
-
-    setErrorMessage(null);
-    setIsSSOSubmitting(true);
-
-    try {
-      const result = await authClient.signIn.sso(
-        identifier.includes('@')
-          ? {
-              email: identifier,
-              callbackURL: `${window.location.origin}${callbackURL}`,
-            }
-          : {
-              organizationSlug: identifier,
-              callbackURL: `${window.location.origin}${callbackURL}`,
-            }
-      );
-
-      if (result.error) {
-        setErrorMessage(result.error.message ?? t('users.login.errors.sso'));
-        setIsSSOSubmitting(false);
-      }
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : t('users.login.errors.sso'));
-      setIsSSOSubmitting(false);
-    }
-  };
-
   if (isPending) {
     return <div className="p-6 text-sm text-muted-foreground">{t('users.login.loadingSession')}</div>;
   }
@@ -173,7 +138,6 @@ export default function LoginPage() {
             disabled={
               isSubmitting ||
               isGoogleSubmitting ||
-              isSSOSubmitting ||
               email.trim().length === 0 ||
               password.trim().length === 0 ||
               (mode === 'sign-up' && name.trim().length === 0)
@@ -199,7 +163,7 @@ export default function LoginPage() {
           type="button"
           variant="outline"
           className="w-full gap-2"
-          disabled={isSubmitting || isGoogleSubmitting || isSSOSubmitting}
+          disabled={isSubmitting || isGoogleSubmitting}
           onClick={handleGoogleSignIn}
         >
           <Chrome className="size-4" />
@@ -210,28 +174,18 @@ export default function LoginPage() {
           <div>
             <h2 className="text-sm font-medium text-foreground">{t('users.login.workSsoTitle')}</h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              {t('users.login.workSsoDescription')}
+              {t('users.login.workSsoLaunchDescription')}
             </p>
           </div>
-          <Input
-            value={ssoIdentifier}
-            onChange={(event) => setSsoIdentifier(event.target.value)}
-            placeholder={t('users.login.workSsoPlaceholder')}
-          />
           <Button
             type="button"
             variant="outline"
             className="w-full gap-2"
-            disabled={
-              isSubmitting ||
-              isGoogleSubmitting ||
-              isSSOSubmitting ||
-              ssoIdentifier.trim().length === 0
-            }
-            onClick={handleSSOSignIn}
+            disabled={isSubmitting || isGoogleSubmitting}
+            onClick={() => navigate('/login/sso', { state: { from: callbackURL } })}
           >
             <Building2 className="size-4" />
-            {isSSOSubmitting ? t('users.login.redirectingSso') : t('users.login.continueSso')}
+            {t('users.login.openWorkSso')}
           </Button>
         </div>
 
